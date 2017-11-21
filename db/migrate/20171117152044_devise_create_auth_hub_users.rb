@@ -38,5 +38,13 @@ class DeviseCreateAuthHubUsers < ActiveRecord::Migration[5.1]
     add_index :auth_hub_users, :reset_password_token, unique: true
     # add_index :auth_hub_users, :confirmation_token,   unique: true
     # add_index :auth_hub_users, :unlock_token,         unique: true
+    
+    # Initialize first account:
+    AuthHub::User.create! do |u|
+        u.email     = 'test@test.it'
+        u.password    = 'password'
+    end
+    
+    
   end
 end
