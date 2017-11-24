@@ -1,0 +1,7 @@
+#adal env variables
+
+ENV['CLIENT_ID'] = 'YOUR CLIENT ID HERE'
+ENV['CLIENT_SECRET'] = 'YOUR CLIENT SECRET HERE'
+ENV['TENANT'] ='YOUR TENANT HERE'
+
+ADAL::Logging.log_level = ADAL::Logger::VERBOSE

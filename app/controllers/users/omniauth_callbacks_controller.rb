@@ -1,23 +1,37 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  # You should configure your model like this:
-  # devise :omniauthable, omniauth_providers: [:twitter]
-
-  # You should also create an action method in this controller like this:
-  # def twitter
-  # end
-
-  # More info at:
-  # https://github.com/plataformatec/devise#omniauth
-
-  # GET|POST /resource/auth/twitter
+  
+  
   # def passthru
-  #   super
+  #   debugger
+  #   a=4
+  #   #redirect_to "https://login.microsoftonline.com/common/oauth2/authorize"
+  
   # end
-
-  # GET|POST /users/auth/twitter/callback
-  # def failure
-  #   super
-  # end
+  
+  
+  
+  def azure_oauth2
+    debugger
+    begin
+    @user = AuthHub::User.from_omniauth(request.env['omniauth.auth'])
+    session[:user_id] = @user.id
+    flash[:success] = "Welcome, #{@user.name}!"
+    rescue
+      flash[:warning] = "Errore creazione user"
+      path_to_redirect = new_user_session_path
+    end
+    path_to_redirect ||= dashboard_path
+    redirect_to path_to_redirect
+  end
+  
+ 
+  #se ci sono errori va qui, tracciare errore e rimandare a login
+  def failure
+    debugger
+    a=4
+    flash[:warning] = "Errore login AAD"
+    redirect_to new_user_session_path
+  end
 
   # protected
 

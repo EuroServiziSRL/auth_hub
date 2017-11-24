@@ -20,5 +20,9 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 5.1.4"
   s.add_dependency "devise"
   s.add_dependency "omniauth"
+  s.add_dependency "omniauth-azure-oauth2"
+  s.add_dependency "adal"
+ 
+  
   
 end

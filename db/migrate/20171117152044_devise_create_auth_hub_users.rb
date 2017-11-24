@@ -1,6 +1,13 @@
 class DeviseCreateAuthHubUsers < ActiveRecord::Migration[5.1]
   def change
     create_table :auth_hub_users do |t|
+      
+      #campi provenienti da Azure Active Directory o inseriti da superadmin
+      t.string :nome_cognome,     null: true
+      t.string :nome,             null: true
+      t.string :cognome,          null: true
+      
+      
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
