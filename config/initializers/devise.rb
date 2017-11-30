@@ -255,7 +255,7 @@ Devise.setup do |config|
   config.omniauth :azure_oauth2, client_id: '768f0277-4ede-449c-8036-38164da49ba2', 
   client_secret: "r7uHkApxvkGy95fIpIrWdEJrmea7WcA/fTLUYJQ8tSk=", 
   tenant_id: '04604bbd-e14a-4b40-bb65-c31eca3ced91', 
-  base_azure_url: "https://login.microsoftonline.com/"
+  base_azure_url: "https://login.microsoftonline.com"
   #resource: "openwebtest"
   
   

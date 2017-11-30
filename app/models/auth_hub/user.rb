@@ -23,8 +23,7 @@ module AuthHub
     # }
     
     
-    def self.from_omniauth(auth_hash)
-      debugger
+    def self.find_for_oauth(auth_hash)
       user = find_or_create_by(uid: auth_hash['uid'], provider: auth_hash['provider'])
       user.nome_cognome = auth_hash['info']['name']
       user.nome = auth_hash['info']['first_name']

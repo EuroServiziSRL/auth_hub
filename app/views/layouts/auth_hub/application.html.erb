@@ -2,13 +2,30 @@
 <html>
 <head>
   <title>Auth hub</title>
+  <%= javascript_pack_tag 'application' %>
+  
+  
   <%= stylesheet_link_tag    "auth_hub/application", media: "all" %>
   <%= javascript_include_tag "auth_hub/application" %>
+  
+  
+  
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<%= yield %>
+  <div id="notify">
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
+  </div>
+  <div id="user-info">
+    <% if user_signed_in? %>
+      <%#= current_user.name %>
+      [<%= link_to 'Sign out', destroy_user_session_path, method: :delete  %>]
+    <% else %>
+      <%= link_to "Sign in with Azure", user_omniauth_authorize_path(provider: "azure_oauth2") %>
+    <% end %>
+  </div>
+  <%= yield %>
 
 </body>
 </html>
