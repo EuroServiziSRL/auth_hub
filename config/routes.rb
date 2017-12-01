@@ -11,14 +11,14 @@ AuthHub::Engine.routes.draw do
     
       match "#{path_prefix}/:provider",
         :constraints => { :provider => providers },
-        :to => "/auth_hub//users/omniauth_callbacks#passthru",
-        :as => :user_omniauth_authorize,
+        :to => "/auth_hub/users/omniauth_callbacks#passthru",
+        :as => :user_omniauth_azure_oauth2_authorize,
         :via => [:get, :post]
     
       match "#{path_prefix}/:action/callback",
         :constraints => { :action => providers },
         :to => "/auth_hub/users/omniauth_callbacks#azure_oauth2",
-        :as => :user_omniauth_callback,
+        :as => :user_omniauth_azure_oauth2_callback,
         :via => [:get, :post]
     end
     
@@ -31,6 +31,8 @@ AuthHub::Engine.routes.draw do
 
     get 'dashboard' => 'dashboard#admin_dashboard', :as => :dashboard
     get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index
+    get 'ext_logout' => 'application#ext_logout', :as => :external_logout
+
 
     root to: "dashboard#admin_dashboard"    
    

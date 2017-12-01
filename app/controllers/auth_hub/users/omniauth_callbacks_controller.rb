@@ -30,10 +30,7 @@ module AuthHub
         redirect_to new_user_session_url
       end
     end
-    
 
-    
-   
     #se ci sono errori va qui, tracciare errore e rimandare a login
     def failure
       flash[:warning] = "Errore login AAD"

@@ -22,7 +22,7 @@
       <%#= current_user.name %>
       [<%= link_to 'Sign out', destroy_user_session_path, method: :delete  %>]
     <% else %>
-      <%= link_to "Sign in with Azure", user_omniauth_authorize_path(provider: "azure_oauth2") %>
+      <%= link_to "Sign in with Azure", user_omniauth_azure_oauth2_authorize_path(provider: "azure_oauth2") %>
     <% end %>
   </div>
   <%= yield %>
