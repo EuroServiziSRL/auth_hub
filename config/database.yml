@@ -1,0 +1,52 @@
+# default: &default
+#   adapter: mysql2
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+#   timeout: 5000
+#   encoding: utf8
+#   username: fabianopavan
+#   password: c90p3nw3b
+#   host: 127.0.0.1
+#   port: 3306
+
+# development:
+#   <<: *default
+#   database: openweb_devel
+  
+
+# # Warning: The database defined as "test" will be erased and
+# # re-generated from your development database when you run "rake".
+# # Do not set this db to the same as development or production.
+# test:
+#   <<: *default
+#   database: openweb_test
+
+# production:
+#   <<: *default
+#   database: openweb_prod
+
+
+# # #Per generare i models di un db esistente:
+# # #rmre -a mysql2 -d clienti -u fabianopavan -p c90p3nw3b -o engines/auth_hub/app/models/
+# # #portare i nomi dalla forma clienti__allegato.rb a clienti_allegato.rb
+
+# clienti: &clienti
+#   adapter: mysql2
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+#   timeout: 5000
+#   encoding: utf8
+#   username: fabianopavan
+#   password: c90p3nw3b
+#   host: 127.0.0.1
+#   port: 3306
+
+# clienti_development:
+#   <<: *clienti
+#   database: clienti_development
+
+# clienti_test:
+#   <<: *clienti
+#   database: clienti_test
+
+# clienti_production:
+#   <<: *clienti
+#   url: <%= ENV['CLIENTI_DATABASE_URL'] %>

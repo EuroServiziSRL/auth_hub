@@ -43,7 +43,6 @@ module AuthHub
     
     #serve?
     def after_sign_out_path_for(user_instance)
-      debugger
       a=3
     end
     

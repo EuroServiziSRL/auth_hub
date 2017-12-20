@@ -1,0 +1,7 @@
+module AuthHub    
+    class ClientiScadenza < ClientiRecord
+        self.table_name = 'clienti__scadenza'
+    
+    
+    end
+end

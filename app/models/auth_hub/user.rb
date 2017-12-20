@@ -6,6 +6,10 @@ module AuthHub
            :recoverable, :rememberable, :trackable, :validatable,
            :omniauthable, :omniauth_providers => [:azure_oauth2]
     
+    #has_many :clienti_clienti, :through => :auth_hub_enti_gestiti
+    #da mettere in migration
+    #create_join_table :products, :categories, table_name: :categorization
+    
     #arriva un auth_hash del tipo
     # {
     #   uid: '12345',
