@@ -12,11 +12,11 @@
 
 ActiveRecord::Schema.define(version: 20171220103243) do
 
-  create_table "auth_hub_enti_gestiti", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "auth_hub_user_id"
+  create_table "auth_hub_enti_gestiti", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "user_id"
     t.bigint "clienti_cliente_id"
-    t.index ["auth_hub_user_id"], name: "index_auth_hub_enti_gestiti_on_auth_hub_user_id"
     t.index ["clienti_cliente_id"], name: "index_auth_hub_enti_gestiti_on_clienti_cliente_id"
+    t.index ["user_id"], name: "index_auth_hub_enti_gestiti_on_user_id"
   end
 
   create_table "auth_hub_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -26,6 +26,7 @@ module AuthHub
         sign_in_and_redirect @user, :event => :authentication #this will throw if @user is not activated
         set_flash_message(:notice, :success, :kind => provider.capitalize) if is_navigational_format?
       else
+        #qui arrivo dopo essere stato autenticato per la prima volta
         session["devise.#{provider}_data"] = request.env["omniauth.auth"]
         redirect_to new_user_session_url
       end

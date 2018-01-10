@@ -6,10 +6,6 @@ module AuthHub
            :recoverable, :rememberable, :trackable, :validatable,
            :omniauthable, :omniauth_providers => [:azure_oauth2]
     
-    #has_many :clienti_clienti, :through => :auth_hub_enti_gestiti
-    #da mettere in migration
-    #create_join_table :products, :categories, table_name: :categorization
-    
     #arriva un auth_hash del tipo
     # {
     #   uid: '12345',
@@ -26,9 +22,32 @@ module AuthHub
     #   extra: { raw_info: raw_api_response }
     # }
     
+    #tabella per relazione N a N, ha migration e model proprio
+    has_many :enti_gestiti
+    has_many :clienti_clienti, through: :enti_gestiti
+    
     
     def self.find_for_oauth(auth_hash)
       user = find_or_create_by(uid: auth_hash['uid'], provider: auth_hash['provider'])
+      #aggiorno la lista dei clienti associati in base al tenant id
+      #parametri microsoft in request.env['omniauth.auth']['info']['tid']
+      #cerco i clienti con tenant id uguale a quello dello user appena autenticato
+      tenant_id = auth_hash['info']['tid']
+      #controllo se ha il cliente associato
+      #clienti_tenant_associato = ClientiCliente.find_by_tenant_azure(tenant_id)
+      ClientiCliente.where(tenant_azure: tenant_id).find_each do |cliente|
+        #se non ho associazioni
+        if user.enti_gestiti.blank?
+          user.enti_gestiti.create(clienti_cliente: cliente)
+        else
+          #controllo se presente nell'associazione enti_gestiti
+          trovato = user.enti_gestiti.per_cliente(cliente.id)
+          if trovato.blank?
+            user.enti_gestiti.create(clienti_cliente: cliente)
+          end
+        end
+      end
+      
       user.nome_cognome = auth_hash['info']['name']
       user.nome = auth_hash['info']['first_name']
       user.cognome = auth_hash['info']['last_name']
