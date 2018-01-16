@@ -13,18 +13,20 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <div id="notify">
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
-  </div>
   <div id="user-info">
     <% if user_signed_in? %>
-      <%#= current_user.name %>
-      [<%= link_to 'Sign out', destroy_user_session_path, method: :delete  %>]
+      Ciao <%= current_user.nome_cognome %> | <%= link_to 'Sign out', destroy_user_session_path, method: :delete  %> | 
+      <%= form_tag(cambia_ente_path, class: 'form-inline') do %> <%= select_tag(:cliente_id, options_for_select(@array_enti_gestiti,@ente_principale)) %><% end %>
     <% else %>
       <%= link_to "Sign in with Azure", user_omniauth_azure_oauth2_authorize_path(provider: "azure_oauth2") %>
     <% end %>
   </div>
+  
+  <div id="notify">
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
+  </div>
+  
   <%= yield %>
 
 </body>

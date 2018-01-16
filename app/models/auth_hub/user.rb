@@ -6,6 +6,11 @@ module AuthHub
            :recoverable, :rememberable, :trackable, :validatable,
            :omniauthable, :omniauth_providers => [:azure_oauth2]
     
+    #tabella per relazione N a N, ha migration e model proprio
+    has_many :enti_gestiti
+    has_many :clienti_clienti, through: :enti_gestiti
+   
+   
     #arriva un auth_hash del tipo
     # {
     #   uid: '12345',
@@ -21,14 +26,15 @@ module AuthHub
     #   },
     #   extra: { raw_info: raw_api_response }
     # }
-    
-    #tabella per relazione N a N, ha migration e model proprio
-    has_many :enti_gestiti
-    has_many :clienti_clienti, through: :enti_gestiti
-    
-    
+  
     def self.find_for_oauth(auth_hash)
       user = find_or_create_by(uid: auth_hash['uid'], provider: auth_hash['provider'])
+      user.nome_cognome = auth_hash['info']['name']
+      user.nome = auth_hash['info']['first_name']
+      user.cognome = auth_hash['info']['last_name']
+      user.email = auth_hash['info']['email']
+      user.password = Devise.friendly_token[0,20]
+      user.save!
       #aggiorno la lista dei clienti associati in base al tenant id
       #parametri microsoft in request.env['omniauth.auth']['info']['tid']
       #cerco i clienti con tenant id uguale a quello dello user appena autenticato
@@ -46,16 +52,13 @@ module AuthHub
             user.enti_gestiti.create(clienti_cliente: cliente)
           end
         end
+        user.save!
       end
-      
-      user.nome_cognome = auth_hash['info']['name']
-      user.nome = auth_hash['info']['first_name']
-      user.cognome = auth_hash['info']['last_name']
-      user.email = auth_hash['info']['email']
-      user.password = Devise.friendly_token[0,20]
-      user.save!
+    
       user
     end 
+    
+  
            
       
   

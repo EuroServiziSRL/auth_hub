@@ -33,6 +33,7 @@ AuthHub::Engine.routes.draw do
     get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index
     get 'ext_logout' => 'application#ext_logout', :as => :external_logout
 
+    post "cambia_ente" => "application#cambia_ente", :as => :cambia_ente
 
     root to: "dashboard#admin_dashboard"    
    

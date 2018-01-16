@@ -7,10 +7,10 @@ module AuthHub
     
     #pagina con blocchi per vari servizi, path di base
     def admin_dashboard
-      a=3
+      
     end
     
-    
+
     
     
   end

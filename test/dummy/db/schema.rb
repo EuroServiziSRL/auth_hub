@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 20171220103243) do
 
   create_table "auth_hub_enti_gestiti", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.boolean "principale"
     t.bigint "user_id"
     t.bigint "clienti_cliente_id"
     t.index ["clienti_cliente_id"], name: "index_auth_hub_enti_gestiti_on_clienti_cliente_id"
@@ -41,6 +42,8 @@ ActiveRecord::Schema.define(version: 20171220103243) do
     t.boolean "user_role", default: true
     t.string "provider"
     t.string "uid"
+    t.text "jwt"
+    t.datetime "jwt_created"
     t.index ["email"], name: "index_auth_hub_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_auth_hub_users_on_reset_password_token", unique: true
   end
