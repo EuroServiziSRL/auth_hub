@@ -2,6 +2,8 @@ module AuthHub
   class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     skip_before_action :authenticate_user!, only: [:azure_oauth2]
     
+    protect_from_forgery prepend: false
+    
     #action invocata al ritorno da azure
     def azure_oauth2
       callback_from :azure_oauth2
@@ -15,6 +17,13 @@ module AuthHub
     # def twitter
     #   callback_from :twitter
     # end
+  
+    #se ci sono errori va qui, tracciare errore e rimandare a login
+    def failure
+      flash[:warning] = "Errore login AAD"
+      redirect_to new_user_session_path
+    end
+  
   
     private
   
@@ -30,8 +39,9 @@ module AuthHub
         hash_azure = request.env['omniauth.auth']
         hmac_secret = Rails.application.secrets.external_auth_api_key
         payload = {
-          exp: Time.now.to_i + 60 * 60,
-          iat: Time.now.to_i,
+          # exp: Time.now.to_i + 60 * 60,
+          # iat: Time.now.to_i,
+          phpid: session[:phpid],
           user: {
             name: hash_azure['name'],
             first_name: hash_azure['_first_name'],
@@ -46,7 +56,6 @@ module AuthHub
         @user.jwt_created = DateTime.now
         @user.save
       end
-      
       if @user.persisted?
         sign_in_and_redirect @user, :event => :authentication #this will throw if @user is not activated
         #set_flash_message(:notice, :success, :kind => provider.capitalize) if is_navigational_format? non mostro messaggio
@@ -57,11 +66,7 @@ module AuthHub
       end
     end
 
-    #se ci sono errori va qui, tracciare errore e rimandare a login
-    def failure
-      flash[:warning] = "Errore login AAD"
-      redirect_to new_user_session_path
-    end
+    
   
     
   end

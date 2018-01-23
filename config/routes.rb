@@ -23,11 +23,16 @@ AuthHub::Engine.routes.draw do
     end
     
     
-    devise_for :users, class_name: "AuthHub::User", module: "auth_hub", path: "/", 
+    devise_for :users, class_name: "AuthHub::User", module: "auth_hub", path: "/",
     controllers: {
         sessions: 'auth_hub/users/sessions',
         omniauth_callbacks: 'auth_hub/users/omniauth_callbacks'
     }
+
+    #aggiungo la route per fare la logout esterna in get
+    devise_scope :user do
+      get 'ext_sign_out', :to => 'users/sessions#ext_sign_out'
+    end
 
     get 'dashboard' => 'dashboard#admin_dashboard', :as => :dashboard
     get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index

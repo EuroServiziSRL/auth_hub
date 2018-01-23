@@ -10,7 +10,9 @@ module AuthHub
         end
       end
     end
-    
+  
+    # Indica se con il logout dall'app rails o da app esterna si fa anche la logout da Oauth Azure
+    #config.logout_azure = false #=> uso config.yml in applicazione master
     
   end
   

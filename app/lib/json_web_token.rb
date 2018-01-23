@@ -11,6 +11,9 @@ class JsonWebToken
             nil 
         end
         
+        
+        
+        
         # Validates the payload hash for expiration and meta claims
         def valid_payload(payload)
             if expired(payload) || payload['iss'] != meta[:iss] || payload['aud'] != meta[:aud]
