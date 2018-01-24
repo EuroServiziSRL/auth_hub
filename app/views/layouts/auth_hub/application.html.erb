@@ -16,7 +16,7 @@
   <div id="user-info">
     <% if user_signed_in? %>
       Ciao <%= current_user.nome_cognome %> | <%= link_to 'Sign out', destroy_user_session_path, method: :delete  %> | 
-      <%= form_tag(cambia_ente_path, class: 'form-inline') do %> <%= select_tag(:cliente_id, options_for_select(@array_enti_gestiti,@ente_principale)) %><% end %>
+      <%= form_tag(cambia_ente_path, class: 'form-inline') do %> <% unless @array_enti_gestiti.blank? %> <%= select_tag(:cliente_id, options_for_select(@array_enti_gestiti,@ente_principale)) %><% end %><% end %>
     <% else %>
       <%= link_to "Sign in with Azure", user_omniauth_azure_oauth2_authorize_path(provider: "azure_oauth2") %>
     <% end %>
