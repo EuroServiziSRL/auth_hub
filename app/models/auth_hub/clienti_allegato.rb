@@ -1,6 +1,6 @@
-class ClientiAllegato < ClientiRecord
-    self.table_name = 'clienti__allegato'
-    self.primary_key = :ID
-
-
+module AuthHub
+    class ClientiAllegato < ClientiRecord
+        self.table_name = 'clienti__allegato'
+        self.primary_key = :ID
+    end
 end
