@@ -4,14 +4,14 @@ module AuthHub
     protect_from_forgery prepend: true
     
     #GET ext_logout
-    #arriva un JWT in get, controllo il phpid. Redirect sul controller session per fare la logout facendo la delete delle sessioni
+    #arriva un JWT in get, controllo il ext_session_id. Redirect sul controller session per fare la logout facendo la delete delle sessioni
     #poi redirect su una ub che c'è in jwt 
     def ext_logout
       #se ho il jwt devo pulire la sessione salvata nel jwt
       unless http_get_token.blank?
-          if phpid_ub_in_get_token?
+          if ext_session_id_ub_in_get_token?
             #cancello dalla sessione le chiavi
-            session['phpid_da_cancellare'] = auth_get_token['phpid']
+            session['ext_session_id_da_cancellare'] = auth_get_token['ext_session_id']
             session['ub_logout'] = auth_get_token['ub_logout']
             redirect_to :controller => "auth_hub/users/sessions", :action =>"ext_sign_out"
           else
@@ -42,8 +42,8 @@ module AuthHub
       http_get_token && auth_get_token && auth_get_token[:idc]
     end
     
-    def phpid_ub_in_get_token?
-      http_get_token && auth_get_token && (!auth_get_token[:phpid].blank? && !auth_get_token[:ub_logout].blank?)
+    def ext_session_id_ub_in_get_token?
+      http_get_token && auth_get_token && (!auth_get_token[:ext_session_id].blank? && !auth_get_token[:ub_logout].blank?)
     end
     
     # # Uso di JWT con parametro in header, NON USATO
@@ -113,12 +113,25 @@ module AuthHub
     #dopo aver fatto la login con omniauth arrivo a questo metodo per capire dove fare il redirect
     #QUI PASSA SEMPRE
     def after_sign_in_path_for(user_instance)
+      #se ho una path salvata in sessione ripristino quella
       path = session[:url_pre_sign_in]
       #path = request.env['omniauth.origin'].blank? ? dashboard_url : request.env['omniauth.origin']
       #se ho settato questa variabile vengo da una app esterna, ripasso indietro dei parametri e faccio redirect
       if !session[:auth].blank? and !user_instance.jwt.blank?
         #headers['auth_token'] = user_instance.jwt
         path += "?jwt=#{user_instance.jwt}"
+      end
+      #se non ho il path controllo il ruolo dell'utente, path in base al ruolo
+      if path.blank?
+        if user_instance.superadmin_role
+          path = index_superadmin_path
+        elsif user_instance.admin_role
+          path = index_admin_path
+        elsif user_instance.admin_servizi
+          path = index_admin_path
+        else #user_role
+          path = dashboard_path
+        end
       end
       path
     end

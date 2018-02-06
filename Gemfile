@@ -12,3 +12,8 @@ gemspec
 
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
+gem 'sass-rails', '~> 5.0'
+gem 'sprockets', '= 3.7.1'
+gem 'sprockets-rails', :require => 'sprockets/railtie'
+gem 'bootstrap-sass', '~> 3.3.7'
+gem 'autoprefixer-rails'

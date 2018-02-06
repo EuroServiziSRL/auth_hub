@@ -23,11 +23,11 @@ module AuthHub
                 session[:url_pre_sign_in] = auth_get_token['ub']
                 session[:cliente_id] = auth_get_token['idc']
                 session[:auth] = auth_get_token['auth']
-                if !session[:phpid].blank? && session[:phpid] != auth_get_token['phpid']
-                  session[:phpid] = auth_get_token['phpid']
+                if !session[:ext_session_id].blank? && session[:ext_session_id] != auth_get_token['ext_session_id']
+                  session[:ext_session_id] = auth_get_token['ext_session_id']
                   redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{user_omniauth_azure_oauth2_authorize_url('azure_oauth2')}"
                 else
-                  session[:phpid] = auth_get_token['phpid']
+                  session[:ext_session_id] = auth_get_token['ext_session_id']
                   redirect_to user_omniauth_azure_oauth2_authorize_path('azure_oauth2')#, state: session["omniauth.state"]
                 end
                 
@@ -56,7 +56,7 @@ module AuthHub
     def ext_sign_out
       ub_dopo_logout = session['ub_logout']
       unless ub_dopo_logout.blank?
-          if session['phpid_da_cancellare'] == session['phpid']
+          if session['ext_session_id_da_cancellare'] == session['ext_session_id']
             Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
             session.keys.each{ |chiave_sessione|
                 next if chiave_sessione == "_csrf_token"

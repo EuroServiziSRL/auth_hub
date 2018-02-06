@@ -41,7 +41,8 @@ module AuthHub
         payload = {
           # exp: Time.now.to_i + 60 * 60,
           # iat: Time.now.to_i,
-          phpid: session[:phpid],
+          iss: 'soluzionipa.it',
+          ext_session_id: session[:ext_session_id],
           user: {
             name: hash_azure['name'],
             first_name: hash_azure['_first_name'],

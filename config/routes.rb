@@ -1,5 +1,7 @@
 AuthHub::Engine.routes.draw do
   
+  get 'superadmin/index'
+
     #devise_for :users, class_name: "AuthHub::User", path: "/", module: "auth_hub", 
     
     #nella route mostra doppio auth_hub ma funziona!
@@ -37,8 +39,11 @@ AuthHub::Engine.routes.draw do
     get 'dashboard' => 'dashboard#admin_dashboard', :as => :dashboard
     get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index
     get 'ext_logout' => 'application#ext_logout', :as => :external_logout
-
+    
     post "cambia_ente" => "application#cambia_ente", :as => :cambia_ente
+
+    get 'admin' => 'admin#index', :as => :index_admin
+    get 'sa' => 'superadmin#index', :as => :index_superadmin
 
     root to: "dashboard#admin_dashboard"    
    
