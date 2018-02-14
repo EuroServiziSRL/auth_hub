@@ -6,13 +6,16 @@ module AuthHub
     skip_before_action :authenticate_user!, only: [:new, :destroy]
     prepend_before_action :allow_params_authentication!, only: :create
     #prepend_before_action(only: [:create, :destroy]) { request.env["devise.skip_timeout"] = true }
+
+    #carico l'helper application
+    helper AuthHub::ApplicationHelper
   
     #GET /resource/sign_in
     def new
       #leggo i parametri che arrivano e vedo se invocare subito il metodo per oauth2 azure
       #Azure active directory oauth2
-      #se c'è il token con il parametro idc sto facendo una richiesta con JWT
         begin
+            #se c'è il token con il parametro idc sto facendo una richiesta con JWT
             unless http_get_token.blank?
               unless user_id_in_get_token?
                   flash[:error] = "Non autorizzato: idc mancante"
@@ -23,18 +26,46 @@ module AuthHub
                 session[:url_pre_sign_in] = auth_get_token['ub']
                 session[:cliente_id] = auth_get_token['idc']
                 session[:auth] = auth_get_token['auth']
-                if !session[:ext_session_id].blank? && session[:ext_session_id] != auth_get_token['ext_session_id']
-                  session[:ext_session_id] = auth_get_token['ext_session_id']
-                  redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{user_omniauth_azure_oauth2_authorize_url('azure_oauth2')}"
+                
+                #se non passo niente mostro tutte le auth, altrimenti quello che arriva
+                @autenticazione = auth_get_token['auth'].blank? ? "all" : auth_get_token['auth']
+                #se azure devo fare redirect se
+                if session[:auth] == "aad" #&& session['from_civ_next'].blank?
+                  #se l'id di sessione esterna diverso faccio logout e login, se vuoto oppure non vuoto ma uguali ripasso per login
+                  if !session[:ext_session_id].blank? && session[:ext_session_id] != auth_get_token['ext_session_id']
+                    session[:ext_session_id] = auth_get_token['ext_session_id']
+                    redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{user_omniauth_azure_oauth2_authorize_url('azure_oauth2')}"
+                    return
+                  else
+                    session[:ext_session_id] = auth_get_token['ext_session_id']
+                    redirect_to user_omniauth_azure_oauth2_authorize_path('azure_oauth2')#, state: session["omniauth.state"]
+                    return
+                  end
                 else
-                  session[:ext_session_id] = auth_get_token['ext_session_id']
-                  redirect_to user_omniauth_azure_oauth2_authorize_path('azure_oauth2')#, state: session["omniauth.state"]
+                    
+                  
                 end
                 
-                return
               end
             else
-              #niente, mostro la view
+              #potrebbe essere una chiamata che arriva da CiviliaNext del tipo:
+              # xx/auth_hub/sign_in?auth=aad&app=notifiche_affissioni
+              # xx/auth_hub/sign_in?auth=aad&app=trasparenza
+              # xx/auth_hub/sign_in?auth=aad&app=servizi_online
+              if params['auth'] == "aad" && ['notifiche_affissioni','trasparenza','servizi_online'].include?(params['app'])
+                  #ARRIVO DA CIVILIA NEXT
+                  session.delete(:url_pre_sign_in)
+                  session['auth'] = params['auth']
+                  session['from_civ_next'] = true
+                  session['dest_app_civ_next'] = params['app']
+                  redirect_to user_omniauth_azure_oauth2_authorize_url('azure_oauth2')
+                  return
+              else #non ho jwt e non arrivo da next, sono andato su una pagina interna protetta
+                #salvo l'url di provenienza per fare la redirect dopo l'autenticazione
+                session[:url_pre_sign_in] ||= request.url if params[:auth].blank?
+              end
+              # mostro la view
+              @autenticazione = "all"
             end
         rescue JWT::VerificationError, JWT::DecodeError => exc
             #render json: { errors: ['Not Authenticated'] }, status: :unauthorized
@@ -90,7 +121,6 @@ module AuthHub
           next if chiave_sessione == "_csrf_token"
           session.delete(chiave_sessione.to_sym)
       }
-    
       # if current_user
       #   session.keys.each{ |chiave_sessione|
       #     next if chiave_sessione == "_csrf_token"

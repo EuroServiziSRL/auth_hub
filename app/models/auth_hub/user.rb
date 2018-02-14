@@ -57,9 +57,6 @@ module AuthHub
     
       user
     end 
-    
-  
-           
       
   
   end

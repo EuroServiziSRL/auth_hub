@@ -12,8 +12,9 @@
 
 module AuthHub
     class Engine < Rails::Engine
-        #da cambiare
-        Rails.application.config.assets.paths << Rails.root.join("engines", "auth_hub", "app", "assets", "stylesheets" ,"auth_hub")
+        Rails.application.config.assets.paths << root.join("app", "assets", "stylesheets" ,"auth_hub")
+        Rails.application.config.assets.paths << root.join("app", "assets", "javascripts" ,"auth_hub")
+        Rails.application.config.assets.paths << root.join("app", "assets", "images" ,"auth_hub")
         Rails.application.config.assets.precompile += %w{ main.css }
     end
 end
