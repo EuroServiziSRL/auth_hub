@@ -48,6 +48,9 @@ class DeviseCreateAuthHubUsers < ActiveRecord::Migration[5.1]
     
     # Initialize first account:
     AuthHub::User.create! do |u|
+        u.nome_cognome = "Super Admin"
+        u.nome = "Admin"
+        u.cognome = "ES"
         u.email     = 'test@test.it'
         u.password    = 'password'
     end

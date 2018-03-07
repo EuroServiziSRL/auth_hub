@@ -23,32 +23,33 @@ module AuthHub
                   return false
               else
                 #ho il jwt, estraggo parametri
+                session.delete('from_civ_next') #pulisco la sessione se ero entrato con civ next
                 session[:url_pre_sign_in] = auth_get_token['ub']
                 session[:cliente_id] = auth_get_token['idc']
                 session[:auth] = auth_get_token['auth']
-                
+                session[:ext_session_id] = auth_get_token['ext_session_id']
+                 
                 #se non passo niente mostro tutte le auth, altrimenti quello che arriva
                 @autenticazione = auth_get_token['auth'].blank? ? "all" : auth_get_token['auth']
                 #se azure devo fare redirect se
-                if session[:auth] == "aad" #&& session['from_civ_next'].blank?
+                if session[:auth] == "aad" #azure active directory
                   #se l'id di sessione esterna diverso faccio logout e login, se vuoto oppure non vuoto ma uguali ripasso per login
                   if !session[:ext_session_id].blank? && session[:ext_session_id] != auth_get_token['ext_session_id']
-                    session[:ext_session_id] = auth_get_token['ext_session_id']
                     redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{user_omniauth_azure_oauth2_authorize_url('azure_oauth2')}"
                     return
                   else
-                    session[:ext_session_id] = auth_get_token['ext_session_id']
                     redirect_to user_omniauth_azure_oauth2_authorize_path('azure_oauth2')#, state: session["omniauth.state"]
                     return
                   end
+                elsif session[:auth] == "up" #username password
+                    #controllo su eventuale login esistente
                 else
-                    
-                  
+                    #caso di default, da definire..
                 end
                 
               end
             else
-              #potrebbe essere una chiamata che arriva da CiviliaNext del tipo:
+              #potrebbe essere una chiamata che arriva da CiviliaNext dove non ho jwt del tipo:
               # xx/auth_hub/sign_in?auth=aad&app=notifiche_affissioni
               # xx/auth_hub/sign_in?auth=aad&app=trasparenza
               # xx/auth_hub/sign_in?auth=aad&app=servizi_online
@@ -60,8 +61,7 @@ module AuthHub
                   session['dest_app_civ_next'] = params['app']
                   redirect_to user_omniauth_azure_oauth2_authorize_url('azure_oauth2')
                   return
-              else #non ho jwt e non arrivo da next, sono andato su una pagina interna protetta
-                #salvo l'url di provenienza per fare la redirect dopo l'autenticazione
+              else #non ho jwt e non arrivo da next, sono andato su una pagina interna protetta 
                 session[:url_pre_sign_in] ||= request.url if params[:auth].blank?
               end
               # mostro la view

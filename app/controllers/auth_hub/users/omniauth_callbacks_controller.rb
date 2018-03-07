@@ -2,6 +2,8 @@ module AuthHub
   class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     skip_before_action :authenticate_user!, only: [:azure_oauth2]
     
+    include Rails.application.routes.url_helpers
+    
     protect_from_forgery prepend: false
     
     #carico l'helper application
@@ -55,7 +57,8 @@ module AuthHub
             end
     
         rescue Exception => exc
-
+            logger.error exc.message
+            logger.error exc.backtrace.join("\n")
             flash[:error] = "Dati mancanti: #{exc.message}"
             redirect_to error_dati_url
         end
