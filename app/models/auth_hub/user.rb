@@ -19,7 +19,7 @@ module AuthHub
   
     #Log dell'accesso dopo autenticazione
     Warden::Manager.after_authentication do |user, auth, opts|
-      AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email} (id: #{user.id}) login at #{DateTime.now} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
+      ::AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email} (id: #{user.id}) login at #{DateTime.now} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
     end
    
     #arriva un auth_hash del tipo

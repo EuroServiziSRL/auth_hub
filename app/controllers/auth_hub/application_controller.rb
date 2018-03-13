@@ -177,6 +177,7 @@ module AuthHub
               ext_session_id: ext_session,
               auth: 'aad',
               user: {
+                  user_id: user_instance.id,
                   name: user_instance.nome_cognome,
                   first_name: user_instance.nome,
                   last_name: user_instance.cognome,
@@ -223,8 +224,9 @@ module AuthHub
               ext_session_id: ext_session,
               auth: 'aad',
               user: {
+                  user_id: user_instance.id,
                   name: hash_azure['name'],
-                  first_name: hash_azure['_first_name'],
+                  first_name: hash_azure['first_name'],
                   last_name: hash_azure['last_name'],
                   email: hash_azure['email'],
                   nickname: hash_azure['nickname'],
@@ -248,9 +250,11 @@ module AuthHub
               auth: 'up',
               ext_session_id: ext_session,
               user: {
+                  user_id: user_instance.id,
                   name: user_instance.nome_cognome,
                   first_name: user_instance.nome,
                   last_name: user_instance.cognome,
+                  nickname: user_instance.nome_cognome,
                   email: user_instance.email
               }
           }
