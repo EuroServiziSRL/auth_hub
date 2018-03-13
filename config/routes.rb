@@ -48,6 +48,8 @@ AuthHub::Engine.routes.draw do
     post 'users/:id/salva_enti_associati' => 'users#salva_enti_associati', :as => :salva_enti_associati
     get 'users/:id/cancella_enti/:ente' => 'users#cancella_enti', :as => :cancella_enti_user
 
+    resources :users
+
     get 'dashboard' => 'dashboard#admin_dashboard', :as => :dashboard
     get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index
     get 'ext_logout' => 'application#ext_logout', :as => :external_logout
