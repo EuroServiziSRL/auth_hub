@@ -1,0 +1,17 @@
+<%= form_with(model: applicazioni_ente, local: true) do |form| %>
+  <% if applicazioni_ente.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(applicazioni_ente.errors.count, "error") %> prohibited this applicazioni_ente from being saved:</h2>
+
+      <ul>
+      <% applicazioni_ente.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

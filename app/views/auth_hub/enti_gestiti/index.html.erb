@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Enti Gestiti</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Destroy</th>
+      <th>Show</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @enti_gestiti.each do |ente_gestito| %>
+      <tr>
+        <td><%= ente_gestito.destroy %></td>
+        <td><%= ente_gestito.show %></td>
+        <td><%= link_to 'Show', ente_gestito %></td>
+        <td><%= link_to 'Edit', edit_ente_gestito_path(ente_gestito) %></td>
+        <td><%= link_to 'Destroy', ente_gestito, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ente Gestito', new_ente_gestito_path %>

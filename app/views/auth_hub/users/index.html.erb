@@ -1,0 +1,28 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="5"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.email %> </td>
+        <td><%= user.nome_cognome %> </td>
+        <td><%= link_to 'Vedi', user %> </td>
+        <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
+        <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>
+        <td><%= link_to 'Elimina', user, method: :delete, data: { confirm: 'Are you sure?' } %> </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New User', new_user_path %>

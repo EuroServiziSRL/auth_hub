@@ -63,6 +63,7 @@ module AuthHub
                   return
               else #non ho jwt e non arrivo da next, sono andato su una pagina interna protetta 
                 session[:url_pre_sign_in] ||= request.url if params[:auth].blank?
+                session['from_civ_next'] = false
               end
               # mostro la view
               @autenticazione = "all"
@@ -83,11 +84,11 @@ module AuthHub
     #   super
     # end
   
-  
+  #non usato..
     def ext_sign_out
-      ub_dopo_logout = session['ub_logout']
-      unless ub_dopo_logout.blank?
-          if session['ext_session_id_da_cancellare'] == session['ext_session_id']
+        ub_dopo_logout = session['ub_logout']
+        unless ub_dopo_logout.blank?
+          if session['ext_session_id_da_cancellare'] == session[:ext_session_id]
             Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
             session.keys.each{ |chiave_sessione|
                 next if chiave_sessione == "_csrf_token"
@@ -101,10 +102,10 @@ module AuthHub
           else #se non vogliamo sloggarci da microsoft
             redirect_to ub_dopo_logout
           end
-      else
+        else
           flash[:error] = "Non autorizzato: url back mancante"
           redirect_to root_path
-      end
+        end
     end
   
   
@@ -138,21 +139,6 @@ module AuthHub
       end
     end
   
-
-    # def http_token
-    #     @http_token ||= if request.headers['Authorization'].present?
-    #       request.headers['Authorization'].split(' ').last
-    #     end
-    # end
-  
-    # def auth_token
-    #   @auth_token ||= JsonWebToken.decode(http_token)
-    # end
-  
-    # def user_id_in_token?
-    #   http_token && auth_token && auth_token[:idc]
-    # end
-    
     
     private
 

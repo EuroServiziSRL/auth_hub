@@ -1,0 +1,39 @@
+<h3>Gestisci Applicazioni</h3>
+<% if !@esito.blank? %>
+    <div class="row">
+        <div class="col-lg-offset-2 col-lg-8 alert alert-success"><%= @esito %></div>
+    </div>
+<% end %>
+<div class="row">
+    <div class="col-lg-10"><h4>Utente <%= @ente_gestito.user.email %> </h4></div>
+</div>
+<div class="row">
+    <div class="col-lg-10"><h4>Ente <%= @ente_gestito.clienti_cliente.CLIENTE %> </h4></div>
+</div>
+<% if @ente_gestito.applicazioni_ente.length > 0 %>
+    <div class="row">
+        <h4>Applicazioni Associate</h4>
+        <ul class="list-group">
+            <% @ente_gestito.applicazioni_ente.each do |applicazione| %>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-lg-6"><%= applicazione.DESCRIZIONE %></div>
+                        <div class="col-lg-2"><%= link_to "Cancella", applicazioni_ente_path(id: applicazione.id), method: :delete, data: { confirm: "Sei sicuro di cancellare l'applicazione?" } %></div>
+                    </div>
+                </li>
+            <% end %>
+        </ul>
+    </div>
+<% end %>
+
+
+
+<!--<h4>Aggiungi Applicazione</h4>-->
+<!--<%= form_with(scope: :post, url: salva_enti_associati_path, local: true) do |form| %>-->
+<!--  <%= select_tag 'enti_da_associare[]', options_for_select( @enti.map {|ente| [ente.CLIENTE,ente.ID]}, @utente_selezionato.id), :multiple => true  %>-->
+<!--  <br />-->
+<!--  <br />    -->
+<!--  <div class="actions">-->
+<!--    <%= form.submit "Associa" %>-->
+<!--  </div>-->
+<!--<% end %>-->

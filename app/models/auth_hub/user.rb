@@ -2,14 +2,25 @@ module AuthHub
   class User < ApplicationRecord
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable and :omniauthable
-    devise :database_authenticatable, :registerable,
-           :recoverable, :rememberable, :trackable, :validatable,
-           :omniauthable, :omniauth_providers => [:azure_oauth2]
+    devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:azure_oauth2]
+           
     
     #tabella per relazione N a N, ha migration e model proprio
     has_many :enti_gestiti
     has_many :clienti_clienti, through: :enti_gestiti
-   
+    
+    #fa la validazione della conferma password
+    validates_confirmation_of :password
+    
+    #nome_cognome lo creo dai campi separati
+    def nome_cognome=(valore)
+      super("#{nome} #{cognome}") 
+    end
+  
+    #Log dell'accesso dopo autenticazione
+    Warden::Manager.after_authentication do |user, auth, opts|
+      AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email} (id: #{user.id}) login at #{DateTime.now} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
+    end
    
     #arriva un auth_hash del tipo
     # {

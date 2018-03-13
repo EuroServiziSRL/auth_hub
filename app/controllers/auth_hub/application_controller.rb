@@ -1,5 +1,3 @@
-
-
 module AuthHub
   class ApplicationController < ::ApplicationController
     before_action :authenticate_user!, except: [:new]
@@ -12,12 +10,27 @@ module AuthHub
     #poi redirect su una ub che c'è in jwt 
     def ext_logout
       #se ho il jwt devo pulire la sessione salvata nel jwt
+      jwt = params['jwt']
       unless http_get_token.blank?
           if ext_session_id_ub_in_get_token?
+            auth_azure = session['auth'] == 'aad'
             #cancello dalla sessione le chiavi
-            session['ext_session_id_da_cancellare'] = auth_get_token['ext_session_id']
-            session['ub_logout'] = auth_get_token['ub_logout']
-            redirect_to :controller => "auth_hub/users/sessions", :action =>"ext_sign_out"
+            #in auth_get_token['ub_logout'] ho l'url per fare redirect
+            signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
+            #cancello sessioni di openweb
+            session.keys.each{ |chiave_sessione|
+                next if chiave_sessione == "_csrf_token"
+                session.delete(chiave_sessione.to_sym)
+            }
+            url_per_nuova_login = "/auth_hub"+new_user_session_path
+            #questa redirect fa la logout da microsoft se prima mi sono loggato con aad
+            if APP_CONFIG['logout_azure'] && auth_azure
+              redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{auth_get_token['ub_logout']}"
+              return
+            else #se non vogliamo sloggarci da microsoft
+              redirect_to auth_get_token['ub_logout']
+            end
+            
           else
             flash[:error] = "Non autorizzato: id sessione esterna mancante"
             redirect_to root_path
@@ -154,6 +167,28 @@ module AuthHub
           session['from_civ_next'] = true
           session['auth'] = "aad" #da NEXT arrivo sempre con azure
           session['dest_app_civ_next'] = params['app'] unless params['app'].blank?
+          #devo caricare un jwt in tabella
+          hmac_secret = Rails.application.secrets.external_auth_api_key
+          ext_session = nil #session[:ext_session_id]
+          payload = {
+              # exp: Time.now.to_i + 60 * 60,
+              # iat: Time.now.to_i,
+              iss: 'soluzionipa.it',
+              ext_session_id: ext_session,
+              auth: 'aad',
+              user: {
+                  name: user_instance.nome_cognome,
+                  first_name: user_instance.nome,
+                  last_name: user_instance.cognome,
+                  email: user_instance.email,
+                  nickname: user_instance.nome_cognome,
+                  tid: session['tid_corrente'],
+              }
+          }
+          token = JsonWebToken.encode(payload, hmac_secret, 'HS256')
+          user_instance.jwt = token
+          user_instance.jwt_created = DateTime.now
+          user_instance.save
           #se ho in sessione tid_corrente ho fatto login azure
           unless session['tid_corrente'].blank?
             #carico il cliente/installazione in base al tenant id corrente salvato in sessione
@@ -170,6 +205,8 @@ module AuthHub
             #devo rifare login azure, potrei avere una sessione attiva ma fatta con username e password
             return user_omniauth_azure_oauth2_authorize_path('azure_oauth2')
           end
+      else
+        session['from_civ_next'] = false
       end
     
       #da app esterna con azure
@@ -184,6 +221,7 @@ module AuthHub
               # iat: Time.now.to_i,
               iss: 'soluzionipa.it',
               ext_session_id: ext_session,
+              auth: 'aad',
               user: {
                   name: hash_azure['name'],
                   first_name: hash_azure['_first_name'],
@@ -207,6 +245,7 @@ module AuthHub
               # exp: Time.now.to_i + 60 * 60,
               # iat: Time.now.to_i,
               iss: 'soluzionipa.it',
+              auth: 'up',
               ext_session_id: ext_session,
               user: {
                   name: user_instance.nome_cognome,

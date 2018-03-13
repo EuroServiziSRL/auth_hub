@@ -9,6 +9,7 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.irregular 'person', 'people'
 #   inflect.uncountable %w( fish sheep )
     inflect.irregular 'ente_gestito', 'enti_gestiti'
+    inflect.irregular 'applicazioni_ente', 'applicazioni_ente'
     inflect.irregular 'clienti_allegato', 'clienti_allegati'
     inflect.irregular 'clienti_applicazione', 'clienti_applicazioni'
     inflect.irregular 'clienti_applinstallate', 'clienti_applinstallate'
@@ -23,6 +24,7 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
     inflect.irregular 'clienti_statistica', 'clienti_statistiche'
     inflect.irregular 'clienti_tipostatistica', 'clienti_tipostatistiche'
     inflect.irregular 'ente_gestito', 'enti_gestiti'
+    
 end
 
 # These inflection rules are supported but not enabled by default:

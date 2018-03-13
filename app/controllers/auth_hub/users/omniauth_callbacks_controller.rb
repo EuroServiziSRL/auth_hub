@@ -42,6 +42,10 @@ module AuthHub
             #salvo in sessione le info che arrivano da azure
             session['hash_azure'] = hash_azure
             #salvo il tenantid corrente
+            if session['tid_corrente'] != hash_azure['tid']
+                #pulisco la sessione php
+                #session[:ext_session_id] = nil
+            end
             session['tid_corrente'] = hash_azure['tid']
             #devo usare https://www.pluralsight.com/guides/ruby-ruby-on-rails/token-based-authentication-with-ruby-on-rails-5-api
             

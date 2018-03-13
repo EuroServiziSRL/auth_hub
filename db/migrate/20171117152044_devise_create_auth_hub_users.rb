@@ -37,6 +37,8 @@ class DeviseCreateAuthHubUsers < ActiveRecord::Migration[5.1]
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
 
+      #Password expirable, gemma devise_security_extension
+      t.datetime :password_changed_at
 
       t.timestamps null: false
     end
@@ -45,6 +47,9 @@ class DeviseCreateAuthHubUsers < ActiveRecord::Migration[5.1]
     add_index :auth_hub_users, :reset_password_token, unique: true
     # add_index :auth_hub_users, :confirmation_token,   unique: true
     # add_index :auth_hub_users, :unlock_token,         unique: true
+    
+    #aggiunto indice per gemma devise_security_extension
+    add_index :auth_hub_users, :password_changed_at
     
     # Initialize first account:
     AuthHub::User.create! do |u|

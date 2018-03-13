@@ -17,3 +17,8 @@ gem 'sprockets', '= 3.7.1'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'bootstrap-sass', '~> 3.3.7'
 gem 'autoprefixer-rails'
+#spostate qui fin che non sistemo gemma devise_security_extension, DA FARE
+gem 'devise'
+gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git' #le gemma non la installa, vuole railties < 5.0
+gem 'omniauth'
+gem 'omniauth-azure-oauth2'

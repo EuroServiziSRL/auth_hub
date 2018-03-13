@@ -25,16 +25,28 @@ AuthHub::Engine.routes.draw do
     end
     
     
+    #aggiungo la route per fare la logout esterna in get
+    devise_scope :user do
+      get 'ext_sign_out', :to => 'users/sessions#ext_sign_out', :as => :ext_sign_out
+    end
+    
     devise_for :users, class_name: "AuthHub::User", module: "auth_hub", path: "/",
     controllers: {
         sessions: 'auth_hub/users/sessions',
         omniauth_callbacks: 'auth_hub/users/omniauth_callbacks'
     }
 
-    #aggiungo la route per fare la logout esterna in get
-    devise_scope :user do
-      get 'ext_sign_out', :to => 'users/sessions#ext_sign_out'
-    end
+    #path standard per crud degli enti_gestiti
+    resources :enti_gestiti
+
+    get 'enti_gestiti/:id/gestisci_applicazione_ente_gestito' => 'enti_gestiti#gestisci_applicazione_ente_gestito', :as => :gestisci_applicazione_ente_gestito
+
+    #path standard per crud delle applicazioni associate all'ente
+    resources :applicazioni_ente
+    
+    get 'users/:id/associa_enti' => 'users#associa_enti', :as => :associa_enti_user
+    post 'users/:id/salva_enti_associati' => 'users#salva_enti_associati', :as => :salva_enti_associati
+    get 'users/:id/cancella_enti/:ente' => 'users#cancella_enti', :as => :cancella_enti_user
 
     get 'dashboard' => 'dashboard#admin_dashboard', :as => :dashboard
     get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index
