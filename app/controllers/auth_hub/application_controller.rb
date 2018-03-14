@@ -134,7 +134,7 @@ module AuthHub
               #ho un jwt corretto
               session.delete('from_civ_next') #pulisco la sessione se ero entrato con civ next
               #se ho cambiato tipo di auth devo rifare la login
-              if session['auth'] != auth_get_token['auth']
+              if !session['auth'].blank? && session['auth'] != auth_get_token['auth']
                 jwt = params['jwt']
                 signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
                 set_flash_message! :notice, :signed_out if signed_out
