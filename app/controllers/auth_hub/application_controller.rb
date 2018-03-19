@@ -184,6 +184,7 @@ module AuthHub
                   email: user_instance.email,
                   nickname: user_instance.nome_cognome,
                   tid: session['tid_corrente'],
+                  admin: user_instance.admin_role == true
               }
           }
           token = JsonWebToken.encode(payload, hmac_secret, 'HS256')
@@ -209,7 +210,6 @@ module AuthHub
       else
         session['from_civ_next'] = false
       end
-    
       #da app esterna con azure
       if session[:auth] == 'aad' && session['from_civ_next'].blank?
           #recupero dalla sessione le info azure
@@ -231,6 +231,7 @@ module AuthHub
                   email: hash_azure['email'],
                   nickname: hash_azure['nickname'],
                   tid: hash_azure['tid'],
+                  admin: user_instance.admin_role == true
               }
           }
           token = JsonWebToken.encode(payload, hmac_secret, 'HS256')
@@ -255,7 +256,8 @@ module AuthHub
                   first_name: user_instance.nome,
                   last_name: user_instance.cognome,
                   nickname: user_instance.nome_cognome,
-                  email: user_instance.email
+                  email: user_instance.email,
+                  admin: user_instance.admin_role == true
               }
           }
           token = JsonWebToken.encode(payload, hmac_secret, 'HS256')
