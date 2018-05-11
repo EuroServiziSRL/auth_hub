@@ -3,6 +3,13 @@ module AuthHub
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable and :omniauthable
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:azure_oauth2]
+    
+    filterrific(
+      default_filter_params: {  },
+      available_filters: [
+	:search_query
+      ]
+    )
            
     
     #tabella per relazione N a N, ha migration e model proprio
@@ -68,7 +75,32 @@ module AuthHub
     
       user
     end 
-      
+  
+    scope :search_query, lambda { |query|
+      return nil  if query.blank?
+      # condition query, parse into individual keywords
+      terms = query.downcase.split(/\s+/)
+      # replace "*" with "%" for wildcard searches,
+      # append '%', remove duplicate '%'s
+      terms = terms.map { |e|
+	(e.gsub('*', '%') + '%').gsub(/%+/, '%')
+      }
+      # configure number of OR conditions for provision
+      # of interpolation arguments. Adjust this if you
+      # change the number of OR conditions.
+      num_or_conditions = 3
+      where(
+	terms.map {
+	  or_clauses = [
+	    "LOWER(user.first_name) LIKE ?",
+	    "LOWER(user.last_name) LIKE ?",
+	    "LOWER(user.email) LIKE ?"
+	  ].join(' OR ')
+	  "(#{ or_clauses })"
+	}.join(' AND '),
+	*terms.map { |e| [e] * num_or_conditions }.flatten
+      )
+    }    
   
   end
 end

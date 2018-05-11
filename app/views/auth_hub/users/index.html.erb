@@ -2,27 +2,26 @@
 
 <h1>Users</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="5"></th>
-    </tr>
-  </thead>
+<%= form_for_filterrific @filterrific do |f| %>
+  <div>
+    Search
+    <%# give the search field the 'filterrific-periodically-observed' class for live updates %>
+    <%= f.text_field(
+      :search_query,
+      class: 'filterrific-periodically-observed'
+    ) %>
+  </div>
+  <div>
+    <%= link_to(
+      'Reset filters',
+      reset_filterrific_url,
+    ) %>
+  </div>
+  <%# add an automated spinner to your form when the list is refreshed %>
+  <%= render_filterrific_spinner %>
+<% end %>
 
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td><%= user.email %> </td>
-        <td><%= user.nome_cognome %> </td>
-        <td><%= link_to 'Vedi', user %> </td>
-        <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
-        <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>
-        <td><%= link_to 'Elimina', user, method: :delete, data: { confirm: 'Are you sure?' } %> </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New User', new_user_path %>
+<%= render(
+  partial: 'list',
+  locals: { users: @users }
+) %>

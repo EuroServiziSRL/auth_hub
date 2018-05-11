@@ -22,3 +22,4 @@ gem 'devise'
 gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git' #le gemma non la installa, vuole railties < 5.0
 gem 'omniauth'
 gem 'omniauth-azure-oauth2'
+gem 'filterrific'
