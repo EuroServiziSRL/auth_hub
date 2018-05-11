@@ -15,7 +15,12 @@ module AuthHub
 	User,
 	params[:filterrific]
       ) or return
-      @students = @filterrific.find.page(params[:page])
+      @users = @filterrific.find.page(params[:page])
+      
+      respond_to do |format|
+	format.html
+	format.js
+      end
     end
 
     # GET /users/1

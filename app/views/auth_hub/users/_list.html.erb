@@ -1,4 +1,7 @@
-<div id="filterrific_results">
+<div id="filterrific_results">  
+  <div>
+    <%= page_entries_info users  %>
+  </div>
 
   <table class="table table-bordered table-striped">
     <thead>
@@ -20,6 +23,5 @@
       <% end %>
     </tbody>
   </table>
+  <%= will_paginate @users %>
 </div>
-
-<%= link_to 'New User', new_user_path %>

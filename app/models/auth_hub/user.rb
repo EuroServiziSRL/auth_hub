@@ -83,7 +83,7 @@ module AuthHub
       # replace "*" with "%" for wildcard searches,
       # append '%', remove duplicate '%'s
       terms = terms.map { |e|
-	(e.gsub('*', '%') + '%').gsub(/%+/, '%')
+	('%'+e.gsub('*', '%') + '%').gsub(/%+/, '%')
       }
       # configure number of OR conditions for provision
       # of interpolation arguments. Adjust this if you
@@ -92,9 +92,9 @@ module AuthHub
       where(
 	terms.map {
 	  or_clauses = [
-	    "LOWER(user.first_name) LIKE ?",
-	    "LOWER(user.last_name) LIKE ?",
-	    "LOWER(user.email) LIKE ?"
+	    "LOWER(nome) LIKE ?",
+	    "LOWER(cognome) LIKE ?",
+	    "LOWER(email) LIKE ?"
 	  ].join(' OR ')
 	  "(#{ or_clauses })"
 	}.join(' AND '),
