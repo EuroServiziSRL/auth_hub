@@ -275,6 +275,7 @@ module AuthHub
       if !session[:auth].blank? and !user_instance.jwt.blank?
         path += "?jwt=#{user_instance.jwt}"
       end
+      
       #se non ho il path controllo il ruolo dell'utente, path in base al ruolo
       if path.blank?
         if user_instance.superadmin_role
@@ -286,8 +287,9 @@ module AuthHub
         else #user_role
           path = dashboard_path
         end
+        path = "#{Rails.configuration.url_dominio}#{path}"
       end
-      path
+      return path
     end
     
     #dopo logout microsoft

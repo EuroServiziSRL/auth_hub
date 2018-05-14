@@ -1,4 +1,7 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<%= render 'form', user: @user, azione: 'vedi' %>
+<!--
+<%= link_to 'Modifica', edit_user_path(@user), {class: 'btn btn-default btn-sm no-radius btn-primary'} %> 
+-->
+

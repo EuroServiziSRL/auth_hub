@@ -11,7 +11,7 @@
         </div>
     </div>
     
-    <% if @autenticazione.include?("up") || @autenticazione.include?("all")  %>
+    <% if !@autenticazione.blank? && (@autenticazione.include?("up") || @autenticazione.include?("all"))  %>
         <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
       
         <div class="panel panel-default">

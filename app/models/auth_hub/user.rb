@@ -10,7 +10,31 @@ module AuthHub
     has_many :clienti_clienti, through: :enti_gestiti
     
     #fa la validazione della conferma password
-    validates_confirmation_of :password
+    # validates_confirmation_of :password, on: :create
+    # validates :password, format: { with: /\A[a-zA-Z0-9]+\z/, message: "deve essere di almeno 8 caratteri, lettere e cifre" }
+    # validates :email, uniqueness: { case_sensitive: false }
+    
+    # PASSWORD_FORMAT = /\A
+    #   (?=.{8,})          # Must contain 8 or more characters
+    #   (?=.*\d)           # Must contain a digit
+    #   (?=.*[a-z])        # Must contain a lower case character
+    #   (?=.*[A-Z])        # Must contain an upper case character
+    #   #(?=.*[[:^alnum:]]) # Must contain a symbol
+    # /x
+    
+    # validates :password, 
+    #   presence: true, 
+    #   length: { in: Devise.password_length }, 
+    #   format: { with: PASSWORD_FORMAT }, 
+    #   confirmation: true, 
+    #   on: :create
+    
+    # validates :password, 
+    #   allow_nil: true, 
+    #   length: { in: Devise.password_length }, 
+    #   format: { with: PASSWORD_FORMAT }, 
+    #   #confirmation: true, 
+    #   on: :update
     
     #nome_cognome lo creo dai campi separati
     def nome_cognome=(valore)
