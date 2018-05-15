@@ -11,15 +11,12 @@ module AuthHub
     # GET /users
     def index
       #@users = User.all
-      @filterrific = initialize_filterrific(
-	User,
-	params[:filterrific]
-      ) or return
+      @filterrific = initialize_filterrific(User,	params[:filterrific]) or return
       @users = @filterrific.find.page(params[:page])
       
       respond_to do |format|
-	format.html
-	format.js
+      	format.html
+      	format.js
       end
     end
 

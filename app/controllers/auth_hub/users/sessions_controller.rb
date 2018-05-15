@@ -14,7 +14,8 @@ module AuthHub
     def new
         #vado a impostare l'url del dominio se non è impostato a livello di config.yml
         Rails.configuration.url_dominio = request.base_url if Rails.configuration.url_dominio.blank?
-        
+        #uso messaggio che arriva da flash
+        @success = flash['success'] unless flash.blank?
         #leggo i parametri che arrivano e vedo se invocare subito il metodo per oauth2 azure
         #Azure active directory oauth2
         begin

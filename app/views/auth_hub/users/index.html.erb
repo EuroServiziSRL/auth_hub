@@ -4,21 +4,20 @@
 
 <%= form_for_filterrific @filterrific do |f| %>
   <div>
-    Search
+    Filtra
     <%# give the search field the 'filterrific-periodically-observed' class for live updates %>
     <%= f.text_field(
       :search_query,
       class: 'filterrific-periodically-observed'
     ) %>
-  </div>
-  <div>
+    <%= render_filterrific_spinner %>
     <%= link_to(
-      'Reset filters',
+      'Reset',
       reset_filterrific_url,
     ) %>
   </div>
-  <%# add an automated spinner to your form when the list is refreshed %>
-  <%= render_filterrific_spinner %>
+  <br /><br />
+  
 <% end %>
 
 <%= render(

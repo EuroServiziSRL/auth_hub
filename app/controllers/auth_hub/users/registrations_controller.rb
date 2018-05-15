@@ -3,7 +3,7 @@ module AuthHub
     before_action :configure_sign_up_params, only: [:create]
     before_action :configure_account_update_params, only: [:update]
     #non devo controllare se sono autenticato quando faccio la registrazione, altrimenti lo fa sempre
-    #skip_before_action :authenticate_user!, only: [:create]
+    skip_before_action :authenticate_user!, only: [:create]
   
     #GET /resource/sign_up
     def new
@@ -12,7 +12,18 @@ module AuthHub
   
     #POST /resource
     def create
-      super
+      #creo un nuovo user
+      begin
+        #salva anche il clienti_cliente
+        nuovo_admin = AuthHub::User.new(configure_sign_up_params.to_h)
+        nuovo_admin.admin_role = true #li creo sempre come admin quelli che si registrano
+        nuovo_admin.save
+        flash[:success] = "Registrazione andata a buon fine"
+        redirect_to new_user_session_url
+      rescue Exception => e
+        puts e.message
+        puts e.backtrace.inspect
+      end
     end
   
     #GET /resource/edit
@@ -41,9 +52,10 @@ module AuthHub
   
     protected
   
-    #If you have extra params to permit, append them to the sanitizer.
+    #Questo metodo viene richiamato nelle action per avere dei params "permessi" e si può creare un obj di un model
     def configure_sign_up_params
-      devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
+      devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute, :nome, :cognome, :email, :password, :password_confirmation,:clienti_cliente_ids]) #fatto da devise...
+      params.require(:user).permit(:nome, :cognome, :email, :password, :password_confirmation,:clienti_cliente_ids)
     end
   
     #If you have extra params to permit, append them to the sanitizer.

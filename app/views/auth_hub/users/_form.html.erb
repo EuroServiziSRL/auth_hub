@@ -14,15 +14,13 @@
     <label for="email" class="col-lg-1 control-label">Email</label>
     <div class="col-lg-2">
       <% if azione == 'vedi' %>
-          <p class="form-control-static">@user.email</p>
-        <% else %>
-          <%= form.text_field :email, class: "form-control" %>
-        <% end  %>
+        <p class="form-control-static"><%= @user.email %></p>
+      <% else %>
+        <%= form.text_field :email, class: "form-control" %>
+      <% end  %>
     </div>
   </div>
-  <%= azione %>
   <% if azione == 'nuovo' %>
-  
     <div class="form-group">
       <label for="password" class="col-lg-1 control-label">Password</label>
       <div class="col-lg-2">
@@ -42,40 +40,70 @@
   <div class="form-group">
     <label for="nome" class="col-lg-1 control-label">Nome</label>
     <div class="col-lg-2">
-      <%= form.text_field :nome, class: "form-control" %>
+      <% if azione == 'vedi' %>
+        <p class="form-control-static"><%= @user.nome %></p>
+      <% else %>
+        <%= form.text_field :nome, class: "form-control" %>
+      <% end  %>
     </div>
   </div>
   
   <div class="form-group">
     <label for="cognome" class="col-lg-1 control-label">Cognome</label>
     <div class="col-lg-2">
-      <%= form.text_field :cognome, class: "form-control" %>
+      <% if azione == 'vedi' %>
+        <p class="form-control-static"><%= @user.cognome %></p>
+      <% else %>
+        <%= form.text_field :cognome, class: "form-control" %>
+      <% end  %>
+      
     </div>
   </div>
-  <div class="form-group">
-    <div class="col-lg-offset-1 col-lg-2">
-      <div class="checkbox">
-        <%= form.check_box :admin_role, id: "admin_role" %>
-        <label for="admin_role">Admin</label>
+  <% if azione == 'vedi' %>
+    <div class="form-group">
+      <label for="tipologia_utente" class="col-lg-1 control-label">Tipologia:</label>
+      <div class="col-lg-2">
+        <p class="form-control-static">
+          <% if @user.admin_role %>
+            Amministratore
+          <% end  %>
+          <% if @user.admin_servizi %>
+            Amministratore Servizio
+          <% end  %>
+        </p>
+      </div>
+    </div>  
+  <% else %>
+    <div class="form-group">
+      <div class="col-lg-offset-1 col-lg-2">
+        <div class="checkbox">
+          <%= form.check_box :admin_role, id: "admin_role" %>
+          <label for="admin_role">Admin</label>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-lg-offset-1 col-lg-2">
-      <div class="checkbox">
-        <%= form.check_box :admin_servizi, id: "admin_servizi" %>
-        <label for="admin_servizi">Admin Servizi</label>
+  
+    <div class="form-group">
+      <div class="col-lg-offset-1 col-lg-2">
+        <div class="checkbox">
+          <%= form.check_box :admin_servizi, id: "admin_servizi" %>
+          <label for="admin_servizi">Admin Servizi</label>
+        </div>
       </div>
     </div>
-  </div>
+  <% end %>
+  
 
   
   <%= form.hidden_field :nome_cognome %>
   <br />
   <br />
   <div class="actions">
-    <%= form.submit 'Salva', :class => 'btn btn-default btn-sm no-radius btn-primary' %>
+    <% if azione != 'vedi' %>
+      <%= form.submit 'Salva', :class => 'btn btn-default btn-sm no-radius btn-primary' %>
+    <% else %>
+      <%= link_to 'Modifica', edit_user_path, id: "#{@user.id}", class: 'btn btn-default btn-sm no-radius btn-primary' %>
+    <% end %>
     <%= link_to 'Lista Amministratori', users_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
   </div>
 <% end %>
