@@ -17,6 +17,8 @@ module AuthHub
         #salva anche il clienti_cliente
         nuovo_admin = AuthHub::User.new(configure_sign_up_params.to_h)
         nuovo_admin.admin_role = true #li creo sempre come admin quelli che si registrano
+        nuovo_admin.nome_cognome = "#{configure_sign_up_params['nome']} #{configure_sign_up_params['cognome']}"
+        nuovo_admin.stato = "da_validare"
         nuovo_admin.save
         flash[:success] = "Registrazione andata a buon fine"
         redirect_to new_user_session_url
