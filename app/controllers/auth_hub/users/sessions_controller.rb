@@ -12,8 +12,12 @@ module AuthHub
   
     #GET /resource/sign_in
     def new
-      #leggo i parametri che arrivano e vedo se invocare subito il metodo per oauth2 azure
-      #Azure active directory oauth2
+        #vado a impostare l'url del dominio se non è impostato a livello di config.yml
+        Rails.configuration.url_dominio = request.base_url if Rails.configuration.url_dominio.blank?
+        #uso messaggio che arriva da flash
+        @success = flash['success'] unless flash.blank?
+        #leggo i parametri che arrivano e vedo se invocare subito il metodo per oauth2 azure
+        #Azure active directory oauth2
         begin
             #se c'è il token con il parametro idc sto facendo una richiesta con JWT
             unless http_get_token.blank?
@@ -62,7 +66,7 @@ module AuthHub
                   redirect_to user_omniauth_azure_oauth2_authorize_url('azure_oauth2')
                   return
               else #non ho jwt e non arrivo da next, sono andato su una pagina interna protetta 
-                session[:url_pre_sign_in] ||= request.url if params[:auth].blank?
+                session[:url_pre_sign_in] ||= request.url if params[:auth].blank? #&& action_name != 'new'
                 session['from_civ_next'] = false
               end
               # mostro la view
@@ -79,10 +83,10 @@ module AuthHub
       super
     end
   
-    # # POST /resource/sign_in
-    # def create
-    #   super
-    # end
+    # POST /resource/sign_in
+    def create
+        super
+    end
   
   #non usato..
     def ext_sign_out

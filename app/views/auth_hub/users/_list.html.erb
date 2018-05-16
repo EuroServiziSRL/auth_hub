@@ -4,22 +4,17 @@
   </div>
 
   <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-	<th colspan="6"></th>
-      </tr>
-    </thead>
-
+    <thead></thead>
     <tbody>
       <% @users.each do |user| %>
-	<tr>
-	  <td><%= user.email %> </td>
-	  <td><%= user.nome_cognome %> </td>
-	  <td><%= link_to 'Vedi', user %> </td>
-	  <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
-	  <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>
-	  <td><%= link_to 'Elimina', user, method: :delete, data: { confirm: 'Are you sure?' } %> </td>
-	</tr>
+    	<tr>
+    	  <td><%= user.email %> </td>
+    	  <td><%= user.nome_cognome %> </td>
+    	  <td><%= link_to 'Vedi', user %> </td>
+    	  <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
+    	  <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>
+    	  <td><%= link_to 'Elimina', user, method: :delete, data: { confirm: 'Are you sure?' } %> </td>
+    	</tr>
       <% end %>
     </tbody>
   </table>

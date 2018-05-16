@@ -3,25 +3,24 @@
 
 <p id="notice"><%= notice %></p>
 
-<h1>Users</h1>
+<h1>Amministratori</h1>
 
 <%= form_for_filterrific @filterrific do |f| %>
   <div>
-    Search
+    Filtra
     <%# give the search field the 'filterrific-periodically-observed' class for live updates %>
     <%= f.text_field(
       :search_query,
       class: 'filterrific-periodically-observed'
     ) %>
-  </div>
-  <div>
+    <%= render_filterrific_spinner %>
     <%= link_to(
-      'Reset filters',
+      'Reset',
       reset_filterrific_url,
     ) %>
   </div>
-  <%# add an automated spinner to your form when the list is refreshed %>
-  <%= render_filterrific_spinner %>
+  <br /><br />
+  
 <% end %>
 
 <%= render(
@@ -29,6 +28,5 @@
   locals: { users: @users }
 ) %>
 
-<%= link_to 'New User', new_user_path %>
-
 </div>
+<%= link_to 'Crea Nuovo', new_user_path, {class: 'btn btn-primary'} %>

@@ -11,15 +11,12 @@ module AuthHub
     # GET /users
     def index
       #@users = User.all
-      @filterrific = initialize_filterrific(
-	User,
-	params[:filterrific]
-      ) or return
+      @filterrific = initialize_filterrific(User,	params[:filterrific]) or return
       @users = @filterrific.find.page(params[:page])
       
       respond_to do |format|
-	format.html
-	format.js
+      	format.html
+      	format.js
       end
     end
 
@@ -34,6 +31,7 @@ module AuthHub
 
     # GET /users/1/edit
     def edit
+      @modifica = true
     end
 
     # POST /users
@@ -72,9 +70,9 @@ module AuthHub
       @utente_selezionato = User.find(params[:id])
       enti_associati = @utente_selezionato.enti_gestiti.map{|ente| ente.clienti_cliente_id} if @utente_selezionato.enti_gestiti.length > 0
       if enti_associati.blank?
-        @enti = ClientiCliente.all
+        @enti = ClientiCliente.all.order("CLIENTE desc")
       else
-        @enti = ClientiCliente.where( "clienti__cliente.ID not IN (?)", enti_associati)
+        @enti = ClientiCliente.where( "clienti__cliente.ID not IN (?)", enti_associati).order("CLIENTE asc")
       end
       
     end
@@ -108,7 +106,11 @@ module AuthHub
 
       # dei parametri che mi arrivano permetto che passino solo alcuni
       def user_params
-        params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi)
+        if params['action'] == 'update'
+          params.require(:user).permit(:email,:nome,:cognome,:admin_role,:admin_servizi)
+        else
+          params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi)
+        end
       end
   end
 end

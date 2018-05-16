@@ -6,9 +6,7 @@ module AuthHub
     
     filterrific(
       default_filter_params: {  },
-      available_filters: [
-	:search_query
-      ]
+      available_filters: [ :search_query ]
     )
            
     
@@ -17,11 +15,39 @@ module AuthHub
     has_many :clienti_clienti, through: :enti_gestiti
     
     #fa la validazione della conferma password
-    validates_confirmation_of :password
+    # validates_confirmation_of :password, on: :create
+    # validates :password, format: { with: /\A[a-zA-Z0-9]+\z/, message: "deve essere di almeno 8 caratteri, lettere e cifre" }
+    # validates :email, uniqueness: { case_sensitive: false }
+    
+    # PASSWORD_FORMAT = /\A
+    #   (?=.{8,})          # Must contain 8 or more characters
+    #   (?=.*\d)           # Must contain a digit
+    #   (?=.*[a-z])        # Must contain a lower case character
+    #   (?=.*[A-Z])        # Must contain an upper case character
+    #   #(?=.*[[:^alnum:]]) # Must contain a symbol
+    # /x
+    
+    # validates :password, 
+    #   presence: true, 
+    #   length: { in: Devise.password_length }, 
+    #   format: { with: PASSWORD_FORMAT }, 
+    #   confirmation: true, 
+    #   on: :create
+    
+    # validates :password, 
+    #   allow_nil: true, 
+    #   length: { in: Devise.password_length }, 
+    #   format: { with: PASSWORD_FORMAT }, 
+    #   #confirmation: true, 
+    #   on: :update
     
     #nome_cognome lo creo dai campi separati
     def nome_cognome=(valore)
-      super("#{nome} #{cognome}") 
+      if valore.blank?
+        super("#{nome} #{cognome}")
+      else
+        super(valore)
+      end
     end
   
     #Log dell'accesso dopo autenticazione
@@ -47,11 +73,13 @@ module AuthHub
   
     def self.find_for_oauth(auth_hash)
       user = find_or_create_by(uid: auth_hash['uid'], provider: auth_hash['provider'])
-      user.nome_cognome = auth_hash['info']['name']
       user.nome = auth_hash['info']['first_name']
       user.cognome = auth_hash['info']['last_name']
+      nome_e_cognome = "#{user.nome} #{user.cognome}"
+      user.nome_cognome = nome_e_cognome
       user.email = auth_hash['info']['email']
       user.password = Devise.friendly_token[0,20]
+      user.stato = 'confermato'
       user.save!
       #aggiorno la lista dei clienti associati in base al tenant id
       #parametri microsoft in request.env['omniauth.auth']['info']['tid']
@@ -82,24 +110,20 @@ module AuthHub
       terms = query.downcase.split(/\s+/)
       # replace "*" with "%" for wildcard searches,
       # append '%', remove duplicate '%'s
-      terms = terms.map { |e|
-	('%'+e.gsub('*', '%') + '%').gsub(/%+/, '%')
-      }
-      # configure number of OR conditions for provision
-      # of interpolation arguments. Adjust this if you
-      # change the number of OR conditions.
-      num_or_conditions = 3
-      where(
-	terms.map {
-	  or_clauses = [
-	    "LOWER(nome) LIKE ?",
-	    "LOWER(cognome) LIKE ?",
-	    "LOWER(email) LIKE ?"
-	  ].join(' OR ')
-	  "(#{ or_clauses })"
-	}.join(' AND '),
-	*terms.map { |e| [e] * num_or_conditions }.flatten
-      )
+      terms = terms.map { |e| ('%'+e.gsub('*', '%') + '%').gsub(/%+/, '%')}
+          # configure number of OR conditions for provision
+          # of interpolation arguments. Adjust this if you
+          # change the number of OR conditions.
+          num_or_conditions = 3
+          where( terms.map {
+        	  or_clauses = [
+        	    "LOWER(nome) LIKE ?",
+        	    "LOWER(cognome) LIKE ?",
+        	    "LOWER(email) LIKE ?"
+        	  ].join(' OR ')
+        	  "(#{ or_clauses })"
+        	}.join(' AND '),*terms.map { |e| [e] * num_or_conditions }.flatten)
+      
     }    
   
   end

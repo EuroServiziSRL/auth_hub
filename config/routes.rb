@@ -24,17 +24,18 @@ AuthHub::Engine.routes.draw do
         :via => [:get, :post]
     end
     
-    
-    #aggiungo la route per fare la logout esterna in get
-    devise_scope :user do
-      get 'ext_sign_out', :to => 'users/sessions#ext_sign_out', :as => :ext_sign_out
-    end
-    
     devise_for :users, class_name: "AuthHub::User", module: "auth_hub", path: "/",
     controllers: {
         sessions: 'auth_hub/users/sessions',
-        omniauth_callbacks: 'auth_hub/users/omniauth_callbacks'
+        omniauth_callbacks: 'auth_hub/users/omniauth_callbacks',
+        registrations: 'auth_hub/users/registrations',
     }
+
+    #aggiungo la route per fare la logout esterna in get e la registrazione in post
+    devise_scope :user do
+      get 'ext_sign_out', :to => 'users/sessions#ext_sign_out', :as => :ext_sign_out
+      post 'salva_utente', :to => 'users/registrations#create', :as => :salva_utente
+    end
 
     #path standard per crud degli enti_gestiti
     resources :enti_gestiti

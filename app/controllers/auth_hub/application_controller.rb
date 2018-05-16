@@ -87,12 +87,21 @@ module AuthHub
         end
         return true
       else
+        messaggio = nil
         #controllo se arrivo da form di login
         if request.post? and !params['user'].blank?
           @current_user = warden.authenticate!(:scope => :user)
-          return true
+          #controllo se lo stato è confermato
+          if @current_user.stato == 'confermato'
+            return true
+          else
+            warden.logout(:user)
+            @current_user = nil
+            messaggio= "Utente non confermato dall'amministratore"
+          end
         end
-        redirect_to new_user_session_path, notice: "Please Login to view that page!"
+        messaggio ||= "Please Login to view that page!"
+        redirect_to new_user_session_path, notice: messaggio
       end
     end
         
@@ -103,7 +112,7 @@ module AuthHub
       #carico l'user da sessione con auth esterna tramite omniauth
       @current_user ||= User.find_by(id: session['warden.user.user.key'][0][0]) unless session['warden.user.user.key'].blank?
       #se non ho fatto login esterna carico id salvato (usato in sign_in omniauth e anche login con email e psw devise)
-      @current_user ||= User.find_by(id: session[:user_id])
+      @current_user ||= User.find_by(id: session[:user_id], stato: 'confermato')
       @current_user
     end
     
@@ -275,6 +284,7 @@ module AuthHub
       if !session[:auth].blank? and !user_instance.jwt.blank?
         path += "?jwt=#{user_instance.jwt}"
       end
+      
       #se non ho il path controllo il ruolo dell'utente, path in base al ruolo
       if path.blank?
         if user_instance.superadmin_role
@@ -286,8 +296,9 @@ module AuthHub
         else #user_role
           path = dashboard_path
         end
+        path = "#{Rails.configuration.url_dominio}#{path}"
       end
-      path
+      return path
     end
     
     #dopo logout microsoft
