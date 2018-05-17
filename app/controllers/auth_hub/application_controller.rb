@@ -117,16 +117,6 @@ module AuthHub
     end
     
     
-    def enti_gestiti
-      if @current_user.nome_cognome == 'openweb'
-        @enti_gestiti = "siena"
-      else
-        @enti_gestiti = "milano"
-      end
-      @enti_gestiti
-    end
-    
-    
     #helper_method :current_user
     
     #dopo aver fatto la login con omniauth arrivo a questo metodo per capire dove fare il redirect

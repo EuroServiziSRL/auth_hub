@@ -70,7 +70,7 @@ module AuthHub
       @utente_selezionato = User.find(params[:id])
       enti_associati = @utente_selezionato.enti_gestiti.map{|ente| ente.clienti_cliente_id} if @utente_selezionato.enti_gestiti.length > 0
       if enti_associati.blank?
-        @enti = ClientiCliente.all.order("CLIENTE desc")
+        @enti = ClientiCliente.all.order("CLIENTE asc")
       else
         @enti = ClientiCliente.where( "clienti__cliente.ID not IN (?)", enti_associati).order("CLIENTE asc")
       end

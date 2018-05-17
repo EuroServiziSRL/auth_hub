@@ -7,9 +7,17 @@ module AuthHub
     before_action :authenticate_user!
     protect_from_forgery prepend: true
     
-    #pagina con blocchi per vari servizi, path di base
+    #pagina per utente con ruolo user,
+    #se admin viene fatto redirect
     def admin_dashboard
-    
+        if @current_user.superadmin_role
+          path = index_superadmin_url
+        elsif @current_user.admin_role
+          path = index_admin_url
+        elsif @current_user.admin_servizi
+          path = index_admin_url
+        end
+        redirect_to path unless path.blank?
     end
     
 
