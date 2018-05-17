@@ -1,32 +1,59 @@
+<div id="leftColumn" class="col-lg-2 col-md-2">
+  <div class="card-box">
 
-<div class="card-box">
+    <%= form_for_filterrific @filterrific do |f| %>
 
-<p id="notice"><%= notice %></p>
-
-<h1>Amministratori</h1>
-
-<%= form_for_filterrific @filterrific do |f| %>
-  <div>
-    Filtra
-    <%# give the search field the 'filterrific-periodically-observed' class for live updates %>
-    <%= f.text_field(
-      :search_query,
-      class: 'filterrific-periodically-observed'
-    ) %>
-    <%= render_filterrific_spinner %>
-    <%= link_to(
-      'Reset',
-      reset_filterrific_url,
-    ) %>
+      <div class="row">
+	<div class="col-md-12">
+	  <button id="Filtra" class="btn btn-default btn-sm no-radius btn-primary btn-block"><span class="fa fa-search"></span>
+<span class="text">Filtra</span></button>
+	</div>
+      </div>
+      
+      <div class="row m-t-10">
+	<div class="col-md-12">
+	  <div class="col-sm-12">
+	    <div class="form-group form-group-sm">
+	      <label class="control-label" for="search_query">Scrivi per filtrare</label>
+	      <%# give the search field the 'filterrific-periodically-observed' class for live updates %>
+	      <%= f.text_field(
+		:search_query,
+		class: 'filterrific-periodically-observed form-control input-sm no-radius'
+	      ) %>
+	      <%= render_filterrific_spinner %>
+	    </div>
+	  </div>
+	</div>
+      </div>
+      
+      <div class="row">
+	<div class="col-md-12">
+	  <%= link_to(
+	    '<button class="btn btn-default btn-sm no-radius btn-primary btn-block">Reset</button>'.html_safe,
+	    reset_filterrific_url,
+	  ) %>
+	  
+	</div>
+      </div>
+      
+    <% end %>
   </div>
-  <br /><br />
-  
-<% end %>
-
-<%= render(
-  partial: 'list',
-  locals: { users: @users }
-) %>
-
 </div>
-<%= link_to 'Crea Nuovo', new_user_path, {class: 'btn btn-primary'} %>
+<div id="contentColumn" class="col-lg-10 col-md-10">
+  <div class="card-box">
+
+  <p id="notice"><%= notice %></p>
+
+  <div class="row m-b-10">
+    <div class="col-md-12">
+    <%= link_to '<span class="fa fa-plus"></span> <span class="text">Nuova affissione</span>'.html_safe, new_user_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+    </div>
+  </div>
+
+  <%= render(
+    partial: 'list',
+    locals: { users: @users }
+  ) %>
+
+  </div>
+</div>

@@ -3,20 +3,31 @@
     <%= page_entries_info users  %>
   </div>
 
-  <table class="table table-bordered table-striped">
-    <thead></thead>
-    <tbody>
-      <% @users.each do |user| %>
-    	<tr>
-    	  <td><%= user.email %> </td>
-    	  <td><%= user.nome_cognome %> </td>
-    	  <td><%= link_to 'Vedi', user %> </td>
-    	  <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
-    	  <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>
-    	  <td><%= link_to 'Elimina', user, method: :delete, data: { confirm: 'Are you sure?' } %> </td>
-    	</tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class=" awe-grid">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+	<thead>
+	  <tr>
+	    <th>Email</th>
+	    <th>Nome Cognome</th>
+	    <th colspan="4">Azioni</th>
+	  </tr>
+	</thead>
+	</thead>
+	<tbody>
+	  <% @users.each do |user| %>
+	    <tr>
+	      <td><%= user.email %> </td>
+	      <td><%= user.nome_cognome %> </td>
+	      <td><%= link_to 'Vedi', user %> </td>
+	      <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
+	      <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>
+	      <td><%= link_to 'Elimina', user, method: :delete, data: { confirm: 'Are you sure?' } %> </td>
+	    </tr>
+	  <% end %>
+	</tbody>
+      </table>
+    </div>
+  </div>
   <%= will_paginate @users %>
 </div>
