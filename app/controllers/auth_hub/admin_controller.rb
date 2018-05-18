@@ -32,17 +32,20 @@ module AuthHub
                 @hash_applicazioni_ente[app.ID_AREA] << { 'nome': app.NOME, 'descrizione': app.DESCRIZIONE, 'url': url_applicazione, 'ambiente': app.ID_AMBIENTE}
               }
             end
-            
-            
-            
           }
         else
           @messaggio = { "warning": "Non hai applicazioni installate nell'ente #{ente_corrente.CLIENTE}" }
         end
         @array_applicazioni_ente = [] 
       end
-      a=3
     end
+    
+    
+    def cambia_password_admin
+        
+    end
+    
+    
     
     
   end
