@@ -50,6 +50,19 @@ module AuthHub
       end
     end
   
+    def descrizione_ruolo
+      if superadmin_role
+        "Super Admin"
+      elsif admin_role
+        "Amministratore Portale"
+      elsif admin_servizi
+        "Amministratore Servizi"
+      else
+        "Utente"
+      end
+    end
+  
+  
     #Log dell'accesso dopo autenticazione
     Warden::Manager.after_authentication do |user, auth, opts|
       ::AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email} (id: #{user.id}) login at #{DateTime.now} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")

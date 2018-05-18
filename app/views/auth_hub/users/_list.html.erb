@@ -10,6 +10,7 @@
 	  <tr>
 	    <th>Email</th>
 	    <th>Nome Cognome</th>
+	    <th>Stato</th>
 	    <th colspan="4">Azioni</th>
 	  </tr>
 	</thead>
@@ -19,6 +20,7 @@
 	    <tr>
 	      <td><%= user.email %> </td>
 	      <td><%= user.nome_cognome %> </td>
+	      <td><%= user.stato == 'confermato' ? 'Confermato' : 'Non abilitato' %> </td>
 	      <td><%= link_to 'Vedi', user %> </td>
 	      <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
 	      <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>

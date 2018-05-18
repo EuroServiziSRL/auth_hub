@@ -5,7 +5,7 @@ module AuthHub
     
     #view con vari link
     def index
-      @tipo_amministratore = 'Super Admin'
+      @nome_pagina = "Home"
     end
   
   end

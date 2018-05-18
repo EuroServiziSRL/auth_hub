@@ -10,6 +10,7 @@ module AuthHub
 
     # GET /users
     def index
+      @nome_pagina = "Lista Utenti"
       #@users = User.all
       @filterrific = initialize_filterrific(User,	params[:filterrific]) or return
       @users = @filterrific.find.page(params[:page])
@@ -22,25 +23,26 @@ module AuthHub
 
     # GET /users/1
     def show
+      @nome_pagina = "Dati Utente"
     end
 
     # GET /users/new
     def new
       @user = User.new
+      @nome_pagina = "Nuovo Utente"
     end
 
     # GET /users/1/edit
     def edit
       @modifica = true
+      @nome_pagina = "Modifica Dati Utente"
     end
 
     # POST /users
     def create
       #password_diverse = user_params['conferma_password'] != user_params['password']
-      
       @user = User.new(user_params)
       #@user.errors.add(:password, :blank, message: "Le due password devono coincidere") if password_diverse
-        
       if @user.save
         redirect_to @user, notice: 'User was successfully created.'
       else
@@ -66,6 +68,7 @@ module AuthHub
     #Vedo gli enti associati ad un utente e la select per associarne di nuovi (select multipla)
     # GET /users/1/associa_enti
     def associa_enti
+      @nome_pagina = "Associa Enti ad Amministratore"
       @esito = flash['esito'] unless flash.blank?
       @utente_selezionato = User.find(params[:id])
       enti_associati = @utente_selezionato.enti_gestiti.map{|ente| ente.clienti_cliente_id} if @utente_selezionato.enti_gestiti.length > 0
@@ -106,10 +109,11 @@ module AuthHub
 
       # dei parametri che mi arrivano permetto che passino solo alcuni
       def user_params
-        if params['action'] == 'update'
-          params.require(:user).permit(:email,:nome,:cognome,:admin_role,:admin_servizi)
+        params['user']['stato'] = 'confermato' if params['user']['stato'] == '1'
+        if params['azione'] == 'modifica'
+          params.require(:user).permit(:email,:nome,:cognome,:admin_role,:admin_servizi,:stato)
         else
-          params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi)
+          params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi,:stato)
         end
       end
   end
