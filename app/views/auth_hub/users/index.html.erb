@@ -29,8 +29,9 @@
       <div class="row">
 	<div class="col-md-12">
 	  <%= link_to(
-	    '<button class="btn btn-default btn-sm no-radius btn-primary btn-block">Reset</button>'.html_safe,
+	    'Reset'.html_safe,
 	    reset_filterrific_url,
+	    class: 'btn btn-default btn-sm no-radius btn-primary btn-block'
 	  ) %>
 	  
 	</div>
@@ -42,14 +43,15 @@
 <div id="contentColumn" class="col-lg-10 col-md-10">
   <div class="card-box">
 
-  <p id="notice"><%= notice %></p>
-
   <div class="row m-b-10">
     <div class="col-md-12">
-    <%= link_to '<span class="fa fa-plus"></span> <span class="text">Nuova affissione</span>'.html_safe, new_user_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+    <%= link_to '<span class="fa fa-plus"></span> <span class="text">Nuovo utente</span>'.html_safe, new_user_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
     </div>
   </div>
 
+
+  <p id="notice"><%= notice %></p>
+  
   <%= render(
     partial: 'list',
     locals: { users: @users }
