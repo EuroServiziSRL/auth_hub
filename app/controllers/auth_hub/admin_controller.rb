@@ -40,9 +40,26 @@ module AuthHub
       end
     end
     
-    
+    #get per view cambia_password
     def cambia_password_admin
         
+    end
+    
+    #post 
+    def aggiorna_password
+        
+        if @current_user.valid_password?(user_params[:old_password])
+            
+        else
+            #vecchia password non valida
+        end
+    end
+    
+    
+    private
+    
+    def user_params
+        params.require(:user).permit(:old_password, :password, :new_password)
     end
     
     

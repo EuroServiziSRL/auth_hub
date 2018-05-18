@@ -59,9 +59,10 @@ AuthHub::Engine.routes.draw do
 
     get 'admin' => 'admin#index', :as => :index_admin
     get 'cambia_password_admin' => 'admin#cambia_password_admin', :as => :cambia_password_admin
+    post 'aggiorna_password' => 'admin#aggiorna_password', :as => :aggiorna_password
     get 'sa' => 'superadmin#index', :as => :index_superadmin
 
-    root to: "dashboard#admin_dashboard"    
+    root to: "dashboard#admin_dashboard"
    
   
 end
