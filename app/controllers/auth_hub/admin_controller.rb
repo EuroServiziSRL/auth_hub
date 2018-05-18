@@ -4,7 +4,7 @@ module AuthHub
   class AdminController < ApplicationController
     
     def index
-      @tipo_amministratore = 'Amministratore Portale'
+      @nome_pagina = "Applicazioni"
       if @array_enti_gestiti.blank?
         @messaggio = { "warning": "Non hai enti associati" }
       else
@@ -22,12 +22,13 @@ module AuthHub
                 app = AuthHub::ClientiApplicazione.find_by_NOME(nome_app)
                 @hash_applicazioni_ente[app.ID_AREA] ||= []
                 if app.ID_AMBIENTE == 'ruby'
-                  url_applicazione = File.join("https://",dominio_installazione_ruby,app.URLAMMINISTRAZIONE)
+                  url_applicazione = File.join(dominio_installazione_ruby,app.URLAMMINISTRAZIONE)
                 elsif app.ID_AMBIENTE == 'php'
-                  url_applicazione = File.join("https://",dominio_installazione_hippo,app.URLAMMINISTRAZIONE)
+                  url_applicazione = File.join(dominio_installazione_hippo,app.URLAMMINISTRAZIONE)
                 else #caso in cui non ho ambiente...
                   url_applicazione = "#"
                 end
+                url_applicazione = "https://"+url_applicazione unless url_applicazione.include?("http")
                 @hash_applicazioni_ente[app.ID_AREA] << { 'nome': app.NOME, 'descrizione': app.DESCRIZIONE, 'url': url_applicazione, 'ambiente': app.ID_AMBIENTE}
               }
             end
