@@ -19,27 +19,29 @@ module AuthHub
     # validates :password, format: { with: /\A[a-zA-Z0-9]+\z/, message: "deve essere di almeno 8 caratteri, lettere e cifre" }
     # validates :email, uniqueness: { case_sensitive: false }
     
-    # PASSWORD_FORMAT = /\A
-    #   (?=.{8,})          # Must contain 8 or more characters
-    #   (?=.*\d)           # Must contain a digit
-    #   (?=.*[a-z])        # Must contain a lower case character
-    #   (?=.*[A-Z])        # Must contain an upper case character
-    #   #(?=.*[[:^alnum:]]) # Must contain a symbol
-    # /x
+    #Usiamo la regola: almeno 8 caratteri, una cifra e una maiuscola
+    PASSWORD_FORMAT = /\A
+      (?=.{8,})          # Must contain 8 or more characters
+      (?=.*\d)           # Must contain a digit
+      #(?=.*[a-z])        # Must contain a lower case character
+      (?=.*[A-Z])        # Must contain an upper case character
+      #(?=.*[[:^alnum:]]) # Must contain a symbol
+    /x
     
-    # validates :password, 
-    #   presence: true, 
-    #   length: { in: Devise.password_length }, 
-    #   format: { with: PASSWORD_FORMAT }, 
-    #   confirmation: true, 
-    #   on: :create
+    validates :password, 
+      presence: true, 
+      #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri" }, 
+      format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
+      confirmation: true, 
+      on: :create
     
-    # validates :password, 
-    #   allow_nil: true, 
-    #   length: { in: Devise.password_length }, 
-    #   format: { with: PASSWORD_FORMAT }, 
-    #   #confirmation: true, 
-    #   on: :update
+    validates :password, 
+      allow_nil: true, 
+      #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri"}, 
+      format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
+      #confirmation: true, 
+      on: :update
+      
     
     #nome_cognome lo creo dai campi separati
     def nome_cognome=(valore)

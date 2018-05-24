@@ -5,6 +5,8 @@ module AuthHub
     
     def index
       @nome_pagina = "Applicazioni"
+      @errore = flash[:error]
+      @successo = flash[:success]
       if @array_enti_gestiti.blank?
         @messaggio = { "warning": "Non hai enti associati" }
       else
@@ -42,16 +44,32 @@ module AuthHub
     
     #get per view cambia_password
     def cambia_password_admin
-        
+        @nome_pagina = "Cambia Password"
+        @errore = flash[:error]
     end
     
     #post 
     def aggiorna_password
-        
         if @current_user.valid_password?(user_params[:old_password])
-            
+            if user_params[:password] != user_params[:password_confirmation]
+                flash[:error] = "Le due nuove password non coincidono."
+                redirect_to cambia_password_admin_path
+            else
+                begin
+                  @current_user.password = user_params[:password]
+                  @current_user.save!
+                  flash[:success] = "Password Aggiornata con successo."
+                  redirect_to index_admin_path
+                rescue Exception => e
+                  flash[:error] = e.message
+                  puts e.backtrace.inspect
+                  redirect_to cambia_password_admin_path
+                end
+            end
         else
             #vecchia password non valida
+            flash[:error] = "La password corrente non è valida."
+            redirect_to cambia_password_admin_path
         end
     end
     
@@ -59,7 +77,7 @@ module AuthHub
     private
     
     def user_params
-        params.require(:user).permit(:old_password, :password, :new_password)
+        params.require(:user).permit(:old_password, :password, :password_confirmation)
     end
     
     

@@ -33,6 +33,7 @@
   <br />
   <br />    
   <div class="actions">
-    <%= form.submit "Associa", :class => 'btn btn-default btn-sm no-radius btn-primary' %>
+      <%= link_to 'Lista Amministratori', users_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+      <%= form.submit "Associa", :class => 'btn btn-default btn-sm no-radius btn-primary' %>
   </div>
 <% end %>
