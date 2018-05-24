@@ -1,38 +1,53 @@
-<h3>Associa Enti</h3>
-<% if !@esito.blank? %>
-    <div class="row">
-        <div class="col-lg-offset-2 col-lg-8 alert alert-success"><%= @esito %></div>
+<div class="card-box">
+  <%= form_with(scope: :post, url: salva_enti_associati_path, local: true) do |form| %>
+  <div class="panel panel-default">
+    <div class="panel-heading panel-heading-lg"> Associa Enti </div>
+    <div class="panel-body">
+      <% if !@esito.blank? %>
+	  <div class="row">
+	      <div class="col-lg-offset-2 col-lg-8 alert alert-success"><%= @esito %></div>
+	  </div>
+      <% end %>
+      <div class="row">
+	  <div class="col-lg-10"><h4>Utente <%= @utente_selezionato.email %> </h4></div>
+      </div>
+
+      <% if @utente_selezionato.enti_gestiti.length > 0 %>
+	  <div class="row">
+	      <h4>Enti Associati</h4>
+	      <div class=" awe-grid">
+		<div class="table-responsive">
+		  <table class="table table-bordered table-striped">
+		    <thead>
+		      <tr>
+			<th>Ente</th>
+			<th colspan="2">Azioni</th>
+		      </tr>
+		    </thead>
+		    </thead>
+		    <tbody>
+		      <% @utente_selezionato.enti_gestiti.each do |ente| %>
+			<tr>
+			  <td><%= ente.clienti_cliente.CLIENTE %></td>
+			  <td><%= link_to "Cancella", ente_gestito_path(id: ente.id), method: :delete, data: { confirm: "Sei sicuro di cancellare l'associazione?" } %></td>
+			  <td><%= link_to "Gestisci Applicazioni", gestisci_applicazione_ente_gestito_path(id: ente.id) %></td>
+			</tr>
+		      <% end %>
+		    </tbody>
+		  </table>
+		</div>
+	      </div>
+	  </div>
+      <% end %>
+
+
+
+      <h4>Seleziona enti da associare</h4>
+	<%= select_tag 'enti_da_associare[]', options_for_select( @enti.map {|ente| [ente.CLIENTE,ente.ID]}, @utente_selezionato.id), :multiple => true, :class => 'form-control input-sm no-radius'  %>
     </div>
-<% end %>
-<div class="row">
-    <div class="col-lg-10"><h4>Utente <%= @utente_selezionato.email %> </h4></div>
-</div>
-
-<% if @utente_selezionato.enti_gestiti.length > 0 %>
-    <div class="row">
-        <h4>Enti Associati</h4>
-        <ul class="list-group">
-            <% @utente_selezionato.enti_gestiti.each do |ente| %>
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col-lg-6"><%= ente.clienti_cliente.CLIENTE %></div>
-                        <div class="col-lg-2"><%= link_to "Cancella", ente_gestito_path(id: ente.id), method: :delete, data: { confirm: "Sei sicuro di cancellare l'associazione?" } %></div>
-                        <div class="col-lg-2"><%= link_to "Gestisci Applicazioni", gestisci_applicazione_ente_gestito_path(id: ente.id) %></div>
-                    </div>
-                </li>
-            <% end %>
-        </ul>
-    </div>
-<% end %>
-
-
-
-<h4>Aggiungi ente</h4>
-<%= form_with(scope: :post, url: salva_enti_associati_path, local: true) do |form| %>
-  <%= select_tag 'enti_da_associare[]', options_for_select( @enti.map {|ente| [ente.CLIENTE,ente.ID]}, @utente_selezionato.id), :multiple => true  %>
-  <br />
-  <br />    
-  <div class="actions">
+  </div>
+  <div class="text-center actions">
     <%= form.submit "Associa", :class => 'btn btn-default btn-sm no-radius btn-primary' %>
   </div>
-<% end %>
+  <% end %>
+</div>
