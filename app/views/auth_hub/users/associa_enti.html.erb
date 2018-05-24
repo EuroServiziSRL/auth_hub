@@ -40,13 +40,12 @@
 	  </div>
       <% end %>
 
-
-
       <h4>Seleziona enti da associare</h4>
 	<%= select_tag 'enti_da_associare[]', options_for_select( @enti.map {|ente| [ente.CLIENTE,ente.ID]}, @utente_selezionato.id), :multiple => true, :class => 'form-control input-sm no-radius'  %>
     </div>
   </div>
   <div class="text-center actions">
+    <%= link_to 'Lista Amministratori', users_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
     <%= form.submit "Associa", :class => 'btn btn-default btn-sm no-radius btn-primary' %>
   </div>
   <% end %>

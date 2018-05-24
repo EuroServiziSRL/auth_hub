@@ -12,7 +12,7 @@ module AuthHub
   
     # GET /resource/password/edit?reset_password_token=abcdef
     # def edit
-    #   super
+    #  super
     # end
   
     # PUT /resource/password

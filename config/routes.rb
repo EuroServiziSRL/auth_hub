@@ -28,7 +28,7 @@ AuthHub::Engine.routes.draw do
     controllers: {
         sessions: 'auth_hub/users/sessions',
         omniauth_callbacks: 'auth_hub/users/omniauth_callbacks',
-        registrations: 'auth_hub/users/registrations',
+        registrations: 'auth_hub/users/registrations'
     }
 
     #aggiungo la route per fare la logout esterna in get e la registrazione in post
@@ -58,9 +58,11 @@ AuthHub::Engine.routes.draw do
     post "cambia_ente" => "application#cambia_ente", :as => :cambia_ente
 
     get 'admin' => 'admin#index', :as => :index_admin
+    get 'cambia_password_admin' => 'admin#cambia_password_admin', :as => :cambia_password_admin
+    post 'aggiorna_password' => 'admin#aggiorna_password', :as => :aggiorna_password
     get 'sa' => 'superadmin#index', :as => :index_superadmin
 
-    root to: "dashboard#admin_dashboard"    
+    root to: "dashboard#admin_dashboard"
    
   
 end
