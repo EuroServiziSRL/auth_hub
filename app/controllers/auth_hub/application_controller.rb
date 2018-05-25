@@ -82,7 +82,7 @@ module AuthHub
         @ente_principale = nil
         enti_gestiti.each do |ente|
           @ente_principale ||= ente.clienti_cliente.ID if ente.principale?
-          array_ente_per_select_tag = [ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID] 
+          array_ente_per_select_tag = ["&#xf132; ".html_safe+ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID] 
           @array_enti_gestiti << array_ente_per_select_tag
         end
         return true
