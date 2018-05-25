@@ -25,7 +25,7 @@
   <%- if devise_mapping.omniauthable? %>
     <%- resource_class.omniauth_providers.each do |provider| %>
       <% if (@autenticazione.include?("aad") || @autenticazione.include?("all")) && (provider == :azure_oauth2)   %>
-        <%= link_to "Sign in with "+map_strategy_omniauth(provider), omniauth_authorize_path(resource_name, provider).gsub("auth_hub/auth_hub","auth_hub"), {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+        <%= link_to "Accedi con "+map_strategy_omniauth(provider), omniauth_authorize_path(resource_name, provider).gsub("auth_hub/auth_hub","auth_hub"), {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
       <% end  %>
     <% end -%>
   <% end -%>
