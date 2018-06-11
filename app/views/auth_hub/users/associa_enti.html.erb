@@ -30,7 +30,11 @@
 			<tr>
 			  <td><%= ente.clienti_cliente.CLIENTE %></td>
 			  <td><%= link_to "Cancella", ente_gestito_path(id: ente.id), method: :delete, data: { confirm: "Sei sicuro di cancellare l'associazione?" } %></td>
-			  <td><%= link_to "Gestisci Applicazioni", gestisci_applicazione_ente_gestito_path(id: ente.id) %></td>
+			  <td>
+			  	<% if @utente_selezionato.admin_servizi %>
+			  	<%= link_to "Vedi Applicazioni", vedi_applicazione_ente_gestito_path(id: ente.id) %>
+			  	<% end %>
+			  </td>
 			</tr>
 		      <% end %>
 		    </tbody>

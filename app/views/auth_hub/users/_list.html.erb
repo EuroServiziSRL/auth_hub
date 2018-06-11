@@ -10,6 +10,7 @@
 	  <tr>
 	    <th>Email</th>
 	    <th>Nome Cognome</th>
+	    <th>Tip Utente</th>
 	    <th>Stato</th>
 	    <th colspan="4">Azioni</th>
 	  </tr>
@@ -20,6 +21,7 @@
 	    <tr>
 	      <td><%= user.email %> </td>
 	      <td><%= user.nome_cognome %> </td>
+	      <td><%= user.descrizione_ruolo %></td>
 	      <td><%= user.stato == 'confermato' ? 'Confermato' : 'Non abilitato' %> </td>
 	      <td><%= link_to 'Vedi', user %> </td>
 	      <td><%= link_to 'Modifica', edit_user_path(user) %> </td>

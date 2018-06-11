@@ -82,9 +82,12 @@ module AuthHub
         @ente_principale = nil
         enti_gestiti.each do |ente|
           @ente_principale ||= ente.clienti_cliente.ID if ente.principale?
-          array_ente_per_select_tag = ["&#xf132; ".html_safe+ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID] 
+          #array_ente_per_select_tag = ["&#xf132; ".html_safe+ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID] #mostra uno stemmino su ogni riga
+          array_ente_per_select_tag = [ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID]
           @array_enti_gestiti << array_ente_per_select_tag
         end
+        #visualizzo questo come ente collegato se l'admin ha solo un ente
+        @ente_principale ||= @array_enti_gestiti[0][0] if @array_enti_gestiti.length == 1
         return true
       else
         messaggio = nil
@@ -256,7 +259,8 @@ module AuthHub
                   last_name: user_instance.cognome,
                   nickname: user_instance.nome_cognome,
                   email: user_instance.email,
-                  admin: user_instance.admin_role == true
+                  admin: user_instance.admin_role == true,
+                  admin_servizi: user_instance.admin_servizi == true
               }
           }
           token = JsonWebToken.encode(payload, hmac_secret, 'HS256')
@@ -268,11 +272,10 @@ module AuthHub
       #se ho una path salvata in sessione o l'ho appena salvata uso quella
       path = session[:url_pre_sign_in] unless session[:url_pre_sign_in].blank?
       session.delete(:url_pre_sign_in)
-    
       #se ho settato session[:auth] vengo da una app esterna o da NEXT,
       #ripasso indietro il jwt nel redirect
-      if !session[:auth].blank? and !user_instance.jwt.blank?
-        path += "?jwt=#{user_instance.jwt}"
+      if !session[:auth].blank? && !user_instance.jwt.blank? && !path.blank?
+        path += ( !path.blank? && path.include?('?') ? "&jwt=#{user_instance.jwt}" : "?jwt=#{user_instance.jwt}" )  
       end
       
       #se non ho il path controllo il ruolo dell'utente, path in base al ruolo

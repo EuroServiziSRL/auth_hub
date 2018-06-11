@@ -8,10 +8,11 @@ module AuthHub
 
     load_and_authorize_resource :class => "AuthHub::User"
 
+
+
     # GET /users
     def index
       @nome_pagina = "Lista Utenti"
-      #@users = User.all
       @filterrific = initialize_filterrific(User,	params[:filterrific]) or return
       @users = @filterrific.find.page(params[:page])
       

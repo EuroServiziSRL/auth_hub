@@ -40,7 +40,7 @@ AuthHub::Engine.routes.draw do
     #path standard per crud degli enti_gestiti
     resources :enti_gestiti
 
-    get 'enti_gestiti/:id/gestisci_applicazione_ente_gestito' => 'enti_gestiti#gestisci_applicazione_ente_gestito', :as => :gestisci_applicazione_ente_gestito
+    get 'enti_gestiti/:id/vedi_applicazione_ente_gestito' => 'enti_gestiti#vedi_applicazione_ente_gestito', :as => :vedi_applicazione_ente_gestito
 
     #path standard per crud delle applicazioni associate all'ente
     resources :applicazioni_ente

@@ -12,20 +12,36 @@ module AuthHub
   
     #POST /resource
     def create
-      #creo un nuovo user
+      #creo un nuovo user, uso codice del controller originario su devise
       begin
-        #salva anche il clienti_cliente
-        nuovo_admin = AuthHub::User.new(configure_sign_up_params.to_h)
-        nuovo_admin.admin_role = true #li creo sempre come admin quelli che si registrano
-        nuovo_admin.nome_cognome = "#{configure_sign_up_params['nome']} #{configure_sign_up_params['cognome']}"
-        nuovo_admin.stato = "da_validare"
-        nuovo_admin.save
-        flash[:success] = "Registrazione andata a buon fine"
-        redirect_to new_user_session_url
+        build_resource(sign_up_params)
+        #resource è un istanza di AuthHub::User
+        resource.admin_role = true #li creo sempre come admin quelli che si registrano
+        resource.stato = "da_validare"
+        nome_e_cognome = "#{sign_up_params['nome']} #{sign_up_params['cognome']}"
+        resource.nome_cognome = nome_e_cognome
+        resource.save
+        yield resource if block_given?
+        if resource.persisted?
+            #set_flash_message! :notice, :signed_up
+            #sign_up(resource_name, resource) non lo faccio autenticare perchè ha un account da validare
+            #respond_with resource, location: after_sign_up_path_for(resource)
+            flash[:success] = "Registrazione andata a buon fine"
+            Mailer.with(user: resource).registrazione_eseguita.deliver_now
+            redirect_to new_user_session_url
+        else
+          clean_up_passwords resource
+          #set_minimum_password_length
+          respond_with resource
+        end
+      
       rescue Exception => e
-        puts e.message
-        puts e.backtrace.inspect
+        logger.error e.message
+        logger.error e.backtrace.inspect
       end
+      
+      
+      
     end
   
     #GET /resource/edit

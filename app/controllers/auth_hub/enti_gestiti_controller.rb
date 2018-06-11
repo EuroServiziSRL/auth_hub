@@ -53,16 +53,18 @@ module AuthHub
     
     
     #view per associare una o più applicazioni ad un ente gestito 
-    def gestisci_applicazione_ente_gestito
+    def vedi_applicazione_ente_gestito
       @ente_gestito = EnteGestito.find(params[:id])
-      #posso usare anche lo scope
-      #applicazioni_associate = ApplicazioniEnte.dell_ente(@ente_gestito.id).map{|app| app.id} if ApplicazioniEnte.dell_ente(@ente_gestito.id).length > 0
-      applicazioni_associate = @ente_gestito.applicazioni_ente.map{|app| app.id} if @ente_gestito.applicazioni_ente.length > 0
-      if applicazioni_associate.blank?
-        @enti = ClientiApplicazione.all
-      else
-        @enti = ClientiApplicazione.where( "clienti__applicazione.ID not IN (?)", applicazioni_associate)
-      end
+      #Qui faccio un redirect alla parte admin del portale dove c'è già la gestione delle applicazioni per gli amministratori del portale.
+      # #posso usare anche lo scope
+      # #applicazioni_associate = ApplicazioniEnte.dell_ente(@ente_gestito.id).map{|app| app.id} if ApplicazioniEnte.dell_ente(@ente_gestito.id).length > 0
+      # applicazioni_associate = @ente_gestito.applicazioni_ente.map{|app| app.id} if @ente_gestito.applicazioni_ente.length > 0
+      # if applicazioni_associate.blank?
+      #   @enti = ClientiApplicazione.all
+      # else
+      #   @enti = ClientiApplicazione.where( "clienti__applicazione.ID not IN (?)", applicazioni_associate)
+      # end
+      
     end
   
 

@@ -17,11 +17,11 @@
 							  
 									    <ul class="dd-list">
 									      	<li class="text-center">
-												<div class="btn btn-app btn-info no-hover no-pointer no-radius"><%= area %></div>
+												<div class="btn btn-app no-hover no-pointer no-radius <%= area %>"><%= area.capitalize %></div>
 									      	</li>
 											<% array_di_applicazioni.each do |applicazione| %>
 											    <li class="dd-item">
-												    <a class="btn btn-app btn-info no-radius btn-cruscotto" style="text-shadow:none" href='<%= applicazione[:url] %>'>
+												    <a class="btn btn-app no-radius btn-cruscotto <%= area %>" style="text-shadow:none" href='<%= applicazione[:url] %>'>
 												    <i class="icon fa fa-envelope-o bigger-230"></i><%= applicazione[:descrizione] %>
 												    </a>
 											    </li>

@@ -3,6 +3,7 @@ module AuthHub
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable and :omniauthable
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:azure_oauth2]
+
     
     filterrific(
       default_filter_params: {  },
@@ -17,7 +18,9 @@ module AuthHub
     #fa la validazione della conferma password
     # validates_confirmation_of :password, on: :create
     # validates :password, format: { with: /\A[a-zA-Z0-9]+\z/, message: "deve essere di almeno 8 caratteri, lettere e cifre" }
-    # validates :email, uniqueness: { case_sensitive: false }
+    validates :email, uniqueness: { case_sensitive: false,  message: "già presente" },  presence: { message: " è obbligatoria." }
+    validates_email_realness_of :email, on: :create 
+    #validates_exist_email_of :email
     
     #Usiamo la regola: almeno 8 caratteri, una cifra e una maiuscola
     PASSWORD_FORMAT = /\A
@@ -41,8 +44,7 @@ module AuthHub
       format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
       #confirmation: true, 
       on: :update
-      
-    
+  
     #nome_cognome lo creo dai campi separati
     def nome_cognome=(valore)
       if valore.blank?

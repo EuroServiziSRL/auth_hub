@@ -47,7 +47,7 @@ module AuthHub
       id_ente_gestito = @applicazioni_ente.ente_id
       @applicazioni_ente.destroy
       #faccio la redirect alla pagina di associazione ente-applicazione 
-      redirect_to gestisci_applicazione_ente_gestito_path(id: id_ente_gestito), notice: 'Associazione Cancellata'
+      redirect_to vedi_applicazione_ente_gestito_path(id: id_ente_gestito), notice: 'Associazione Cancellata'
       #redirect_to applicazioni_ente_index_url, notice: 'Applicazioni ente was successfully destroyed.'
     end
 

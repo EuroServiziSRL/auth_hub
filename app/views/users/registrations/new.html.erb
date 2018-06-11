@@ -17,7 +17,7 @@
                     <div class="col-sm-12">
       								<div class="form-group form-group-sm" id="ente_associato">
       								  <label class="control-label" for="ente_associato">Ente Associato</label>
-      								  <%= f.collection_select(:clienti_cliente_ids, AuthHub::ClientiCliente.all.order('CLIENTE asc'), :id, :CLIENTE) %>
+      								  <%= f.collection_select(:clienti_cliente_ids, AuthHub::ClientiCliente.where('ATTIVO': true).order('CLIENTE asc'), :id, :CLIENTE) %>
       								</div>
       							</div>
   					      

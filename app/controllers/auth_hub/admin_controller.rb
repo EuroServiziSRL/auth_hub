@@ -19,6 +19,9 @@ module AuthHub
             dominio_installazione_ruby = installazione.SPIDERURL
             dominio_installazione_hippo = installazione.HIPPO
             if installazione.clienti_applinstallate.length > 0
+              #Uso il jwt salvato nell'user corrente alla login per fare un link e autenticarmi direttamente sulle varie applicazioni
+              str_jwt_param = current_user.jwt
+              
               installazione.clienti_applinstallate.each{ |app_installata|
                 nome_app = app_installata.APPLICAZIONE
                 app = AuthHub::ClientiApplicazione.find_by_NOME(nome_app)
@@ -30,7 +33,10 @@ module AuthHub
                 else #caso in cui non ho ambiente...
                   url_applicazione = "#"
                 end
+                #se non ho http nell'url metto https
                 url_applicazione = "https://"+url_applicazione unless url_applicazione.include?("http")
+                #aggiungo il parametro per il jwt
+                url_applicazione += ( url_applicazione.include?('?') ? "&jwt=#{str_jwt_param}" : "?jwt=#{str_jwt_param}" )
                 @hash_applicazioni_ente[app.ID_AREA] << { 'nome': app.NOME, 'descrizione': app.DESCRIZIONE, 'url': url_applicazione, 'ambiente': app.ID_AMBIENTE}
               }
             end
