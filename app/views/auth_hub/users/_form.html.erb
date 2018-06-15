@@ -1,7 +1,7 @@
 <%= form_with(model: @user, local: true, class: "form-horizontal") do |form| %>
   <% if user.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <h3><%= pluralize(user.errors.count, "error") %> sono stati rilevati:</h3>
       <ul>
       <% user.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -34,14 +34,14 @@
 								<div class="col-sm-12">
 									<div class="form-group form-group-sm" id="password_container">
 									  <label class="control-label" for="password">Password</label>
-									  <%= form.text_field :password, class: "form-control input-sm no-radius" %>
+									  <%= form.password_field :password, class: "form-control input-sm no-radius" %>
 									</div>
 							  </div>
 							      
 							  <div class="col-sm-12">
 									<div class="form-group form-group-sm" id="password_confirmation_container">
 								  	<label class="control-label" for="password_confirmation">Conferma Password</label>
-								  	<%= form.text_field :password_confirmation, class: "form-control input-sm no-radius" %>
+								  	<%= form.password_field :password_confirmation, class: "form-control input-sm no-radius" %>
 									</div>
 				      	</div>
 				    
@@ -71,7 +71,7 @@
 				      
 				    	<% if azione == 'vedi' %>
 					      <div class="form-group">
-									<label for="tipologia_utente" class="col-lg-1 control-label">Tipologia:</label>
+									<label for="tipologia_utente" class="col-lg-2 control-label">Tipologia:</label>
 									<div class="col-lg-10">
 									  <p class="form-control-static">
 									    <% if @user.admin_role %>
@@ -136,7 +136,7 @@
     <% else %>
       <%= link_to 'Modifica', edit_user_path, id: "#{@user.id}", class: 'btn btn-default btn-sm no-radius btn-primary' %>
     <% end %>
-    <%= link_to 'Lista Amministratori', users_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+    <%= link_to 'Elenco Utenti', users_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
   </div>
 
 <% end %>

@@ -1,4 +1,4 @@
-<p id="notice"><%= notice %></p>
+<% unless notice.blank? %><p id="notice"><div class="alert alert-info"><%= notice %></div></p><% end %>
 
 <h1>Applicazioni Ente</h1>
 
@@ -14,7 +14,7 @@
       <tr>
         <td><%= link_to 'Show', applicazioni_ente %></td>
         <td><%= link_to 'Edit', edit_applicazioni_ente_path(applicazioni_ente) %></td>
-        <td><%= link_to 'Destroy', applicazioni_ente, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', applicazioni_ente, method: :delete, data: { confirm: 'Sei sicuro?' } %></td>
       </tr>
     <% end %>
   </tbody>

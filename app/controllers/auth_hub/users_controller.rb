@@ -13,7 +13,7 @@ module AuthHub
     # GET /users
     def index
       @nome_pagina = "Lista Utenti"
-      @filterrific = initialize_filterrific(User,	params[:filterrific]) or return
+      @filterrific = initialize_filterrific(User,	params[:filterrific], available_filters: [:search_query, :utenti_stato_non], default_filter_params: {stato: 'confermato'} ) or return
       @users = @filterrific.find.page(params[:page])
       
       respond_to do |format|
@@ -45,7 +45,7 @@ module AuthHub
       @user = User.new(user_params)
       #@user.errors.add(:password, :blank, message: "Le due password devono coincidere") if password_diverse
       if @user.save
-        redirect_to @user, notice: 'User was successfully created.'
+        redirect_to @user, notice: 'Utente registrato con successo.'
       else
         render :new
       end
@@ -54,7 +54,7 @@ module AuthHub
     # PATCH/PUT /users/1
     def update
       if @user.update(user_params)
-        redirect_to @user, notice: 'User was successfully updated.'
+        redirect_to @user, notice: 'Utente modificato con successo.'
       else
         render :edit
       end
@@ -63,7 +63,7 @@ module AuthHub
     # DELETE /users/1
     def destroy
       @user.destroy
-      redirect_to users_url, notice: 'User was successfully destroyed.'
+      redirect_to users_url, notice: 'Utente cancellato con successo.'
     end
 
     #Vedo gli enti associati ad un utente e la select per associarne di nuovi (select multipla)

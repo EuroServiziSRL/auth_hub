@@ -67,6 +67,12 @@ module AuthHub
       
     end
   
+  
+    def rendi_ente_principale
+      @ente_gestito = EnteGestito.find(params[:id])
+      @ente_gestito.rendi_ente_principale(true)
+      redirect_to associa_enti_user_path(@ente_gestito.user.id)
+    end
 
     private
       # Use callbacks to share common setup or constraints between actions.

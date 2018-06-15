@@ -103,7 +103,7 @@ module AuthHub
             messaggio= "Utente non confermato dall'amministratore"
           end
         end
-        messaggio ||= "Please Login to view that page!"
+        messaggio ||= "Si prega di accedere per vedere la pagina!"
         redirect_to new_user_session_path, notice: messaggio
       end
     end
@@ -116,6 +116,18 @@ module AuthHub
       @current_user ||= User.find_by(id: session['warden.user.user.key'][0][0]) unless session['warden.user.user.key'].blank?
       #se non ho fatto login esterna carico id salvato (usato in sign_in omniauth e anche login con email e psw devise)
       @current_user ||= User.find_by(id: session[:user_id], stato: 'confermato')
+      #se ho uno user corrente carico in sessione l'ente corrente
+      #se ha un ente principale carico quello, altrimenti l'ho fissato col cambia ente
+      if !@current_user.blank? && session['ente_corrente'].blank?
+        ente_principale ||= ( EnteGestito.ente_principale_da_user(@current_user.id)[0] unless EnteGestito.ente_principale_da_user(@current_user.id).blank? )
+        #se non era stato inserito l'ente principale per lo user prendo il primo dell'array
+        ente_principale ||= @current_user.enti_gestiti[0] unless @current_user.enti_gestiti.blank?
+        session['ente_corrente'] = ente_principale unless ente_principale.blank?
+      end
+      #se session['ente_corrente'] è un hash devo caricare l'istanza di ente_gestito
+      if session['ente_corrente'].is_a?(Hash)
+        session['ente_corrente'] = EnteGestito.find(session['ente_corrente']['id'])
+      end
       @current_user
     end
     

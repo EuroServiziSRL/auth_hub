@@ -8,43 +8,72 @@ module AuthHub
       @errore = flash[:error]
       @successo = flash[:success]
       if @array_enti_gestiti.blank?
-        @messaggio = { "warning": "Non hai enti associati" }
+        @errore_configurazione = 'Non hai enti associati!'
       else
-        # user.enti_gestiti.per_cliente(cliente.id)
-        id_ente_corrente = @array_enti_gestiti[0][1] #da fare: gestione ente corrente se > 1
-        ente_corrente = AuthHub::ClientiCliente.find(id_ente_corrente)
-        @hash_applicazioni_ente = {}
-        if ente_corrente.clienti_installazioni.length > 0
-          ente_corrente.clienti_installazioni.each{ |installazione|
-            dominio_installazione_ruby = installazione.SPIDERURL
-            dominio_installazione_hippo = installazione.HIPPO
-            if installazione.clienti_applinstallate.length > 0
-              #Uso il jwt salvato nell'user corrente alla login per fare un link e autenticarmi direttamente sulle varie applicazioni
-              str_jwt_param = current_user.jwt
-              
-              installazione.clienti_applinstallate.each{ |app_installata|
-                nome_app = app_installata.APPLICAZIONE
-                app = AuthHub::ClientiApplicazione.find_by_NOME(nome_app)
-                @hash_applicazioni_ente[app.ID_AREA] ||= []
-                if app.ID_AMBIENTE == 'ruby'
-                  url_applicazione = File.join(dominio_installazione_ruby,app.URLAMMINISTRAZIONE)
-                elsif app.ID_AMBIENTE == 'php'
-                  url_applicazione = File.join(dominio_installazione_hippo,app.URLAMMINISTRAZIONE)
-                else #caso in cui non ho ambiente...
-                  url_applicazione = "#"
-                end
-                #se non ho http nell'url metto https
-                url_applicazione = "https://"+url_applicazione unless url_applicazione.include?("http")
-                #aggiungo il parametro per il jwt
-                url_applicazione += ( url_applicazione.include?('?') ? "&jwt=#{str_jwt_param}" : "?jwt=#{str_jwt_param}" )
-                @hash_applicazioni_ente[app.ID_AREA] << { 'nome': app.NOME, 'descrizione': app.DESCRIZIONE, 'url': url_applicazione, 'ambiente': app.ID_AMBIENTE}
-              }
-            end
-          }
+        if session['ente_corrente'].blank?
+          #errore, mostrare messaggio che l'admin deve configurare dominio
+          @errore_configurazione = "Problemi nella configurazione, l'amministratore è stato informato."
+          Mailer.with(user: @current_user, array_enti_gestiti: @array_enti_gestiti, url_gestione_utente: associa_enti_user_url(@current_user.id)).configurazione_enti_domini_principale.deliver_now
         else
-          @messaggio = { "warning": "Non hai applicazioni installate nell'ente #{ente_corrente.CLIENTE}" }
+          ente_corrente = session['ente_corrente']
+          @hash_applicazioni_ente = {}
+          if ente_corrente.clienti_cliente.clienti_installazioni.length > 0
+            ente_corrente.clienti_cliente.clienti_installazioni.each{ |installazione|
+              dominio_installazione_ruby = installazione.SPIDERURL
+              dominio_installazione_hippo = installazione.HIPPO
+              if installazione.clienti_applinstallate.length > 0
+                #Uso il jwt salvato nell'user corrente alla login per fare un link e autenticarmi direttamente sulle varie applicazioni
+                # se non ce l'ha lo creo (caso in cui faccio accesso diretto su auth_hub)
+                unless current_user.jwt.blank?
+                  str_jwt_param = current_user.jwt
+                  #devo aggiungere al jwt l'ente corrente
+                  hash_jwt = JsonWebToken.decode(str_jwt_param)
+                  hash_jwt_app = hash_jwt.dup
+                else
+                  hash_jwt_app = {
+                      iss: 'soluzionipa.it',
+                      auth: 'up',
+                      user: {
+                          user_id: current_user.id,
+                          name: current_user.nome_cognome,
+                          first_name: current_user.nome,
+                          last_name: current_user.cognome,
+                          email: current_user.email,
+                          nickname: current_user.nome_cognome,
+                          admin: current_user.admin_role == true
+                      }
+                  }
+                end
+                
+                
+                installazione.clienti_applinstallate.each{ |app_installata|
+                  nome_app = app_installata.APPLICAZIONE
+                  app = AuthHub::ClientiApplicazione.find_by_NOME(nome_app)
+                  @hash_applicazioni_ente[app.ID_AREA] ||= []
+                  if app.ID_AMBIENTE == 'ruby'
+                    url_applicazione = File.join(dominio_installazione_ruby,app.URLAMMINISTRAZIONE)
+                    hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby
+                  elsif app.ID_AMBIENTE == 'php'
+                    url_applicazione = File.join(dominio_installazione_hippo,app.URLAMMINISTRAZIONE)
+                    hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_hippo
+                  else #caso in cui non ho ambiente...
+                    url_applicazione = "#"
+                  end
+                  #se non ho http nell'url metto https
+                  url_applicazione = "https://"+url_applicazione unless url_applicazione.include?("http")
+                  #aggiungo il parametro per il jwt
+                  #creo jwt con dominio in base all'ambiente dell'applicazione corrente
+                  jwt_con_dominio = JsonWebToken.encode(hash_jwt_app)
+                  url_applicazione += ( url_applicazione.include?('?') ? "&jwt=#{jwt_con_dominio}&redirect=#{app.URLAMMINISTRAZIONE}" : "?jwt=#{jwt_con_dominio}&redirect=#{app.URLAMMINISTRAZIONE}" )
+                  @hash_applicazioni_ente[app.ID_AREA] << { nome: app.NOME, descrizione: app.DESCRIZIONE, url: url_applicazione, ambiente: app.ID_AMBIENTE}
+                }
+              end
+            }
+          else
+            @messaggio = { "warning" => "Non hai applicazioni installate nell'ente #{ente_corrente.CLIENTE}" }
+          end
+          @array_applicazioni_ente = []
         end
-        @array_applicazioni_ente = [] 
       end
     end
     

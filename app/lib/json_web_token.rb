@@ -1,6 +1,6 @@
 class JsonWebToken
     class << self
-        def encode(payload, secret, alg)
+        def encode(payload, secret=nil, alg=nil)
             JWT.encode(payload, Rails.application.secrets.external_auth_api_key,'HS256')
         end
    

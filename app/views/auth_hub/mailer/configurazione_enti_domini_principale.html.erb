@@ -1,0 +1,13 @@
+L'utente <%= @user.nome %> <%= @user.cognome %> (Id: <%= @user.id %>) 
+<% unless @user.enti_gestiti.blank? %> ha problemi nella configurazione degli enti associati.
+    <br />
+    Impostare l'ente principale tra:<br/> 
+    <% @array_enti_gestiti.each do |ente| %>
+    <%= ente[0] %><br />
+    <% end %>
+    <br />
+    <a href="<%= @url_gestione_utente %>">Associa enti per l'utente</a> 
+    <br/>
+    <strong>Impostare il dominio degli enti nel campo SPIDERURL e HIPPO della tabella clienti__installazione.</strong>
+<% end %>
+<% if @user.enti_gestiti.blank? %> non enti associati. <% end %>

@@ -1,5 +1,6 @@
 module AuthHub
   class User < ApplicationRecord
+    before_save :salva_nome_cognome
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable and :omniauthable
     devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:azure_oauth2]
@@ -7,7 +8,7 @@ module AuthHub
     
     filterrific(
       default_filter_params: {  },
-      available_filters: [ :search_query ]
+      available_filters: [ :search_query, :utenti_non_confermati ]
     )
            
     
@@ -19,8 +20,8 @@ module AuthHub
     # validates_confirmation_of :password, on: :create
     # validates :password, format: { with: /\A[a-zA-Z0-9]+\z/, message: "deve essere di almeno 8 caratteri, lettere e cifre" }
     validates :email, uniqueness: { case_sensitive: false,  message: "già presente" },  presence: { message: " è obbligatoria." }
-    validates_email_realness_of :email, on: :create 
-    #validates_exist_email_of :email
+    validates_email_realness_of :email, on: :registrazione_da_utente #fa la validazione solo nel caso che sia una registrazione da nuovo utente admin
+    
     
     #Usiamo la regola: almeno 8 caratteri, una cifra e una maiuscola
     PASSWORD_FORMAT = /\A
@@ -46,12 +47,8 @@ module AuthHub
       on: :update
   
     #nome_cognome lo creo dai campi separati
-    def nome_cognome=(valore)
-      if valore.blank?
-        super("#{nome} #{cognome}")
-      else
-        super(valore)
-      end
+    def salva_nome_cognome
+      self.nome_cognome = "#{self.nome} #{self.cognome}" if !self.nome.blank? && !self.cognome.blank?
     end
   
     def descrizione_ruolo
@@ -141,7 +138,16 @@ module AuthHub
         	  "(#{ or_clauses })"
         	}.join(' AND '),*terms.map { |e| [e] * num_or_conditions }.flatten)
       
-    }    
+    }
+    
+    # scope :utenti_stato_non, -> (valore) {
+    #   where("users.stato != ?", (valore))
+    # }
+    
+    scope :utenti_stato_non, lambda { |valore|
+      where("users.stato != ?", (valore))
+  }
+    
   
   end
 end

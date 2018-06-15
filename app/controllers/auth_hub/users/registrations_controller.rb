@@ -20,7 +20,7 @@ module AuthHub
         resource.stato = "da_validare"
         nome_e_cognome = "#{sign_up_params['nome']} #{sign_up_params['cognome']}"
         resource.nome_cognome = nome_e_cognome
-        resource.save
+        resource.save(context: :registrazione_da_utente)
         yield resource if block_given?
         if resource.persisted?
             #set_flash_message! :notice, :signed_up

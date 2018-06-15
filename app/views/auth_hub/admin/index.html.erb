@@ -31,6 +31,13 @@
 									</div>
 								<% end %>
 							<% end %>
+							<% if @hash_applicazioni_ente.blank? && !@errore_configurazione.blank? %>
+								<div class="alert alert-danger"><%= @errore_configurazione %></div>
+							<% end %>
+						</div>
+						
+						<div>
+							
 						</div>
 					</div>
 				</div>

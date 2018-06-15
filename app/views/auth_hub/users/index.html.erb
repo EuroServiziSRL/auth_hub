@@ -50,7 +50,7 @@
   </div>
 
 
-  <p id="notice"><%= notice %></p>
+  <% unless notice.blank? %><p id="notice"><div class="alert alert-info"><%= notice %></div></p><% end %>
   
   <%= render(
     partial: 'list',

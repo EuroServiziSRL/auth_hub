@@ -4,7 +4,7 @@
     </div>
   </div>
   <div class="row">
-      <p id="notice"><%= notice %></p>
+      <% unless notice.blank? %><p id="notice"><div class="alert alert-info"><%= notice %></div></p><% end %>
   </div>
   <div class="row">
     <div class="col-md-4 col-md-offset-4">

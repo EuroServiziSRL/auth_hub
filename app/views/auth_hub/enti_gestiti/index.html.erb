@@ -1,4 +1,4 @@
-<p id="notice"><%= notice %></p>
+<% unless notice.blank? %><p id="notice"><div class="alert alert-info"><%= notice %></div></p><% end %>
 
 <h1>Enti Gestiti</h1>
 
@@ -18,7 +18,7 @@
         <td><%= ente_gestito.show %></td>
         <td><%= link_to 'Show', ente_gestito %></td>
         <td><%= link_to 'Edit', edit_ente_gestito_path(ente_gestito) %></td>
-        <td><%= link_to 'Destroy', ente_gestito, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', ente_gestito, method: :delete, data: { confirm: 'Sei sicuro?' } %></td>
       </tr>
     <% end %>
   </tbody>
