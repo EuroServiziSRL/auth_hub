@@ -5,7 +5,7 @@
 				<div class="row">
     				<div class="col-md-8 col-md-offset-1">	      		
 			      		<% unless @errore.blank? %>
-			      			<div class="alert alert-error"><%= @errore %></div>
+			      			<div class="alert alert-danger"><%= @errore %></div>
 			      		<% end %>
 			      		<% unless @successo.blank? %>
 			      			<div class="alert alert-success"><%= @successo %></div>

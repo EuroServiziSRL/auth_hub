@@ -49,6 +49,7 @@ AuthHub::Engine.routes.draw do
     get 'users/:id/associa_enti' => 'users#associa_enti', :as => :associa_enti_user
     post 'users/:id/salva_enti_associati' => 'users#salva_enti_associati', :as => :salva_enti_associati
     get 'users/:id/cancella_enti/:ente' => 'users#cancella_enti', :as => :cancella_enti_user
+    get 'users/utenti_da_confermare' => 'users#utenti_da_confermare', :as => :utenti_da_confermare
 
     resources :users
 

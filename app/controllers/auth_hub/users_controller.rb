@@ -13,7 +13,7 @@ module AuthHub
     # GET /users
     def index
       @nome_pagina = "Lista Utenti"
-      @filterrific = initialize_filterrific(User,	params[:filterrific], available_filters: [:search_query, :utenti_stato_non], default_filter_params: {stato: 'confermato'} ) or return
+      @filterrific = initialize_filterrific(User,	params[:filterrific] ) or return
       @users = @filterrific.find.page(params[:page])
       
       respond_to do |format|
@@ -21,6 +21,23 @@ module AuthHub
       	format.js
       end
     end
+
+    
+    # GET /users/utenti_da_confermare
+    def utenti_da_confermare
+      #controllo se viene passata chiave stato
+      
+      @nome_pagina = "Lista Utenti Da Confermare"
+      #@filterrific = initialize_filterrific(User,	params[:filterrific], available_filters: [:search_query, :utenti_stato_non], default_filter_params: {stato: 'confermato'} ) or return
+      @filterrific = initialize_filterrific(User,	params[:filterrific] ) or return
+      @users = User.filterrific_find(@filterrific).where(stato: 'confermato').page(params[:page])
+      
+      respond_to do |format|
+      	format.html { render :index }
+      	format.js { render :index }
+      end
+    end
+
 
     # GET /users/1
     def show

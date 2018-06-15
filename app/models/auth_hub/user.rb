@@ -140,14 +140,6 @@ module AuthHub
       
     }
     
-    # scope :utenti_stato_non, -> (valore) {
-    #   where("users.stato != ?", (valore))
-    # }
-    
-    scope :utenti_stato_non, lambda { |valore|
-      where("users.stato != ?", (valore))
-  }
-    
   
   end
 end
