@@ -55,7 +55,7 @@ module AuthHub
                                         url_applicazione = File.join(dominio_installazione_ruby,app.URLAMMINISTRAZIONE)
                                         hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby
                                     elsif app.ID_AMBIENTE == 'php'
-                                        url_applicazione = File.join(dominio_installazione_hippo,nil)
+                                        url_applicazione = File.join(dominio_installazione_hippo,app.URLAMMINISTRAZIONE)
                                         hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_hippo
                                     else #caso in cui non ho ambiente...
                                         url_applicazione = "#"
