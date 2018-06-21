@@ -151,8 +151,8 @@ module AuthHub
       end
       
       def set_ente
-        @array_enti_gestiti = session['array_enti_gestiti']
-        @ente_principale = EnteGestito.find(session['ente_corrente']['id'])
+        @array_enti_gestiti = session['array_enti_gestiti'] unless session['array_enti_gestiti'].blank?
+        @ente_principale = EnteGestito.find(session['ente_corrente']['id']) unless session['ente_corrente'].blank?
       end
 
       # dei parametri che mi arrivano permetto che passino solo alcuni
