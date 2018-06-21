@@ -12,7 +12,11 @@
 	    <th>Nome Cognome</th>
 	    <th>Tip Utente</th>
 	    <th>Stato</th>
-	    <th colspan="4">Azioni</th>
+	    <% if can? :associa_enti, AuthHub::User %>
+	    	<th colspan="4">Azioni</th>
+	    <% else %>
+	    	<th colspan="3">Azioni</th>
+	    <% end %>
 	  </tr>
 	</thead>
 	</thead>
@@ -25,7 +29,9 @@
 	      <td><%= user.stato == 'confermato' ? 'Confermato' : 'Non abilitato' %> </td>
 	      <td><%= link_to 'Vedi', user %> </td>
 	      <td><%= link_to 'Modifica', edit_user_path(user) %> </td>
+	      <% if can? :associa_enti, AuthHub::User %>
 	      <td><%= link_to 'Associa Enti', associa_enti_user_path(user) %> </td>
+	      <% end %>
 	      <td><%= link_to 'Elimina', user, method: :delete, data: { confirm: 'Sei sicuro?' } %> </td>
 	    </tr>
 	  <% end %>

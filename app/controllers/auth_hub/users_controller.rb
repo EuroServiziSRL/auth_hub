@@ -5,7 +5,9 @@ require_dependency "auth_hub/application_controller"
 module AuthHub
   class UsersController < ApplicationController
     before_action :set_user, only: [:show, :edit, :update, :destroy]
-
+    before_action :set_ente
+    
+    #serve per le autorizzazioni di cancancan
     load_and_authorize_resource :class => "AuthHub::User"
 
 
@@ -30,13 +32,29 @@ module AuthHub
       @nome_pagina = "Lista Utenti Da Confermare"
       #@filterrific = initialize_filterrific(User,	params[:filterrific], available_filters: [:search_query, :utenti_stato_non], default_filter_params: {stato: 'confermato'} ) or return
       @filterrific = initialize_filterrific(User,	params[:filterrific] ) or return
-      @users = User.filterrific_find(@filterrific).where(stato: 'confermato').page(params[:page])
+      @users = User.filterrific_find(@filterrific).where.not(stato: 'confermato').page(params[:page])
       
       respond_to do |format|
       	format.html { render :index }
       	format.js { render :index }
       end
     end
+
+    #lista utenti che sono admin servizi del proprio ente
+    # GET /users/utenti_servizi
+    def utenti_servizi
+      #controllo se viene passata chiave stato
+      @nome_pagina = "Lista Utenti per Servizi"
+      @filterrific = initialize_filterrific(User,	params[:filterrific] ) or return
+      #faccio join su tabella enti_gestiti e carico il cliente con id uguale al cliente corrente
+      @users = User.filterrific_find(@filterrific).joins(:enti_gestiti).where('admin_servizi' => true, 'auth_hub_enti_gestiti.clienti_cliente_id' => @ente_principale.clienti_cliente.id  ).page(params[:page])
+      
+      respond_to do |format|
+      	format.html { render :index }
+      	format.js { render :index }
+      end
+    end
+
 
 
     # GET /users/1
@@ -58,10 +76,17 @@ module AuthHub
 
     # POST /users
     def create
-      #password_diverse = user_params['conferma_password'] != user_params['password']
       @user = User.new(user_params)
-      #@user.errors.add(:password, :blank, message: "Le due password devono coincidere") if password_diverse
+      #se sono un admin e creo un admin servizi devo passargli l'ente corrente dell'admin
       if @user.save
+        if @current_user.admin_role? && !@ente_principale.blank?
+          if @user.admin_servizi?
+            ente_da_associare = EnteGestito.new
+            ente_da_associare.user = @user
+            ente_da_associare.clienti_cliente = @ente_principale.clienti_cliente
+            ente_da_associare.save
+          end
+        end
         redirect_to @user, notice: 'Utente registrato con successo.'
       else
         render :new
@@ -123,6 +148,11 @@ module AuthHub
       # Use callbacks to share common setup or constraints between actions.
       def set_user
         @user = User.find(params[:id])
+      end
+      
+      def set_ente
+        @array_enti_gestiti = session['array_enti_gestiti']
+        @ente_principale = EnteGestito.find(session['ente_corrente']['id'])
       end
 
       # dei parametri che mi arrivano permetto che passino solo alcuni

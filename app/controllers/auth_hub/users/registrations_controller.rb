@@ -3,7 +3,7 @@ module AuthHub
     before_action :configure_sign_up_params, only: [:create]
     before_action :configure_account_update_params, only: [:update]
     #non devo controllare se sono autenticato quando faccio la registrazione, altrimenti lo fa sempre
-    skip_before_action :authenticate_user!, only: [:create]
+    before_action :authenticate_user!, except: [:new, :create]
   
     #GET /resource/sign_up
     def new
@@ -27,7 +27,8 @@ module AuthHub
             #sign_up(resource_name, resource) non lo faccio autenticare perchè ha un account da validare
             #respond_with resource, location: after_sign_up_path_for(resource)
             flash[:success] = "Registrazione andata a buon fine"
-            Mailer.with(user: resource).registrazione_eseguita.deliver_now
+            Mailer.with(user: resource).registrazione_eseguita_admin.deliver_now
+            Mailer.with(user: resource).registrazione_eseguita_utente.deliver_now
             redirect_to new_user_session_url
         else
           clean_up_passwords resource

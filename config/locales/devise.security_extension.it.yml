@@ -1,14 +1,14 @@
 it:
   errors:
     messages:
-      taken_in_past: "was already taken in the past!"
-      equal_to_current_password: "must be different to the current password!"
+      taken_in_past: "è stato già usato in passato!"
+      equal_to_current_password: "deve essere diversa dalla password corrente!"
       password_format: "must contain big, small letters and digits"
   devise:
-    invalid_captcha: "The captcha input is not valid!"
+    invalid_captcha: "Il captcha non è valido."
     password_expired:
-      updated: "Your new password is saved."
-      change_required: "Your password is expired. Please renew your password!"
+      updated: "La tua nuova password è stata salvata."
+      change_required: "La password è scaduta. Si prega di rinnovare la password."
     failure:
-      session_limited: 'Your login credentials were used in another browser. Please sign in again to continue in this browser.'
-      expired: 'Your account has expired due to inactivity. Please contact the site administrator.'
+      session_limited: 'Le tue credenziali sono state usate in un altro browser. Si prega di riautenticarsi per continuare in questo browser.'
+      expired: "Il tuo account è stato bloccato per inattività. Si prega di contattare l'amministratore"

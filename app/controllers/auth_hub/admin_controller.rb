@@ -7,6 +7,7 @@ module AuthHub
         @nome_pagina = "Applicazioni"
         @errore = flash[:error]
         @successo = flash[:success]
+        @warning = flash[:warning]
         if @array_enti_gestiti.blank?
             @errore_configurazione = 'Non hai enti associati!'
         else
@@ -18,10 +19,13 @@ module AuthHub
                 else
                     ente_corrente = session['ente_corrente']
                     @hash_applicazioni_ente = {}
+                    
                     if ente_corrente.clienti_cliente.clienti_installazioni.length > 0
                         ente_corrente.clienti_cliente.clienti_installazioni.each{ |installazione|
+                            #qui ho l'installazione a livello di server che sarà o una ruby o php con le rispettive app
                             dominio_installazione_ruby = installazione.SPIDERURL
                             dominio_installazione_hippo = installazione.HIPPO
+                            #se ci sono applicazioni installate riferite a questa installazione/server
                             if installazione.clienti_applinstallate.length > 0
                                 #Uso il jwt salvato nell'user corrente alla login per fare un link e autenticarmi direttamente sulle varie applicazioni
                                 # se non ce l'ha lo creo (caso in cui faccio accesso diretto su auth_hub)
@@ -48,14 +52,17 @@ module AuthHub
                             
                             
                                 installazione.clienti_applinstallate.each{ |app_installata|
+                                    next if app_installata.NON_VISIBILE #non mostro se non è visibile
                                     nome_app = app_installata.APPLICAZIONE
                                     app = AuthHub::ClientiApplicazione.find_by_NOME(nome_app)
+                                    #se non ho la url di amministrazione non la mostro
+                                    next if app.URLAMMINISTRAZIONE.blank?
                                     @hash_applicazioni_ente[app.ID_AREA] ||= []
                                     if app.ID_AMBIENTE == 'ruby'
-                                        url_applicazione = File.join(dominio_installazione_ruby,app.URLAMMINISTRAZIONE)
+                                        url_applicazione = "#{dominio_installazione_ruby}/#{app.URLAMMINISTRAZIONE}"
                                         hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby
                                     elsif app.ID_AMBIENTE == 'php'
-                                        url_applicazione = File.join(dominio_installazione_hippo,app.URLAMMINISTRAZIONE)
+                                        url_applicazione = "#{dominio_installazione_hippo}/#{app.URLAMMINISTRAZIONE}"
                                         hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_hippo
                                     else #caso in cui non ho ambiente...
                                         url_applicazione = "#"

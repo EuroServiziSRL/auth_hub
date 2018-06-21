@@ -4,7 +4,7 @@
       <% unless @errore.blank? %>
           <div class="alert alert-danger"><%= @errore %></div>
       <% end %>
-      <%= form_for(resource, as: resource_name, url: salva_utente_path, class: "form-horizontal") do |f| %>
+      <%= form_for(resource, as: resource_name, url: user_registration_path, class: "form-horizontal") do |f| %>
         <%= devise_error_messages! %>
         <div class="panel panel-default">
             <div class="panel-heading panel-heading-lg">Registrazione</div>

@@ -1,0 +1,6 @@
+it:
+    unauthorized:
+        manage:
+            all: "Non sei autorizzato su questa risorsa."
+        index:
+            AuthHub::User: "Non sei autorizzato a vedere gli utenti."

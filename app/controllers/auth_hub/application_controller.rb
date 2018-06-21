@@ -1,11 +1,16 @@
 module AuthHub
   class ApplicationController < ::ApplicationController
-    before_action :authenticate_user!, except: [:new]
+    before_action :authenticate_user!, except: [:new, :create]
     protect_from_forgery prepend: true
     
     include Rails.application.routes.url_helpers
     
-    #GET ext_logout
+    rescue_from CanCan::AccessDenied do |exception|
+      flash[:warning] = exception.message
+      redirect_to auth_hub_index_path
+    end
+    
+    #GET ext_logout DA CONTROLLARE!
     #arriva un JWT in get, controllo il ext_session_id. Redirect sul controller session per fare la logout facendo la delete delle sessioni
     #poi redirect su una ub che c'è in jwt 
     def ext_logout
@@ -24,20 +29,34 @@ module AuthHub
             }
             url_per_nuova_login = "/auth_hub"+new_user_session_path
             #questa redirect fa la logout da microsoft se prima mi sono loggato con aad
-            if APP_CONFIG['logout_azure'] && auth_azure
+            if Settings.logout_azure && auth_azure
               redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{auth_get_token['ub_logout']}"
               return
             else #se non vogliamo sloggarci da microsoft
-              redirect_to auth_get_token['ub_logout']
+              redirect_to auth_hub.auth_get_token['ub_logout']
             end
             
           else
             flash[:error] = "Non autorizzato: id sessione esterna mancante"
-            redirect_to root_path
+            redirect_to auth_hub.root_path
           end
       end
       return
     end
+    
+    
+    
+    #/auth_hub/cambia_ente
+    def cambia_ente
+      nuovo_cliente_corrente = params['cliente_id']
+      ente_gestito_relation = AuthHub::EnteGestito.where(user: current_user.id, clienti_cliente: nuovo_cliente_corrente)
+      unless ente_gestito_relation.blank?
+        session['ente_corrente'] = ente_gestito_relation[0]
+        @ente_principale = session['ente_corrente']
+      end
+      redirect_to auth_hub.dashboard_path
+    end
+    
     
     private
   
@@ -79,15 +98,17 @@ module AuthHub
       if user_signed_in?
         enti_gestiti = @current_user.enti_gestiti
         @array_enti_gestiti = []
-        @ente_principale = nil
+        @ente_principale = session['ente_corrente']
         enti_gestiti.each do |ente|
-          @ente_principale ||= ente.clienti_cliente.ID if ente.principale?
+          @ente_principale = ente if ente.principale? && @ente_principale.blank?
           #array_ente_per_select_tag = ["&#xf132; ".html_safe+ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID] #mostra uno stemmino su ogni riga
           array_ente_per_select_tag = [ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID]
           @array_enti_gestiti << array_ente_per_select_tag
         end
-        #visualizzo questo come ente collegato se l'admin ha solo un ente
-        @ente_principale ||= @array_enti_gestiti[0][0] if @array_enti_gestiti.length == 1
+        #salvo in sessione per usarlo nei vari controller come user_controller
+        session['array_enti_gestiti'] = @array_enti_gestiti
+        #se non ho ente in sessione e non ho il principale assegnato metto il primo 
+        @ente_principale = enti_gestiti[0] if enti_gestiti.length > 0 && @ente_principale.blank?
         return true
       else
         messaggio = nil
@@ -104,32 +125,13 @@ module AuthHub
           end
         end
         messaggio ||= "Si prega di accedere per vedere la pagina!"
-        redirect_to new_user_session_path, notice: messaggio
+        redirect_to auth_hub.new_user_session_path, notice: messaggio
       end
     end
         
     
 
-    #helper per ricavare l'utente corrente loggato
-    def current_user
-      #carico l'user da sessione con auth esterna tramite omniauth
-      @current_user ||= User.find_by(id: session['warden.user.user.key'][0][0]) unless session['warden.user.user.key'].blank?
-      #se non ho fatto login esterna carico id salvato (usato in sign_in omniauth e anche login con email e psw devise)
-      @current_user ||= User.find_by(id: session[:user_id], stato: 'confermato')
-      #se ho uno user corrente carico in sessione l'ente corrente
-      #se ha un ente principale carico quello, altrimenti l'ho fissato col cambia ente
-      if !@current_user.blank? && session['ente_corrente'].blank?
-        ente_principale ||= ( EnteGestito.ente_principale_da_user(@current_user.id)[0] unless EnteGestito.ente_principale_da_user(@current_user.id).blank? )
-        #se non era stato inserito l'ente principale per lo user prendo il primo dell'array
-        ente_principale ||= @current_user.enti_gestiti[0] unless @current_user.enti_gestiti.blank?
-        session['ente_corrente'] = ente_principale unless ente_principale.blank?
-      end
-      #se session['ente_corrente'] è un hash devo caricare l'istanza di ente_gestito
-      if session['ente_corrente'].is_a?(Hash)
-        session['ente_corrente'] = EnteGestito.find(session['ente_corrente']['id'])
-      end
-      @current_user
-    end
+    
     
     
     #helper_method :current_user
@@ -159,10 +161,10 @@ module AuthHub
                 }
                 url_per_nuova_login = new_user_session_url({jwt: jwt})
                 #questa redirect fa la logout da microsoft se prima mi sono loggato con aad
-                if APP_CONFIG['logout_azure'] && session['auth'] == 'aad'
+                if Settings.logout_azure && session['auth'] == 'aad'
                   redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{url_per_nuova_login}"
                 else #se non vogliamo sloggarci da microsoft
-                  return new_user_session_url({jwt: jwt})
+                  return auth_hub.new_user_session_url({jwt: jwt})
                 end
               else
                 #ho il jwt con stessa auth, estraggo parametri e sovrascrivo

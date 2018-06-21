@@ -1,8 +1,4 @@
 AuthHub::Engine.routes.draw do
-  
-  get 'superadmin/index'
-
-    #devise_for :users, class_name: "AuthHub::User", path: "/", module: "auth_hub", 
     
     #nella route mostra doppio auth_hub ma funziona!
     
@@ -22,6 +18,11 @@ AuthHub::Engine.routes.draw do
         :to => "/auth_hub/users/omniauth_callbacks#azure_oauth2",
         :as => :user_omniauth_azure_oauth2_callback,
         :via => [:get, :post]
+      
+      #aggiungo la route per fare la logout esterna in get e la registrazione in post
+      get 'ext_sign_out', :to => 'users/sessions#ext_sign_out', :as => :ext_sign_out
+      #post 'salva_utente', :to => 'users/registrations#create', :as => :salva_utente  
+      
     end
     
     devise_for :users, class_name: "AuthHub::User", module: "auth_hub", path: "/",
@@ -31,11 +32,13 @@ AuthHub::Engine.routes.draw do
         registrations: 'auth_hub/users/registrations'
     }
 
-    #aggiungo la route per fare la logout esterna in get e la registrazione in post
-    devise_scope :user do
-      get 'ext_sign_out', :to => 'users/sessions#ext_sign_out', :as => :ext_sign_out
-      post 'salva_utente', :to => 'users/registrations#create', :as => :salva_utente
-    end
+    get 'users/:id/associa_enti' => 'users#associa_enti', :as => :associa_enti_user
+    post 'users/:id/salva_enti_associati' => 'users#salva_enti_associati', :as => :salva_enti_associati
+    get 'users/:id/cancella_enti/:ente' => 'users#cancella_enti', :as => :cancella_enti_user
+    get 'users/utenti_da_confermare' => 'users#utenti_da_confermare', :as => :utenti_da_confermare
+    get 'users/utenti_servizi' => 'users#utenti_servizi', :as => :utenti_servizi
+
+    resources :users
 
     #path standard per crud degli enti_gestiti
     resources :enti_gestiti
@@ -46,25 +49,19 @@ AuthHub::Engine.routes.draw do
     #path standard per crud delle applicazioni associate all'ente
     resources :applicazioni_ente
     
-    get 'users/:id/associa_enti' => 'users#associa_enti', :as => :associa_enti_user
-    post 'users/:id/salva_enti_associati' => 'users#salva_enti_associati', :as => :salva_enti_associati
-    get 'users/:id/cancella_enti/:ente' => 'users#cancella_enti', :as => :cancella_enti_user
-    get 'users/utenti_da_confermare' => 'users#utenti_da_confermare', :as => :utenti_da_confermare
-
-    resources :users
-
+    
+    
     get 'dashboard' => 'dashboard#admin_dashboard', :as => :dashboard
     get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index
     get 'ext_logout' => 'application#ext_logout', :as => :external_logout
     
     post "cambia_ente" => "application#cambia_ente", :as => :cambia_ente
 
-    get 'admin' => 'admin#index', :as => :index_admin
+    
     get 'cambia_password_admin' => 'admin#cambia_password_admin', :as => :cambia_password_admin
     post 'aggiorna_password' => 'admin#aggiorna_password', :as => :aggiorna_password
+    
     get 'sa' => 'superadmin#index', :as => :index_superadmin
-
-    root to: "dashboard#admin_dashboard"
-   
+    get 'admin' => 'admin#index', :as => :index_admin
   
 end

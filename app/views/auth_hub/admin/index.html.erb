@@ -10,6 +10,9 @@
 			      		<% unless @successo.blank? %>
 			      			<div class="alert alert-success"><%= @successo %></div>
 			      		<% end %>
+			      		<% unless @warning.blank? %>
+			      			<div class="alert alert-warning"><%= @warning %></div>
+			      		<% end %>
 						<div class="row">
 							<% unless @hash_applicazioni_ente.blank? %>
 								<% @hash_applicazioni_ente.each_pair do |area,array_di_applicazioni| %>

@@ -3,12 +3,12 @@ module AuthHub
     before_save :salva_nome_cognome
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable and :omniauthable
-    devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:azure_oauth2]
+    devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :omniauthable, :omniauth_providers => [:azure_oauth2]
 
     
     filterrific(
       default_filter_params: {  },
-      available_filters: [ :search_query, :utenti_non_confermati ]
+      available_filters: [ :search_query ]
     )
            
     
@@ -17,27 +17,28 @@ module AuthHub
     has_many :clienti_clienti, through: :enti_gestiti
     
     #fa la validazione della conferma password
-    # validates_confirmation_of :password, on: :create
-    # validates :password, format: { with: /\A[a-zA-Z0-9]+\z/, message: "deve essere di almeno 8 caratteri, lettere e cifre" }
+    validates :nome, presence: { message: " è obbligatorio." }
+    validates :cognome, presence: { message: " è obbligatorio." }
     validates :email, uniqueness: { case_sensitive: false,  message: "già presente" },  presence: { message: " è obbligatoria." }
-    validates_email_realness_of :email, on: :registrazione_da_utente #fa la validazione solo nel caso che sia una registrazione da nuovo utente admin
+    validates_email_realness_of :email, on: :registrazione_da_utente, if: Proc.new { |obj| Rails.env.production? } #fa la validazione solo nel caso che sia una registrazione da nuovo utente admin e in prod
     
     
     #Usiamo la regola: almeno 8 caratteri, una cifra e una maiuscola
     PASSWORD_FORMAT = /\A
       (?=.{8,})          # Must contain 8 or more characters
       (?=.*\d)           # Must contain a digit
-      #(?=.*[a-z])        # Must contain a lower case character
       (?=.*[A-Z])        # Must contain an upper case character
-      #(?=.*[[:^alnum:]]) # Must contain a symbol
     /x
+    
+    #(?=.*[a-z])        # Must contain a lower case character
+    #(?=.*[[:^alnum:]]) # Must contain a symbol
     
     validates :password, 
       presence: true, 
       #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri" }, 
       format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
       confirmation: true, 
-      on: :create
+      on: :registrazione_da_utente
     
     validates :password, 
       allow_nil: true, 
