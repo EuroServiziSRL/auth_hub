@@ -25,7 +25,7 @@
 											<% array_di_applicazioni.each do |applicazione| %>
 											    <li class="dd-item">
 												    <a class="btn btn-app no-radius btn-cruscotto <%= area %>" style="text-shadow:none" href='<%= applicazione[:url] %>'>
-												    <i class="icon fa fa-envelope-o bigger-230"></i><%= applicazione[:descrizione] %>
+												    <i class="icon fa <%= applicazione[:nome] %> bigger-230"></i><%= applicazione[:descrizione] %>
 												    </a>
 											    </li>
 											<% end %>

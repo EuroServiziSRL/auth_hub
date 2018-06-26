@@ -15,7 +15,6 @@ module AuthHub
     #poi redirect su una ub che c'è in jwt 
     def ext_logout
       #se ho il jwt devo pulire la sessione salvata nel jwt
-      jwt = params['jwt']
       unless http_get_token.blank?
           if ext_session_id_ub_in_get_token?
             auth_azure = session['auth'] == 'aad'
@@ -33,12 +32,12 @@ module AuthHub
               redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{auth_get_token['ub_logout']}"
               return
             else #se non vogliamo sloggarci da microsoft
-              redirect_to auth_hub.auth_get_token['ub_logout']
+              redirect_to auth_get_token['ub_logout']
             end
             
           else
             flash[:error] = "Non autorizzato: id sessione esterna mancante"
-            redirect_to auth_hub.root_path
+            redirect_to root_path
           end
       end
       return
@@ -169,6 +168,7 @@ module AuthHub
               else
                 #ho il jwt con stessa auth, estraggo parametri e sovrascrivo
                 session[:url_pre_sign_in] = auth_get_token['ub']
+                session[:url_redirect] = auth_get_token['ub_redirect'] #serve per ritornare su una url portando un parametro redirect
                 session[:cliente_id] = auth_get_token['idc']
                 session[:ext_session_id] = auth_get_token['ext_session_id']
                 #metto l'auth nuova in params
@@ -177,6 +177,7 @@ module AuthHub
           end
       end
     
+      redirect_param = "" #usata per eventuali redirect
       #se sono già loggato e mi arriva una login da NEXT. Se ho dovuto ripassare per azure uso la var in sessione per sapere che venivo da civ_next
       if params['auth'] == "aad" && ['notifiche_affissioni','trasparenza','servizi_online'].include?(params['app']) || !session['from_civ_next'].blank?
           #ARRIVO DA CIVILIA NEXT
@@ -258,11 +259,14 @@ module AuthHub
       #da app esterna con username password
       if session[:auth] == 'up' && session['from_civ_next'].blank?
           # creo jwt
+          dominio_ente_chiamante = Addressable::URI.parse(session[:url_pre_sign_in]).site unless session[:url_pre_sign_in].blank?
           hmac_secret = Rails.application.secrets.external_auth_api_key
           ext_session = session[:ext_session_id]
+          redirect_param = session[:url_redirect]
           payload = {
               # exp: Time.now.to_i + 60 * 60,
               # iat: Time.now.to_i,
+              dominio_ente_corrente: dominio_ente_chiamante,
               iss: 'soluzionipa.it',
               auth: 'up',
               ext_session_id: ext_session,
@@ -290,6 +294,10 @@ module AuthHub
       #ripasso indietro il jwt nel redirect
       if !session[:auth].blank? && !user_instance.jwt.blank? && !path.blank?
         path += ( !path.blank? && path.include?('?') ? "&jwt=#{user_instance.jwt}" : "?jwt=#{user_instance.jwt}" )  
+      end
+      #Gestione del redirect da chiamata spider
+      if !redirect_param.blank? && !path.blank?
+        path += ( path.include?('?') ? "&redirect=#{redirect_param}" : "?redirect=#{redirect_param}" )
       end
       
       #se non ho il path controllo il ruolo dell'utente, path in base al ruolo

@@ -47,7 +47,7 @@ module AuthHub
       @nome_pagina = "Lista Utenti per Servizi"
       @filterrific = initialize_filterrific(User,	params[:filterrific] ) or return
       #faccio join su tabella enti_gestiti e carico il cliente con id uguale al cliente corrente
-      @users = User.filterrific_find(@filterrific).joins(:enti_gestiti).where('admin_servizi' => true, 'auth_hub_enti_gestiti.clienti_cliente_id' => @ente_principale.clienti_cliente.id  ).page(params[:page])
+      @users = User.filterrific_find(@filterrific).joins(:enti_gestiti).where('admin_role' => false,'auth_hub_enti_gestiti.clienti_cliente_id' => @ente_principale.clienti_cliente.id  ).page(params[:page])
       
       respond_to do |format|
       	format.html { render :index }
@@ -83,6 +83,7 @@ module AuthHub
           if @user.admin_servizi?
             ente_da_associare = EnteGestito.new
             ente_da_associare.user = @user
+            ente_da_associare.principale = true
             ente_da_associare.clienti_cliente = @ente_principale.clienti_cliente
             ente_da_associare.save
           end

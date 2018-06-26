@@ -27,6 +27,7 @@ module AuthHub
                     #ho il jwt, estraggo parametri
                     session.delete('from_civ_next') #pulisco la sessione se ero entrato con civ next
                     session[:url_pre_sign_in] = auth_get_token['ub']
+                    session[:url_redirect] = auth_get_token['ub_redirect'] #serve per ritornare su una url portando un parametro redirect
                     session[:cliente_id] = auth_get_token['idc']
                     session[:auth] = auth_get_token['auth']
                     session[:ext_session_id] = auth_get_token['ext_session_id']
