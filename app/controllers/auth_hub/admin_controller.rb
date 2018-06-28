@@ -27,15 +27,7 @@ module AuthHub
                             dominio_installazione_hippo = installazione.HIPPO
                             #se ci sono applicazioni installate riferite a questa installazione/server
                             if installazione.clienti_applinstallate.length > 0
-                                #Uso il jwt salvato nell'user corrente alla login per fare un link e autenticarmi direttamente sulle varie applicazioni
-                                # se non ce l'ha lo creo (caso in cui faccio accesso diretto su auth_hub)
-                                unless current_user.jwt.blank?
-                                  str_jwt_param = current_user.jwt
-                                  #devo aggiungere al jwt l'ente corrente
-                                  hash_jwt = JsonWebToken.decode(str_jwt_param)
-                                  hash_jwt_app = hash_jwt.dup
-                                else
-                                  hash_jwt_app = {
+                                hash_jwt_app = {
                                       iss: 'soluzionipa.it',
                                       auth: 'up',
                                       user: {
@@ -47,8 +39,7 @@ module AuthHub
                                           nickname: current_user.nome_cognome,
                                           admin: current_user.admin_role == true
                                       }
-                                  }
-                                end
+                                }
                             
                             
                                 installazione.clienti_applinstallate.each{ |app_installata|
