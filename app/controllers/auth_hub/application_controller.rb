@@ -1,6 +1,6 @@
 module AuthHub
   class ApplicationController < ::ApplicationController
-    before_action :authenticate_user!, except: [:new, :create]
+    before_action :authenticate_user!, except: [:new, :create, :ext_logout]
     protect_from_forgery prepend: true
     
     include Rails.application.routes.url_helpers

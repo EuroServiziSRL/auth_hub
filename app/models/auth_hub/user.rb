@@ -45,7 +45,7 @@ module AuthHub
       #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri"}, 
       format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
       #confirmation: true, 
-      on: :update
+      on: :update_da_admin
   
     #nome_cognome lo creo dai campi separati
     def salva_nome_cognome

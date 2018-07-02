@@ -78,7 +78,7 @@ module AuthHub
     def create
       @user = User.new(user_params)
       #se sono un admin e creo un admin servizi devo passargli l'ente corrente dell'admin
-      if @user.save
+      if @user.save(context: :update_da_admin)
         if @current_user.admin_role? && !@ente_principale.blank?
           if @user.admin_servizi?
             ente_da_associare = EnteGestito.new
@@ -159,11 +159,7 @@ module AuthHub
       # dei parametri che mi arrivano permetto che passino solo alcuni
       def user_params
         params['user']['stato'] = 'confermato' if params['user']['stato'] == '1'
-        if params['azione'] == 'modifica'
-          params.require(:user).permit(:email,:nome,:cognome,:admin_role,:admin_servizi,:stato)
-        else
-          params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi,:stato)
-        end
+        params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi,:stato)
       end
   end
 end
