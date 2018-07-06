@@ -15,14 +15,16 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
-
-  s.add_dependency "mysql2"
-  s.add_dependency "rails", "~> 5.1.4"
+  
+  s.add_dependency 'email_verifier' #PER VALIDAZIONI SU MODEL 
+  s.add_dependency "mysql2", "= 0.4.10"
+  s.add_dependency "rails", "= 5.2.0"
+  s.add_dependency 'config' #PER USARE SETTINGS IN DEVISE.RB
   #COMMENTATE FIN CHE NON SISTEMO GEMMA devise_security_extension, DA FARE
-  # s.add_dependency "devise"
-  # s.add_dependency "omniauth"
-  # s.add_dependency "omniauth-azure-oauth2"
-  # s.add_dependency "devise_security_extension"
+  s.add_dependency "devise"
+  s.add_dependency "devise_security_extension"
+  s.add_dependency "omniauth"
+  s.add_dependency "omniauth-azure-oauth2"
   s.add_dependency "adal"
   s.add_dependency "jwt"
   

@@ -140,10 +140,7 @@ module AuthHub
         }
         redirect_to({ action: 'associa_enti'}, :flash => { :esito => "Enti associati con successo." })
       end
-      
-      
     end
-
 
     private
       # Use callbacks to share common setup or constraints between actions.

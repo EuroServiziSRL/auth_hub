@@ -3,7 +3,7 @@ module AuthHub
     before_save :salva_nome_cognome
     # Include default devise modules. Others available are:
     # :confirmable, :lockable, :timeoutable and :omniauthable
-    devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :omniauthable, :omniauth_providers => [:azure_oauth2]
+    devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :omniauthable, :password_expirable, :omniauth_providers => [:azure_oauth2]
 
     
     filterrific(

@@ -1,7 +1,9 @@
 module AuthHub
   class Engine < ::Rails::Engine
     isolate_namespace AuthHub
-    
+    require 'config' #carica gemma per i Settings da file yml
+    require 'email_verifier'
+     
     #aggiunto per usare migration a livello di suite openweb
     initializer :append_migrations do |app|
       unless app.root.to_s.match(root.to_s)

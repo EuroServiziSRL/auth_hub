@@ -29,7 +29,8 @@ AuthHub::Engine.routes.draw do
     controllers: {
         sessions: 'auth_hub/users/sessions',
         omniauth_callbacks: 'auth_hub/users/omniauth_callbacks',
-        registrations: 'auth_hub/users/registrations'
+        registrations: 'auth_hub/users/registrations',
+        password_expired: 'auth_hub/users/password_expired'
     }
 
     get 'users/:id/associa_enti' => 'users#associa_enti', :as => :associa_enti_user
