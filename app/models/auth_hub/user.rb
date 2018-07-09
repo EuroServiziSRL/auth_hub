@@ -17,8 +17,8 @@ module AuthHub
     has_many :clienti_clienti, through: :enti_gestiti
     
     #fa la validazione della conferma password
-    validates :nome, presence: { message: " è obbligatorio." }
-    validates :cognome, presence: { message: " è obbligatorio." }
+    validates :nome, presence: { message: " è obbligatorio." }, on: [:registrazione_da_utente, :new_e_update_da_admin]
+    validates :cognome, presence: { message: " è obbligatorio." }, on: [:registrazione_da_utente, :new_e_update_da_admin]
     validates :email, uniqueness: { case_sensitive: false,  message: "già presente" },  presence: { message: " è obbligatoria." }
     validates_email_realness_of :email, on: :registrazione_da_utente, if: Proc.new { |obj| Rails.env.production? } #fa la validazione solo nel caso che sia una registrazione da nuovo utente admin e in prod
     
@@ -45,7 +45,7 @@ module AuthHub
       #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri"}, 
       format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
       #confirmation: true, 
-      on: :update_da_admin
+      on: :new_e_update_da_admin
   
     #nome_cognome lo creo dai campi separati
     def salva_nome_cognome

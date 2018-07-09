@@ -144,7 +144,7 @@ module AuthHub
           unless user_id_in_get_token?
               flash[:error] = "Non autorizzato: idc mancante"
               #render json: { errors: ['Not Authenticated'] }, status: :unauthorized
-              return error_dati_url
+              return main_app.error_dati_url
           else
               #ho un jwt corretto
               session.delete('from_civ_next') #pulisco la sessione se ero entrato con civ next

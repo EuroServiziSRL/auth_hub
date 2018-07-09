@@ -20,6 +20,8 @@ module AuthHub
         resource.stato = "da_validare"
         nome_e_cognome = "#{sign_up_params['nome']} #{sign_up_params['cognome']}"
         resource.nome_cognome = nome_e_cognome
+        resource.nome = sign_up_params['nome']
+        resource.cognome = sign_up_params['cognome']
         resource.save(context: :registrazione_da_utente)
         yield resource if block_given?
         if resource.persisted?

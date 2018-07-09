@@ -78,7 +78,7 @@ module AuthHub
     def create
       @user = User.new(user_params)
       #se sono un admin e creo un admin servizi devo passargli l'ente corrente dell'admin
-      if @user.save(context: :update_da_admin)
+      if @user.save(context: :new_e_update_da_admin)
         if @current_user.admin_role? && !@ente_principale.blank?
           if @user.admin_servizi?
             ente_da_associare = EnteGestito.new

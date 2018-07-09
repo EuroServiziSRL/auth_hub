@@ -64,7 +64,7 @@ module AuthHub
             logger.error exc.message
             logger.error exc.backtrace.join("\n")
             flash[:error] = "Dati mancanti: #{exc.message}"
-            redirect_to error_dati_url
+            redirect_to main_app.error_dati_url
         end
     
     end
