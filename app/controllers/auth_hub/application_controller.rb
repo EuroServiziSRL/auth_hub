@@ -228,7 +228,7 @@ module AuthHub
         session['from_civ_next'] = false
       end
       #da app esterna con azure
-      if session[:auth] == 'aad' && session['from_civ_next'].blank?
+      if session[:auth] == 'aad' && !session['hash_azure'].blank? && session['from_civ_next'].blank?
           #recupero dalla sessione le info azure
           hash_azure = session['hash_azure']
           # creo jwt
