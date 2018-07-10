@@ -179,7 +179,7 @@ module AuthHub
     
       redirect_param = "" #usata per eventuali redirect
       #se sono già loggato e mi arriva una login da NEXT. Se ho dovuto ripassare per azure uso la var in sessione per sapere che venivo da civ_next
-      if params['auth'] == "aad" && ['notifiche_affissioni','trasparenza','servizi_online'].include?(params['app']) || !session['from_civ_next'].blank?
+      if (params['auth'] == "aad" && ['notifiche_affissioni','trasparenza','servizi_online'].include?(params['app']) ) || !session['from_civ_next'].blank?
           #ARRIVO DA CIVILIA NEXT
           session['from_civ_next'] = true
           session['auth'] = "aad" #da NEXT arrivo sempre con azure
@@ -213,7 +213,7 @@ module AuthHub
             #carico il cliente/installazione in base al tenant id corrente salvato in sessione
             cliente_caricato = ClientiCliente.find_by tenant_azure: session['tid_corrente']
             installazione = cliente_caricato.clienti_installazioni.first
-            if params['app'] == 'servizi_online'
+            if session['dest_app_civ_next'] == 'servizi_online'
                 raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
                 dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site ) 
                 path = dominio+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])
