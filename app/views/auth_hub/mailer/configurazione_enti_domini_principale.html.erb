@@ -8,6 +8,6 @@ L'utente <%= @user.nome %> <%= @user.cognome %> (Id: <%= @user.id %>)
     <br />
     <a href="<%= @url_gestione_utente %>">Associa enti per l'utente</a> 
     <br/>
-    <strong>Impostare il dominio degli enti nel campo SPIDERURL e HIPPO della tabella clienti__installazione.</strong>
+    <strong>Impostare il dominio degli enti nel campo SPIDERURL o SPIDER_PORTAL e HIPPO della tabella clienti__installazione.</strong>
 <% end %>
 <% if @user.enti_gestiti.blank? %> non enti associati. <% end %>

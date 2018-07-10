@@ -23,7 +23,7 @@ module AuthHub
                     if ente_corrente.clienti_cliente.clienti_installazioni.length > 0
                         ente_corrente.clienti_cliente.clienti_installazioni.each{ |installazione|
                             #qui ho l'installazione a livello di server che sarà o una ruby o php con le rispettive app
-                            dominio_installazione_ruby = installazione.SPIDERURL
+                            dominio_installazione_ruby = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site ) 
                             dominio_installazione_hippo = installazione.HIPPO
                             #se ci sono applicazioni installate riferite a questa installazione/server
                             if installazione.clienti_applinstallate.length > 0

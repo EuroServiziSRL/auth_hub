@@ -214,8 +214,9 @@ module AuthHub
             cliente_caricato = ClientiCliente.find_by tenant_azure: session['tid_corrente']
             installazione = cliente_caricato.clienti_installazioni.first
             if params['app'] == 'servizi_online'
-                raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank?
-                path = installazione.SPIDER_PORTAL+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])
+                raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
+                dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site ) 
+                path = dominio+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])
             else
                 raise "Url portale hippo mancante" if installazione.HIPPO.blank?
                 path = installazione.HIPPO+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])+"/login.php"
