@@ -201,7 +201,8 @@ module AuthHub
                   email: user_instance.email,
                   nickname: user_instance.nome_cognome,
                   tid: session['tid_corrente'],
-                  admin: user_instance.admin_role == true
+                  admin: user_instance.admin_role == true,
+                  admin_servizi: user_instance.admin_servizi == true
               }
           }
           token = JsonWebToken.encode(payload, hmac_secret, 'HS256')
@@ -249,7 +250,8 @@ module AuthHub
                   email: hash_azure['email'],
                   nickname: hash_azure['nickname'],
                   tid: hash_azure['tid'],
-                  admin: user_instance.admin_role == true
+                  admin: user_instance.admin_role == true,
+                  admin_servizi: user_instance.admin_servizi == true
               }
           }
           token = JsonWebToken.encode(payload, hmac_secret, 'HS256')
