@@ -37,7 +37,8 @@ module AuthHub
                                           last_name: current_user.cognome,
                                           email: current_user.email,
                                           nickname: current_user.nome_cognome,
-                                          admin: current_user.admin_role == true
+                                          admin: current_user.admin_role == true,
+                                          admin_servizi: current_user.admin_servizi == true
                                       }
                                 }
                             
