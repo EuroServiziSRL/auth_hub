@@ -1,10 +1,7 @@
 module AuthHub
   class EnteGestito < ApplicationRecord
-    belongs_to :clienti_cliente
-    belongs_to :user
-    
-    has_many :applicazioni_ente
-    
+    belongs_to :clienti_cliente, class_name: 'AuthHub::ClientiCliente'
+    belongs_to :user, class_name: 'AuthHub::User'
     
     scope :da_user, ->(id_user) { where(user: id_user) }
     scope :per_cliente, ->(id_cliente) { where(clienti_cliente: id_cliente) }
@@ -21,6 +18,11 @@ module AuthHub
         self.principale = false
       end
       self.save
+    end
+    
+    #metodo richiamato da gemma rails_admin
+    def custom_label_method
+        "#{self.clienti_cliente.CLIENTE}"
     end
     
   end

@@ -1,3 +1,4 @@
+#PER ORA NON UTILIZZATA
 module AuthHub
   class ApplicazioniEnte < ApplicationRecord
     belongs_to :ente_gestito
