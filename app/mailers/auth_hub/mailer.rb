@@ -5,7 +5,7 @@ module AuthHub
     def registrazione_eseguita_admin
       @user = params[:user]
       @url_conferma = edit_user_url(@user.id)
-      mail(to: Settings.mail_admin_to,from: Settings.mail_admin_from, subject: 'Registrato nuovo amministratore.')
+      mail(to: Settings.mail_admin_to,from: Settings.mail_admin_from, subject: 'Openweb - Registrato nuovo amministratore.')
     end
     
     
