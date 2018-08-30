@@ -50,17 +50,15 @@ AuthHub::Engine.routes.draw do
     #path standard per crud delle applicazioni associate all'ente
     resources :applicazioni_ente
     
-    
-    
-    get 'dashboard' => 'dashboard#admin_dashboard', :as => :dashboard
-    get '/' => 'dashboard#admin_dashboard', :as => :auth_hub_index
+
+    get 'dashboard' => 'application#user_dashboard', :as => :dashboard
+    get '/' => 'application#user_dashboard', :as => :auth_hub_index
     get 'ext_logout' => 'application#ext_logout', :as => :external_logout
-    
     post "cambia_ente" => "application#cambia_ente", :as => :cambia_ente
 
     
-    get 'cambia_password_admin' => 'admin#cambia_password_admin', :as => :cambia_password_admin
-    post 'aggiorna_password' => 'admin#aggiorna_password', :as => :aggiorna_password
+    get 'cambia_password_admin' => 'application#cambia_password_admin', :as => :cambia_password_admin
+    post 'aggiorna_password' => 'application#aggiorna_password', :as => :aggiorna_password
     
     get 'sa' => 'superadmin#index', :as => :index_superadmin
     get 'admin' => 'admin#index', :as => :index_admin

@@ -22,6 +22,8 @@ module AuthHub
         resource.nome_cognome = nome_e_cognome
         resource.nome = sign_up_params['nome']
         resource.cognome = sign_up_params['cognome']
+        resource.ente = sign_up_params['ente']
+        resource.telefono = sign_up_params['telefono']
         resource.save(context: :registrazione_da_utente)
         yield resource if block_given?
         if resource.persisted?
@@ -75,8 +77,10 @@ module AuthHub
   
     #Questo metodo viene richiamato nelle action per avere dei params "permessi" e si può creare un obj di un model
     def configure_sign_up_params
-      devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute, :nome, :cognome, :email, :password, :password_confirmation,:clienti_cliente_ids]) #fatto da devise...
-      params.require(:user).permit(:nome, :cognome, :email, :password, :password_confirmation,:clienti_cliente_ids)
+      #devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute, :nome, :cognome, :email, :password, :password_confirmation,:clienti_cliente_ids]) #fatto da devise...
+      #params.require(:user).permit(:nome, :cognome, :email, :password, :password_confirmation,:clienti_cliente_ids)
+      devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute, :nome, :cognome, :email, :password, :password_confirmation,:ente,:telefono]) #fatto da devise...
+      params.require(:user).permit(:nome, :cognome, :email, :password, :password_confirmation,:ente,:telefono)
     end
   
     #If you have extra params to permit, append them to the sanitizer.

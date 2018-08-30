@@ -1,4 +1,6 @@
-require_dependency "auth_hub/application_controller"
+#require_dependency "auth_hub/application_controller"
+
+#CONTROLLER PER GESTIRE GLI ENTI, NON USATO. VENGONO SOLO ASSOCIATI, LA GESTIONE È FATTA CON ENGINE RAILSADMIN
 
 module AuthHub
   class EntiGestitiController < ApplicationController

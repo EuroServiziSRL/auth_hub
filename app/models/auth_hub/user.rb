@@ -21,7 +21,8 @@ module AuthHub
     validates :cognome, presence: { message: " è obbligatorio." }, on: [:registrazione_da_utente, :new_e_update_da_admin]
     validates :email, uniqueness: { case_sensitive: false,  message: "già presente" },  presence: { message: " è obbligatoria." }
     validates_email_realness_of :email, on: :registrazione_da_utente, if: Proc.new { |obj| Rails.env.production? } #fa la validazione solo nel caso che sia una registrazione da nuovo utente admin e in prod
-    
+    validates :ente, presence: { message: " è obbligatorio." }, on: [:registrazione_da_utente]
+    validates :telefono, presence: { message: " è obbligatorio." }, on: [:registrazione_da_utente]
     
     #Usiamo la regola: almeno 8 caratteri, una cifra e una maiuscola
     PASSWORD_FORMAT = /\A
@@ -67,7 +68,16 @@ module AuthHub
   
     #Log dell'accesso dopo autenticazione
     Warden::Manager.after_authentication do |user, auth, opts|
-      ::AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email} (id: #{user.id}) login at #{DateTime.now} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
+      ente = ''
+      #alla login si entra con l'ente principale
+      unless EnteGestito.ente_principale_da_user(user.id).blank?
+        ente = EnteGestito.ente_principale_da_user(user.id)[0].clienti_cliente.CLIENTE
+      else #altrimenti se ci sono enti associati seleziono il primo
+        unless user.enti_gestiti.blank?
+          ente = user.enti_gestiti.first
+        end
+      end
+      ::AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email}, #{ente} (id: #{user.id}) login at #{DateTime.now} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
     end
    
     #arriva un auth_hash del tipo

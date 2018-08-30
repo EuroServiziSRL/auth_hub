@@ -1,4 +1,4 @@
-require_dependency "auth_hub/application_controller"
+#require_dependency "auth_hub/application_controller"
 
 #controller per gestire utenti tramite superadmin e admin
 

@@ -5,7 +5,7 @@ module AuthHub
     def map_strategy_omniauth(provider)
       case provider
       when :azure_oauth2
-        "Azure Active Directory"
+        "Civilia Next"
       end
     end
     

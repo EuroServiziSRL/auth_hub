@@ -29,25 +29,7 @@
 								</div>
 							</div>
 							      
-							<% if azione != 'vedi' %>
-							  
-								<div class="col-sm-12">
-									<div class="form-group form-group-sm" id="password_container">
-									  <label class="control-label" for="password">Password</label>
-									  <%= form.password_field :password, class: "form-control input-sm no-radius" %>
-									</div>
-							  </div>
-							      
-							  <div class="col-sm-12">
-									<div class="form-group form-group-sm" id="password_confirmation_container">
-								  	<label class="control-label" for="password_confirmation">Conferma Password</label>
-								  	<%= form.password_field :password_confirmation, class: "form-control input-sm no-radius" %>
-									</div>
-				      	</div>
-				    
-				    	<% end  %>
-				  
-				      <div class="col-sm-12">
+							<div class="col-sm-12">
 								<div class="form-group form-group-sm" id="nome_container">
 								  <label class="control-label" for="nome">Nome</label>
 								  <% if azione == 'vedi' %>
@@ -68,6 +50,44 @@
 								  <% end  %>
 								</div>
 				      </div>
+				      
+				      <div class="col-sm-12">
+								<div class="form-group form-group-sm" id="ente_container">
+								  <label class="control-label" for="ente">Ente</label>
+								  <% if azione == 'vedi' %>
+								    <p class="form-control-static"><%= @user.ente %></p>
+								  <% else %>
+								    <%= form.text_field :ente, class: "form-control input-sm no-radius" %>
+								  <% end  %>
+								</div>
+				      </div>
+				  
+				      <div class="col-sm-12">
+								<div class="form-group form-group-sm" id="telefono_container">
+								  <label class="control-label" for="telefono">Telefono</label>
+								  <% if azione == 'vedi' %>
+								    <p class="form-control-static"><%= @user.telefono %></p>
+								  <% else %>
+								    <%= form.text_field :telefono, class: "form-control input-sm no-radius" %>
+								  <% end  %>
+								</div>
+				      </div>
+							      
+							<% if azione != 'vedi' %>
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="password_container">
+									  <label class="control-label" for="password">Password</label>
+									  <%= form.password_field :password, class: "form-control input-sm no-radius" %>
+									</div>
+							  </div>
+							      
+							  <div class="col-sm-12">
+									<div class="form-group form-group-sm" id="password_confirmation_container">
+								  	<label class="control-label" for="password_confirmation">Conferma Password</label>
+								  	<%= form.password_field :password_confirmation, class: "form-control input-sm no-radius" %>
+									</div>
+				      	</div>
+				    	<% end  %>
 				      
 				    	<% if azione == 'vedi' %>
 					      <div class="form-group">

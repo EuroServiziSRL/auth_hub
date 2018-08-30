@@ -50,11 +50,61 @@ module AuthHub
       nuovo_cliente_corrente = params['cliente_id']
       ente_gestito_relation = AuthHub::EnteGestito.where(user: current_user.id, clienti_cliente: nuovo_cliente_corrente)
       unless ente_gestito_relation.blank?
+        ente = ente_gestito_relation[0].clienti_cliente.CLIENTE
         session['ente_corrente'] = ente_gestito_relation[0]
         @ente_principale = session['ente_corrente']
+        #traccio il cambio di ente
+        ::AccessLog.debug("User #{current_user.nome} #{current_user.cognome}, #{current_user.email}, #{ente} (id: #{current_user.id}) login at #{DateTime.now} from #{current_user.current_sign_in_ip}. Superadmin: #{current_user.superadmin_role}, Admin: #{current_user.admin_role}, Admin Servizio: #{current_user.admin_servizi}")
       end
       redirect_to auth_hub.dashboard_path
     end
+    
+    #pagina per utente con ruolo user,
+    #se admin viene fatto redirect
+    def user_dashboard
+        if @current_user.superadmin_role
+          path = auth_hub.index_superadmin_url
+        elsif @current_user.admin_role
+          path = auth_hub.index_admin_url
+        elsif @current_user.admin_servizi
+          path = auth_hub.index_admin_url
+        end
+        redirect_to path unless path.blank?
+    end
+    
+        #get per view cambia_password
+    def cambia_password_admin
+        @nome_pagina = "Cambia Password"
+        @errore = flash[:error]
+    end
+    
+    #post 
+    def aggiorna_password
+        if @current_user.valid_password?(user_params[:old_password])
+            if user_params[:password] != user_params[:password_confirmation]
+                flash[:error] = "Le due nuove password non coincidono."
+                redirect_to auth_hub.cambia_password_admin_path
+            else
+                begin
+                  @current_user.password = user_params[:password]
+                  @current_user.save!(context: :registrazione_da_utente)
+                  flash[:success] = "Password Aggiornata con successo."
+                  redirect_to auth_hub.index_admin_path
+                rescue Exception => e
+                  flash[:error] = e.message
+                  puts e.backtrace.inspect
+                  redirect_to auth_hub.cambia_password_admin_path
+                end
+            end
+        else
+            #vecchia password non valida
+            flash[:error] = "La password corrente non è valida."
+            redirect_to auth_hub.cambia_password_admin_path
+        end
+    end
+    
+    
+    
     
     
     private
@@ -95,7 +145,8 @@ module AuthHub
     #Metodo che fa l'autenticazione
     def authenticate_user!
       if user_signed_in?
-        enti_gestiti = @current_user.enti_gestiti
+        #enti_gestiti = @current_user.enti_gestiti
+        enti_gestiti = @current_user.enti_gestiti.sort_by{ |ente| ente.clienti_cliente.CLIENTE}
         @array_enti_gestiti = []
         @ente_principale = session['ente_corrente']
         enti_gestiti.each do |ente|
@@ -324,7 +375,9 @@ module AuthHub
     #   redirect_to root_path
     # end
     
-    
+    def user_params
+        params.require(:user).permit(:old_password, :password, :password_confirmation)
+    end
    
    
   end
