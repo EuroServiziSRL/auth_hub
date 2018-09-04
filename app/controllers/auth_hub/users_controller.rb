@@ -155,7 +155,9 @@ module AuthHub
 
       # dei parametri che mi arrivano permetto che passino solo alcuni
       def user_params
+        #traduco il checkbox per lo stato in uno stato parlante
         params['user']['stato'] = 'confermato' if params['user']['stato'] == '1'
+        params['user']['stato'] = 'da_validare' if params['user']['stato'] == '0'
         params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi,:stato)
       end
   end

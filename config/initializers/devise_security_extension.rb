@@ -1,9 +1,10 @@
 Devise.setup do |config|
   # ==> Security Extension
   # Configure security extension for devise
+  #IMPOSTAZIONI SETTATE SU CONFIG DI DEVISE
 
   # Should the password expire (e.g 3.months)
-  config.expire_password_after = 10.days
+  #config.expire_password_after = 10.days
 
   # Need 1 char of A-Z, a-z and 0-9
   # config.password_regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/

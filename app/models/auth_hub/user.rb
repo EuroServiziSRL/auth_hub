@@ -39,14 +39,14 @@ module AuthHub
       #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri" }, 
       format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
       confirmation: true, 
-      on: :registrazione_da_utente
+      on: [:registrazione_da_utente,:aggiorna_password]
     
     validates :password, 
       allow_nil: true, 
       #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri"}, 
       format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
       #confirmation: true, 
-      on: :new_e_update_da_admin
+      on: [:new_e_update_da_admin,:aggiorna_password]
   
     #nome_cognome lo creo dai campi separati
     def salva_nome_cognome
@@ -65,21 +65,28 @@ module AuthHub
       end
     end
   
-  
-    #Log dell'accesso dopo autenticazione
-    Warden::Manager.after_authentication do |user, auth, opts|
-      ente = ''
-      #alla login si entra con l'ente principale
-      unless EnteGestito.ente_principale_da_user(user.id).blank?
-        ente = EnteGestito.ente_principale_da_user(user.id)[0].clienti_cliente.CLIENTE
-      else #altrimenti se ci sono enti associati seleziono il primo
-        unless user.enti_gestiti.blank?
-          ente = user.enti_gestiti.first
-        end
+    def trova_dominio_in_enti(dominio)
+      canonical_dominio = ApplicationController.helpers.to_canonical(dominio,false)
+      trovato = false
+      unless self.enti_gestiti.blank?
+        enti_gestiti.each{ |ente_corrente|
+          if ente_corrente.clienti_cliente.clienti_installazioni.length > 0
+            ente_corrente.clienti_cliente.clienti_installazioni.each{ |installazione|
+                spider_url = ApplicationController.helpers.to_canonical(installazione.SPIDERURL,false)
+                #qui ho l'installazione a livello di server che sarà o una ruby o php con le rispettive app
+                dominio_installazione_ruby = spider_url || ( installazione.SPIDER_PORTAL.blank? ? "" : ApplicationController.helpers.to_canonical(installazione.SPIDER_PORTAL,false) ) 
+                canonical_dominio_installazione_ruby = ApplicationController.helpers.to_canonical(dominio_installazione_ruby,false)
+                dominio_installazione_hippo = installazione.HIPPO
+                canonical_dominio_installazione_hippo = ApplicationController.helpers.to_canonical(dominio_installazione_hippo,false)
+                #ritorno true se ci sono applicazioni installate riferite a questa installazione/server e se trovo lo stesso dominio 
+                return true if installazione.clienti_applinstallate.length > 0 && (canonical_dominio == canonical_dominio_installazione_ruby || canonical_dominio == canonical_dominio_installazione_hippo)
+            }                  
+          end
+        }
       end
-      ::AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email}, #{ente} (id: #{user.id}) login at #{DateTime.now} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
+      return trovato
     end
-   
+    
     #arriva un auth_hash del tipo
     # {
     #   uid: '12345',

@@ -50,6 +50,8 @@ it:
       signed_in: "Accesso effettuato con successo."
       signed_out: "Sei uscito correttamente."
       already_signed_out: "Sei uscito correttamente."
+      not_confirmed: "Utente non confermato dall'amministratore."
+      domain_not_associated: "Il dominio non è presente negli enti che puoi gestire."
     unlocks:
       send_instructions: "Entro qualche minuto riceverai un messaggio email con le istruzioni per sbloccare il tuo account."
       send_paranoid_instructions: "Se il tuo indirizzo email esiste nel nostro database, entro qualche minuto riceverai un messaggio email con le istruzioni per sbloccare il tuo account."
