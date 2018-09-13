@@ -214,6 +214,9 @@ module AuthHub
             return auth_hub.new_user_session_path
           end
       else
+       
+        nome_ente = nil  #variabile permemorizzare l'ente che metto nel log accessi 
+        redirect_param = "" #usata per eventuali redirect
         #controllo se mi arriva un NUOVO jwt mentre sono già loggato (caso login app esterna), sovrascrivo e cambio ulr back
         if !http_get_token.blank?
             #ho un jwt ma non ho l'id cliente
@@ -252,8 +255,7 @@ module AuthHub
                 end
             end
         end
-      
-        redirect_param = "" #usata per eventuali redirect
+     
         #se sono già loggato e mi arriva una login da NEXT. Se ho dovuto ripassare per azure uso la var in sessione per sapere che venivo da civ_next
         if (params['auth'] == "aad" && ['notifiche_affissioni','trasparenza','servizi_online'].include?(params['app']) ) || !session['from_civ_next'].blank?
             #ARRIVO DA CIVILIA NEXT
@@ -289,6 +291,8 @@ module AuthHub
             unless session['tid_corrente'].blank?
               #carico il cliente/installazione in base al tenant id corrente salvato in sessione
               cliente_caricato = ClientiCliente.find_by tenant_azure: session['tid_corrente']
+              #Nome ente per log
+              nome_ente = cliente_caricato.CLIENTE
               installazione = cliente_caricato.clienti_installazioni.first
               if session['dest_app_civ_next'] == 'servizi_online'
                   raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
@@ -303,12 +307,17 @@ module AuthHub
               return user_omniauth_azure_oauth2_authorize_path('azure_oauth2')
             end
         else
-          session['from_civ_next'] = false
+            #NON ARRIVO DA CIVILIA NEXT
+            session['from_civ_next'] = false
         end
         #da app esterna con azure
         if session[:auth] == 'aad' && !session['hash_azure'].blank? && session['from_civ_next'].blank?
             #recupero dalla sessione le info azure
             hash_azure = session['hash_azure']
+            cliente_da_azure = ClientiCliente.find_by tenant_azure: hash_azure['tid']
+            #Nome ente per log
+            nome_ente = cliente_da_azure.CLIENTE
+            
             # creo jwt
             hmac_secret = Rails.application.secrets.external_auth_api_key
             ext_session = session[:ext_session_id]
@@ -339,8 +348,9 @@ module AuthHub
         if session[:auth] == 'up' && session['from_civ_next'].blank?
             # creo jwt
             dominio_ente_chiamante = Addressable::URI.parse(session[:url_pre_sign_in]).site unless session[:url_pre_sign_in].blank?
-            #Devo verificare se il dominio chiamante è uno di quelli collegati all'utente
-            unless user_instance.trova_dominio_in_enti(dominio_ente_chiamante)
+            #Devo verificare se il dominio chiamante è uno di quelli collegati all'utente, se blank non l'ho trovato. Altrimenti ritorna cliente
+            cliente_da_dominio = user_instance.trova_dominio_in_clienti(dominio_ente_chiamante)
+            if cliente_da_dominio.blank?
               signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
               #cancello sessioni di openweb
               if signed_out
@@ -352,6 +362,8 @@ module AuthHub
                 set_flash_message! :alert, :domain_not_associated
                 return path = auth_hub.new_user_session_path
               end
+            else
+                nome_ente = cliente_da_dominio
             end
             hmac_secret = Rails.application.secrets.external_auth_api_key
             ext_session = session[:ext_session_id]
@@ -406,6 +418,16 @@ module AuthHub
           end
           path = "#{Rails.configuration.url_dominio}#{path}"
         end
+        if nome_ente.blank?
+            unless EnteGestito.ente_principale_da_user(user_instance.id).blank?
+                nome_ente = EnteGestito.ente_principale_da_user(user_instance.id)[0].clienti_cliente.CLIENTE
+            else #altrimenti se ci sono enti associati seleziono il primo
+                nome_ente = user_instance.enti_gestiti.first unless user_instance.enti_gestiti.blank?
+            end
+        end
+        #Loggo l'accesso
+        ::AccessLog.debug("User #{user_instance.nome} #{user_instance.cognome}, #{user_instance.email}, #{nome_ente} (id: #{user_instance.id}) login at #{DateTime.now.in_time_zone} from #{user_instance.current_sign_in_ip}. Superadmin: #{user_instance.superadmin_role}, Admin: #{user_instance.admin_role}, Admin Servizio: #{user_instance.admin_servizi}")
+        
       end
       return path
     end

@@ -65,21 +65,28 @@ module AuthHub
       end
     end
   
-    def trova_dominio_in_enti(dominio)
+    #ritorna nil oppure il nome del cliente che ha quel dominio associato
+    def trova_dominio_in_clienti(dominio)
       canonical_dominio = ApplicationController.helpers.to_canonical(dominio,false)
-      trovato = false
+      logger.debug "\n\n Arriva chiamata da #{canonical_dominio}"
+      trovato = nil
       unless self.enti_gestiti.blank?
         enti_gestiti.each{ |ente_corrente|
           if ente_corrente.clienti_cliente.clienti_installazioni.length > 0
             ente_corrente.clienti_cliente.clienti_installazioni.each{ |installazione|
+                trovato = installazione.CLIENTE
                 spider_url = ApplicationController.helpers.to_canonical(installazione.SPIDERURL,false)
                 #qui ho l'installazione a livello di server che sarà o una ruby o php con le rispettive app
                 dominio_installazione_ruby = spider_url || ( installazione.SPIDER_PORTAL.blank? ? "" : ApplicationController.helpers.to_canonical(installazione.SPIDER_PORTAL,false) ) 
+                logger.debug "\n\n dominio inst ruby #{dominio_installazione_ruby}"
                 canonical_dominio_installazione_ruby = ApplicationController.helpers.to_canonical(dominio_installazione_ruby,false)
+                logger.debug "\n\n dominio inst ruby canonico #{canonical_dominio_installazione_ruby}"
                 dominio_installazione_hippo = installazione.HIPPO
+                logger.debug "\n\n dominio inst hippo #{dominio_installazione_hippo}"
                 canonical_dominio_installazione_hippo = ApplicationController.helpers.to_canonical(dominio_installazione_hippo,false)
+                logger.debug "\n\n dominio inst hippo canonico #{canonical_dominio_installazione_hippo}"
                 #ritorno true se ci sono applicazioni installate riferite a questa installazione/server e se trovo lo stesso dominio 
-                return true if installazione.clienti_applinstallate.length > 0 && (canonical_dominio == canonical_dominio_installazione_ruby || canonical_dominio == canonical_dominio_installazione_hippo)
+                return trovato if installazione.clienti_applinstallate.length > 0 && ( !canonical_dominio_installazione_ruby.blank? && canonical_dominio_installazione_ruby.include?(canonical_dominio)) || (!canonical_dominio_installazione_hippo.blank? && canonical_dominio_installazione_hippo.include?(canonical_dominio))
             }                  
           end
         }

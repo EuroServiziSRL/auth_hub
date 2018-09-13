@@ -86,17 +86,17 @@ module AuthHub
         def create
             #super riportato codice nel metodo per gestire log accessi
             self.resource = warden.authenticate!(auth_options)
-            user = self.resource
-            #Se passo il metodo warden.authenticate! autenticazione ok
-            #alla login si entra con l'ente principale
-            ente = ''
-            unless EnteGestito.ente_principale_da_user(user.id).blank?
-                ente = EnteGestito.ente_principale_da_user(user.id)[0].clienti_cliente.CLIENTE
-            else #altrimenti se ci sono enti associati seleziono il primo
-                ente = user.enti_gestiti.first unless user.enti_gestiti.blank?
-            end
-            #Loggo l'accesso
-            ::AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email}, #{ente} (id: #{user.id}) login at #{DateTime.now.in_time_zone} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
+            # user = self.resource
+            # #Se passo il metodo warden.authenticate! autenticazione ok
+            # #alla login si entra con l'ente principale
+            # ente = ''
+            # unless EnteGestito.ente_principale_da_user(user.id).blank?
+            #     ente = EnteGestito.ente_principale_da_user(user.id)[0].clienti_cliente.CLIENTE
+            # else #altrimenti se ci sono enti associati seleziono il primo
+            #     ente = user.enti_gestiti.first unless user.enti_gestiti.blank?
+            # end
+            # #Loggo l'accesso
+            # ::AccessLog.debug("User #{user.nome} #{user.cognome}, #{user.email}, #{ente} (id: #{user.id}) login at #{DateTime.now.in_time_zone} from #{user.current_sign_in_ip}. Superadmin: #{user.superadmin_role}, Admin: #{user.admin_role}, Admin Servizio: #{user.admin_servizi}")
             
             set_flash_message!(:notice, :signed_in)
             sign_in(resource_name, resource)
