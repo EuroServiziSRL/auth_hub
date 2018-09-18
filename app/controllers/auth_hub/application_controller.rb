@@ -404,6 +404,8 @@ module AuthHub
         if !redirect_param.blank? && !path.blank?
           path += ( path.include?('?') ? "&redirect=#{redirect_param}" : "?redirect=#{redirect_param}" )
         end
+        #tolgo il caso Redirected to http://localhost:8080/spider/auth/login/do_login?&redirect=/admin/portal&jwt=eyJ0eXAiOiJK....
+        path = path.gsub('?&','?')
         
         #se non ho il path controllo il ruolo dell'utente, path in base al ruolo
         if path.blank?
