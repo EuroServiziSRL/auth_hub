@@ -317,7 +317,7 @@ module AuthHub
             cliente_da_azure = ClientiCliente.find_by tenant_azure: hash_azure['tid']
             #Nome ente per log
             nome_ente = cliente_da_azure.CLIENTE
-            
+            redirect_param = session[:url_redirect]
             # creo jwt
             hmac_secret = Rails.application.secrets.external_auth_api_key
             ext_session = session[:ext_session_id]
@@ -391,6 +391,8 @@ module AuthHub
             user_instance.jwt_created = DateTime.now
             user_instance.save
         end
+        
+        
         
         #se ho una path salvata in sessione o l'ho appena salvata uso quella
         path = session[:url_pre_sign_in] unless session[:url_pre_sign_in].blank?
