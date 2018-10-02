@@ -165,6 +165,12 @@ module AuthHub
       
     }
     
+    #da usare per evitare scadenza password per utenti web service
+    #def need_change_password?
+    
+    #end
+    
+    
   
   end
 end
