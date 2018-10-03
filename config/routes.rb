@@ -1,5 +1,6 @@
 AuthHub::Engine.routes.draw do
     
+  use_doorkeeper
     #nella route mostra doppio auth_hub ma funziona!
     
     #Sistema le route togliendo l'engine davanti

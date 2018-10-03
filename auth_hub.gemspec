@@ -27,6 +27,8 @@ Gem::Specification.new do |s|
   s.add_dependency "omniauth-azure-oauth2"
   s.add_dependency "adal"
   s.add_dependency "jwt"
+  s.add_dependency "doorkeeper"
+  s.add_dependency "doorkeeper-jwt"
   
   
 end
