@@ -18,6 +18,21 @@ Doorkeeper.configure do
   # In this flow, a token is requested in exchange for the resource owner credentials (username and password)
   #Viene fatta l'autenticazione con la tabella users
   resource_owner_from_credentials do |routes|
+    
+    #Extra controlli con basic auth, si potrebbe usare client_id e secret di pagamenti
+    # # Since we are using Basic Authorizaion we parse the Authorization header
+    # # and check if the credentials are valid by fetching the application
+    # # matching those credentials
+    # authorization = request.authorization
+    # if authorization.present? && authorization =~ /^Basic (.*)/m
+    #   credentials = Base64.decode64(Regexp.last_match[1]).split(/:/, 2)
+    #   uid         = credentials.first
+    #   secret      = credentials.second
+    #   application = Doorkeeper::Application.by_uid_and_secret uid, secret
+    # end
+    
+    
+    
     user = AuthHub::User.find_for_database_authentication(:email => params[:username])
     if user && user.valid_for_authentication? { user.valid_password?(params[:password]) }
       user
@@ -37,7 +52,7 @@ Doorkeeper.configure do
 
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
-  access_token_expires_in 2.hours
+  access_token_expires_in 30.seconds
 
   # Assign a custom TTL for implicit grants.
   # custom_access_token_expires_in do |oauth_client|
@@ -167,10 +182,20 @@ Doorkeeper::JWT.configure do
   # { token: "RANDOM-TOKEN" }
   token_payload do |opts|
     user = AuthHub::User.find(opts[:resource_owner_id])
+    princ = AuthHub::EnteGestito.ente_principale_da_user(user.id)
+    nome_db = nil
+    princ[0].clienti_cliente.clienti_installazioni.each{|installazione|
+      #trova installazione su server ruby
+      nome_db = installazione.SPIDERDB unless installazione.SPIDERDB.blank?
+    }
+    jti = SecureRandom.uuid
+    client_id = OpenSSL::Digest::SHA256.new(nome_db+jti)
     {
       'iss': 'auth_hub',
-      'iat': Time.current.utc.to_i,
-      'jti': SecureRandom.uuid, # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7 
+      'iat': Time.current.utc.to_i, #Issued At, datetime di creazione jwt
+      'exp': (Time.current.utc+30).to_i, #Expiration time: durata di 30secondi
+      'jti': jti, # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7 
+      'client_id': client_id,
       'user': {
         'id': user.id,
         'email': user.email,
