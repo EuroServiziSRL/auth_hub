@@ -1,0 +1,4 @@
+
+class OauthAccessGrant < ApplicationRecord
+
+end

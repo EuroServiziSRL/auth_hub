@@ -1,0 +1,66 @@
+<%= form_with(model: @setup, local: true, class: "form-horizontal") do |form| %>
+  <% if setup.errors.any? %>
+    <div id="error_explanation">
+      <h3><%= pluralize(user.errors.count, "error") %> sono stati rilevati:</h3>
+
+      <ul>
+      <% setup.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="panel panel-default">
+    <div class="panel-heading panel-heading-lg"><% if azione == 'nuovo' %>Nuovo<% elsif azione == 'modifica'  %>Modifica<% else %>Dati<% end  %> Setup</div>
+      <div class="panel-body">
+        <div class="row">
+  				<div class="col-lg-12">
+  				  <input type='hidden' name='azione' value='<%= azione%>'>
+  				  <div class="row">
+  				      
+  				      <div class="col-sm-12">
+  								<div class="form-group form-group-sm" id="applicazione_container">
+  								  <label class="control-label" for="applicazione">Applicazione</label>
+  								    <p class="form-control-static"><%= @setup.APPLICAZIONE %></p>
+  								</div>
+  							</div>
+  				    
+  				      <div class="col-sm-12">
+  								<div class="form-group form-group-sm" id="codice_container">
+  								  <label class="control-label" for="codice">Codice</label>
+  								    <p class="form-control-static"><%= @setup.CODICE %></p>
+  								</div>
+  							</div>
+  				    
+  				      <div class="col-sm-12">
+    					    <div class="form-group form-group-sm" id="valore_container">
+  								  <label class="control-label" for="valore">Valore</label>
+  								  <% if azione == 'vedi' %>
+        					     <p class="form-control-static"><%= @setup.VALORE %></p>
+        				    <% else %>
+        				    	 <%= form.text_field :VALORE, class: "form-control input-sm no-radius" %>
+        				    <% end %>
+  								</div>
+    				    </div>
+    				    
+  				  </div><!--- fine row -->
+  				</div>
+  	
+        </div>
+      
+    </div>
+  </div><!--- fine panel -->
+  
+  <div class="text-center">
+    <% if azione != 'vedi' %>
+      <%= form.submit 'Salva', :class => 'btn btn-default btn-sm no-radius btn-primary' %>
+    <% else %>
+      <%= link_to 'Modifica', edit_setup_path, id: "#{@setup.id}", class: 'btn btn-default btn-sm no-radius btn-primary' %>
+    <% end %>
+    <%= link_to 'Elenco Setup', setups_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+    
+  </div>
+   
+ 
+<% end %>

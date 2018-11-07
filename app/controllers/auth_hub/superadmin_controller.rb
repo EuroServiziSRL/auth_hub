@@ -14,6 +14,7 @@ module AuthHub
       session[:link_navigazione_utente] << {'titolo' => 'Lista Utenti', 'url' => users_path }
       session[:link_navigazione_utente] << {'titolo' => 'Utenti Da Confermare', 'url' => utenti_da_confermare_path }
       session[:link_navigazione_utente] << {'titolo' => 'Gestione Database', 'url' => ::RailsAdmin::Engine.routes.url_helpers.dashboard_path }
+      session[:link_navigazione_utente] << {'titolo' => 'Gestione Setup', 'url' => setups_path }
     end
   
   

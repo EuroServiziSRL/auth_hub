@@ -1,0 +1,33 @@
+<div id="filterrific_results">  
+  <p>
+    <%= page_entries_info setups  %>
+  </p>
+
+  <p id="notice"><%= notice %></p>
+  <div class=" awe-grid">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+	<thead>
+	  <tr>
+	    <th>Applicazione</th>
+	    <th>Codice</th>
+	    <th>Valore</th>
+	    <th colspan="2">Azioni</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <% @setups.each do |setup| %>
+	    <tr>
+	      <td><%= setup.APPLICAZIONE %></td>
+	      <td><%= setup.CODICE %></td>
+	      <td><%= setup.VALORE %></td>
+	      <td><%= link_to 'Vedi', setup %> </td>
+	      <td><%= link_to 'Modifica', edit_setup_path(setup) %> </td>
+	    </tr>
+	  <% end %>
+	</tbody>
+      </table>
+    </div>
+  </div>
+  <%= will_paginate @setups %>
+</div>

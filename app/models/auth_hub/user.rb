@@ -64,6 +64,19 @@ module AuthHub
         "Utente"
       end
     end
+    
+    #ritorna l'id per fare le query su tabella setup
+    def sigla_ruolo
+      if superadmin_role
+        ["SU","AM","AS"]
+      elsif admin_role
+        ["AM","AS"]
+      elsif admin_servizi
+        ["AS"]
+      else
+        ["U"]
+      end
+    end
   
     #ritorna nil oppure il nome del cliente che ha quel dominio associato
     def trova_dominio_in_clienti(dominio)

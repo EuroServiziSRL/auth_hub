@@ -4,6 +4,7 @@ module AuthHub
         self.primary_key = :ID
         
         has_many :clienti_installazioni, class_name: 'AuthHub::ClientiInstallazione', :foreign_key => "ID_ANAGRAFICA"
+        has_many :clienti_attivazioni, class_name: 'AuthHub::ClientiAttivazione', :foreign_key => "ID_CLIENTE"
         
         #tabella per relazione N a N con gli user
         has_many :enti_gestiti, class_name: 'AuthHub::EnteGestito', inverse_of: 'clienti_cliente'

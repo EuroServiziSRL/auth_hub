@@ -1,0 +1,87 @@
+<div class="row">
+  <div class="col-lg-2">
+    <button id="restart" class="btn btn-default btn-sm no-radius btn-primary btn-block"><span class="fa fa-repeat"></span> Ricarica Setup su ente
+  </div>
+  <%= tag :input, type: 'text', id: 'tag_dati_ente', class: 'hidden', data: @dati_ente  %>
+  <%= tag :input, type: 'text', id: 'scrt', class: 'hidden', data: @scrtk  %>
+</div>
+
+<br />
+<div class="row">
+  <div id="leftColumn" class="col-lg-2 col-md-2">
+    <div class="card-box">
+  
+      <%= form_for_filterrific @filterrific do |f| %>
+  
+        <div class="row">
+      	<div class="col-md-12">
+      	  <button id="Filtra" class="btn btn-default btn-sm no-radius btn-primary btn-block"><span class="fa fa-search"></span>
+          <span class="text">Filtra</span></button>
+      	</div>
+        </div>
+        
+        <div class="row m-t-10">
+      	<div class="col-md-12">
+      	  <div class="col-sm-12">
+      	    <div class="form-group form-group-sm">
+      	      <label class="control-label" for="search_query">Scrivi per filtrare</label>
+      	      <%# give the search field the 'filterrific-periodically-observed' class for live updates %>
+      	      <%= f.text_field(
+      		:search_query,
+      		class: 'filterrific-periodically-observed form-control input-sm no-radius'
+      	      ) %>
+      	      <%= render_filterrific_spinner %>
+      	    </div>
+      	  </div>
+      	</div>
+        </div>
+        
+        <div class="row">
+      	<div class="col-md-12">
+      	  <%= link_to(
+      	    'Reset'.html_safe,
+      	    reset_filterrific_url,
+      	    class: 'btn btn-default btn-sm no-radius btn-primary btn-block'
+      	  ) %>
+      	  
+      	</div>
+        </div>
+        
+      <% end %>
+    </div>
+  </div>
+  <div id="contentColumn" class="col-lg-10 col-md-10">
+    <div class="card-box">
+  
+  <!---
+    <div class="row m-b-10">
+      <div class="col-md-12">
+      <%= link_to '<span class="fa fa-plus"></span> <span class="text">Nuovo Setup</span>'.html_safe, new_setup_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+      </div>
+    </div>
+  -->
+  
+    <% unless notice.blank? %><p id="notice"><div class="alert alert-info"><%= notice %></div></p><% end %>
+    
+    <%= render(
+      partial: 'list',
+      locals: { setups: @setups }
+    ) %>
+  
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
