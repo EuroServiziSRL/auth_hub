@@ -1,4 +1,0 @@
-
-class OauthApplication < ApplicationRecord
-
-end
