@@ -90,10 +90,19 @@ module AuthHub
       #imposto il nome del db a livello di thread corrente 
       def set_db_name
         #se sono su new ho un hash, se sono su index carico oggetto
-        inst = get_installazione
-        nome_db = !inst.SPIDERDB.blank? ? inst.SPIDERDB : inst.HIPPODB
-        Thread.current[:db_name] = nome_db
-        AuthHub::Setup.establish_connection({})
+        begin
+          inst = get_installazione
+          raise "Installazione non presente" if inst.blank?
+          nome_db = !inst.SPIDERDB.blank? ? inst.SPIDERDB : inst.HIPPODB
+          Thread.current[:db_name] = nome_db
+          AuthHub::Setup.establish_connection({})
+        rescue Exception => exc
+          puts exc.message
+          puts exc.backtrace.inspect
+          flash[:error] = "Database non gestibile"
+          redirect_to index_admin_path
+        end
+        
       end
       
       #imposto il nome del db a livello di thread corrente 
