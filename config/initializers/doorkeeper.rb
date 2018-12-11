@@ -52,7 +52,7 @@ Doorkeeper.configure do
 
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
-  access_token_expires_in 30.seconds
+  access_token_expires_in 1800.seconds
 
   # Assign a custom TTL for implicit grants.
   # custom_access_token_expires_in do |oauth_client|
@@ -193,7 +193,7 @@ Doorkeeper::JWT.configure do
     {
       'iss': 'auth_hub',
       'iat': Time.current.utc.to_i, #Issued At, datetime di creazione jwt
-      'exp': (Time.current.utc+30).to_i, #Expiration time: durata di 30secondi
+      'exp': (Time.current.utc+1800).to_i, #Expiration time: durata di 30secondi
       'jti': jti, # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7 
       'client_id': client_id,
       'user': {
