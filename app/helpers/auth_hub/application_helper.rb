@@ -16,7 +16,7 @@ module AuthHub
       when "trasparenza"
         "/benefici/admin"
       when "servizi_online"
-        "/admin/portal"
+        "/admin"
       end
     end
     

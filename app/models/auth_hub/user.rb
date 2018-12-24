@@ -123,6 +123,7 @@ module AuthHub
     #   extra: { raw_info: raw_api_response }
     # }
   
+    #metodo che crea e ritorna uno user all'accesso da azure
     def self.find_for_oauth(auth_hash)
       user = find_or_create_by(uid: auth_hash['uid'], provider: auth_hash['provider'])
       user.nome = auth_hash['info']['first_name']
@@ -132,6 +133,8 @@ module AuthHub
       user.email = auth_hash['info']['email']
       user.password = Devise.friendly_token[0,20]
       user.stato = 'confermato'
+      #inizializzo come un admin servizio
+      user.admin_servizi = true
       user.save!
       #aggiorno la lista dei clienti associati in base al tenant id
       #parametri microsoft in request.env['omniauth.auth']['info']['tid']
