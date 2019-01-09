@@ -296,7 +296,8 @@ module AuthHub
               installazione = cliente_caricato.clienti_installazioni.first
               if session['dest_app_civ_next'] == 'servizi_online'
                   raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
-                  dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site ) 
+                  dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site )
+                  dominio = "https://#{dominio}" if (dominio =~ /http/).nil?
                   path = dominio+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])
               else
                   raise "Url portale hippo mancante" if installazione.HIPPO.blank?
