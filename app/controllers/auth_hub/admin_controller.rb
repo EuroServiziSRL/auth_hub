@@ -65,7 +65,10 @@ module AuthHub
                                         url_applicazione = "#"
                                     end
                                     #se non ho http nell'url metto https, se nn sono sul cms
-                                    if app.NOME != 'cms'
+                                    if app.NOME == 'cms'
+                                        url_applicazione = "http://"+url_applicazione unless url_applicazione.include?("http") #aggiungo http se non presente
+                                        url_applicazione = url_applicazione.gsub("https","http") #se c'era https metto http
+                                    else
                                         url_applicazione = "https://"+url_applicazione unless url_applicazione.include?("http")
                                     end
                                     #aggiungo il parametro per il jwt
