@@ -51,8 +51,13 @@ module AuthHub
                                     next if app.URLAMMINISTRAZIONE.blank?
                                     @hash_applicazioni_ente[app.ID_AREA] ||= []
                                     if app.ID_AMBIENTE == 'ruby'
-                                        url_applicazione = "#{dominio_installazione_ruby}/#{app.URLAMMINISTRAZIONE}"#.gsub('//','/')
-                                        hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby
+                                        if nome_app == 'cms'
+                                            url_applicazione = "#{dominio_installazione_ruby.gsub("https","http")}/#{app.URLAMMINISTRAZIONE}"#.gsub('//','/')
+                                            hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby.gsub("https","http")
+                                        else
+                                            url_applicazione = "#{dominio_installazione_ruby}/#{app.URLAMMINISTRAZIONE}"#.gsub('//','/')
+                                            hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby
+                                        end
                                     elsif app.ID_AMBIENTE == 'php'
                                         url_applicazione = "#{dominio_installazione_hippo}/#{app.URLAMMINISTRAZIONE}"#.gsub('//','/')
                                         hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_hippo
