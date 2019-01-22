@@ -64,13 +64,7 @@ module AuthHub
                                     else #caso in cui non ho ambiente...
                                         url_applicazione = "#"
                                     end
-                                    #se non ho http nell'url metto https, se nn sono sul cms
-                                    if app.NOME == 'cms'
-                                        url_applicazione = "http://"+url_applicazione unless url_applicazione.include?("http") #aggiungo http se non presente
-                                        url_applicazione = url_applicazione.gsub("https","http") #se c'era https metto http
-                                    else
-                                        url_applicazione = "https://"+url_applicazione unless url_applicazione.include?("http")
-                                    end
+                                    url_applicazione = "https://"+url_applicazione unless url_applicazione.include?("http")
                                     #aggiungo il parametro per il jwt
                                     #creo jwt con dominio in base all'ambiente dell'applicazione corrente
                                     jwt_con_dominio = JsonWebToken.encode(hash_jwt_app)
