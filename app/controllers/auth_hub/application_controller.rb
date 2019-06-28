@@ -298,7 +298,7 @@ module AuthHub
                   raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
                   dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site )
                   dominio = "https://#{dominio}" if (dominio =~ /http/).nil?
-                  path = "#{dominio}"+helpers.map_funzioni_next(session['dest_app_civ_next'])
+                  path = "#{dominio[-1]=='/' ? '' : dominio+'/'}#{helpers.map_funzioni_next(session['dest_app_civ_next'])}"
               else
                   raise "Url portale hippo mancante" if installazione.HIPPO.blank?
                   path = installazione.HIPPO+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])+"/login.php"
