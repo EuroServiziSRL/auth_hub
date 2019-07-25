@@ -72,35 +72,59 @@ module AuthHub
     def edit
       @modifica = true
       @nome_pagina = "Modifica Dati Utente"
+      @esito = flash['esito'] unless flash.blank?
     end
 
     # POST /users
     def create
       @user = User.new(user_params)
       #se sono un admin e creo un admin servizi devo passargli l'ente corrente dell'admin
-      if @user.save(context: :new_e_update_da_admin)
-        if @current_user.admin_role? && !@ente_principale.blank?
-          if @user.admin_servizi?
-            ente_da_associare = EnteGestito.new
-            ente_da_associare.user = @user
-            ente_da_associare.principale = true
-            ente_da_associare.clienti_cliente = @ente_principale.clienti_cliente
-            ente_da_associare.save
-          end
-        end
-        redirect_to @user, notice: 'Utente registrato con successo.'
+      if user_params[:password] != user_params[:password_confirmation]
+        @user.errors.add('password',"e Conferma Password devono coincidere.")
+        render :edit
       else
-        render :new
+          begin
+            if @user.save(context: :new_e_update_da_admin)
+              if @current_user.admin_role? && !@ente_principale.blank?
+                if @user.admin_servizi?
+                  ente_da_associare = EnteGestito.new
+                  ente_da_associare.user = @user
+                  ente_da_associare.principale = true
+                  ente_da_associare.clienti_cliente = @ente_principale.clienti_cliente
+                  ente_da_associare.save
+                end
+              end
+              redirect_to @user, notice: 'Utente registrato con successo.'
+            else
+              render :new
+            end
+          rescue Exception => e
+            flash[:error] = e.message
+            puts e.backtrace.inspect
+            render :edit
+          end
       end
+      
     end
 
     # PATCH/PUT /users/1
     def update
-      if @user.update(user_params)
-        redirect_to @user, notice: 'Utente modificato con successo.'
+      if user_params[:password] != user_params[:password_confirmation]
+          @user.errors.add('password',"e Conferma Password devono coincidere.")
+          render :edit
       else
-        render :edit
+          begin
+            @user.password = user_params[:password]
+            @user.save!(context: :aggiorna_password)
+            flash[:esito] = "Password Aggiornata con successo."
+            redirect_to @user
+          rescue Exception => e
+            flash[:error] = e.message
+            puts e.backtrace.inspect
+            render :edit
+          end
       end
+     
     end
 
     # DELETE /users/1

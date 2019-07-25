@@ -1,10 +1,14 @@
 <%= form_with(model: @user, local: true, class: "form-horizontal") do |form| %>
   <% if user.errors.any? %>
     <div id="error_explanation">
-      <h3><%= pluralize(user.errors.count, "error") %> sono stati rilevati:</h3>
+      <h3>Errori rilevati: <%= user.errors.count %> </h3>
       <ul>
       <% user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+        <li>
+		<div class="alert alert-danger">
+		<%= message %>
+		</div>
+		</li>
       <% end %>
       </ul>
     </div>
