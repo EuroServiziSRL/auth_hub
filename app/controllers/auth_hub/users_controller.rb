@@ -59,6 +59,7 @@ module AuthHub
 
     # GET /users/1
     def show
+      @esito = flash['esito'] unless flash.blank?
       @nome_pagina = "Dati Utente"
     end
 
@@ -114,10 +115,20 @@ module AuthHub
           render :edit
       else
           begin
-            @user.password = user_params[:password]
-            @user.save!(context: :aggiorna_password)
-            flash[:esito] = "Password Aggiornata con successo."
-            redirect_to @user
+            @user.nome = user_params[:nome]
+            @user.cognome = user_params[:cognome]
+            @user.nome_cognome = user_params[:nome_cognome]
+            @user.password = user_params[:password] unless user_params[:password].blank?
+            @user.admin_role = user_params[:admin_role] == '1'
+            @user.admin_servizi = user_params[:admin_servizi] == '1'
+            @user.stato = user_params[:stato]
+
+            if @user.save(context: :update_da_admin)
+              flash[:esito] = "Utente aggiornato con successo."
+              redirect_to @user
+            else
+              render :new
+            end
           rescue Exception => e
             flash[:error] = e.message
             puts e.backtrace.inspect
