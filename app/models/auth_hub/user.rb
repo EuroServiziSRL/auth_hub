@@ -46,7 +46,7 @@ module AuthHub
       #length: { in: Devise.password_length, message: "La password deve contenere almeno 8 caratteri"}, 
       format: { with: PASSWORD_FORMAT, message: "deve contenere almeno 8 caratteri, una cifra e una maiuscola" }, 
       #confirmation: true, 
-      on: [:new_da_admin,:aggiorna_password],
+      on: [:new_da_admin,:aggiorna_password]
       
     validates :password, 
       allow_nil: true,  
