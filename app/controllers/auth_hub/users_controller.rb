@@ -119,8 +119,8 @@ module AuthHub
             @user.cognome = user_params[:cognome]
             @user.nome_cognome = user_params[:nome_cognome]
             @user.password = user_params[:password] unless user_params[:password].blank?
-            @user.admin_role = user_params[:admin_role] == '1'
-            @user.admin_servizi = user_params[:admin_servizi] == '1'
+            @user.admin_role = user_params[:admin_role] == 'true'
+            @user.admin_servizi = user_params[:admin_servizi] == 'true'
             @user.stato = user_params[:stato]
 
             if @user.save(context: :update_da_admin)

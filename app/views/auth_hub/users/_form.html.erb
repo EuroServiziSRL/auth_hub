@@ -120,7 +120,7 @@
 								      	<label for="tipologia_utente" class="col-lg-1 control-label">Tipologia:</label>
 												<div class="col-lg-offset-1 col-lg-10">
 												  <div class="checkbox">
-												    <%= form.check_box :admin_role, id: "admin_role" %>
+												    <%= form.check_box :admin_role, { id: "admin_role"} , "true", "false"  %>
 												    <label for="admin_role">Amministratore</label>
 												  </div>
 												</div>
@@ -130,7 +130,7 @@
 											<label for="tipologia_utente" class="col-lg-1 control-label"></label>
 											<div class="col-lg-offset-1 col-lg-10">
 											  <div class="checkbox">
-											    <%= form.check_box :admin_servizi, id: "admin_servizi" %>
+											    <%= form.check_box :admin_servizi, { id: "admin_servizi" }, "true", "false" %>
 											    <label for="admin_servizi">Amministratore Servizio</label>
 											  </div>
 											</div>
