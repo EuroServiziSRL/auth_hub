@@ -85,7 +85,7 @@ module AuthHub
         render :edit
       else
           begin
-            if @user.save(context: :new_e_update_da_admin)
+            if @user.save(context: :new_da_admin)
               if @current_user.admin_role? && !@ente_principale.blank?
                 if @user.admin_servizi?
                   ente_da_associare = EnteGestito.new
