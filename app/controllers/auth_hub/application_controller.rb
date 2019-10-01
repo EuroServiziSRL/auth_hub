@@ -109,9 +109,15 @@ module AuthHub
     
     private
   
-    #metodo che estrae il token jwt da prametro in get
+    #metodo che estrae il token jwt da pametro in get
     def http_get_token
-        @http_get_token ||= params['jwt'] if params['jwt'].present?
+        #verifico che stia arrivando un jwt con formato valido,altrimenti ritorno false
+        if params['jwt'].present? && !(params['jwt'] =~ /^[A-Za-z0-9\-_=]+\.[A-Za-z0-9\-_=]+\.?[A-Za-z0-9\-_.+=]*$/).nil?
+          @http_get_token ||= params['jwt']
+        else
+          false
+        end
+         
     end
     
     def auth_get_token
@@ -217,7 +223,7 @@ module AuthHub
        
         nome_ente = nil  #variabile permemorizzare l'ente che metto nel log accessi 
         redirect_param = "" #usata per eventuali redirect
-        #controllo se mi arriva un NUOVO jwt mentre sono già loggato (caso login app esterna), sovrascrivo e cambio ulr back
+        #controllo se mi arriva un NUOVO jwt mentre sono già loggato (caso login app esterna), sovrascrivo e cambio url back
         if !http_get_token.blank?
             #ho un jwt ma non ho l'id cliente
             unless user_id_in_get_token?
@@ -229,20 +235,25 @@ module AuthHub
                 session.delete('from_civ_next') #pulisco la sessione se ero entrato con civ next
                 #se ho cambiato tipo di auth devo rifare la login
                 if !session['auth'].blank? && session['auth'] != auth_get_token['auth']
+                  #controllo il formato del jwt
                   jwt = params['jwt']
-                  signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
-                  set_flash_message! :notice, :signed_out if signed_out
-                  #cancello sessioni di openweb
-                  session.keys.each{ |chiave_sessione|
-                      next if chiave_sessione == "_csrf_token"
-                      session.delete(chiave_sessione.to_sym)
-                  }
-                  url_per_nuova_login = new_user_session_url({jwt: jwt})
-                  #questa redirect fa la logout da microsoft se prima mi sono loggato con aad
-                  if Settings.logout_azure && session['auth'] == 'aad'
-                    redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{url_per_nuova_login}"
-                  else #se non vogliamo sloggarci da microsoft
-                    return auth_hub.new_user_session_url({jwt: jwt})
+                  if !(jwt =~ /^[A-Za-z0-9\-_=]+\.[A-Za-z0-9\-_=]+\.?[A-Za-z0-9\-_.+=]*$/).nil?
+                    signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
+                    set_flash_message! :notice, :signed_out if signed_out
+                    #cancello sessioni di openweb
+                    session.keys.each{ |chiave_sessione|
+                        next if chiave_sessione == "_csrf_token"
+                        session.delete(chiave_sessione.to_sym)
+                    }
+                    url_per_nuova_login = new_user_session_url({jwt: jwt})
+                    #questa redirect fa la logout da microsoft se prima mi sono loggato con aad
+                    if Settings.logout_azure && session['auth'] == 'aad'
+                      redirect_to "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{url_per_nuova_login}"
+                    else #se non vogliamo sloggarci da microsoft
+                      return auth_hub.new_user_session_url({jwt: jwt})
+                    end
+                  else
+                    raise "Formato jwt non valido"
                   end
                 else
                   #ho il jwt con stessa auth, estraggo parametri e sovrascrivo
@@ -441,7 +452,7 @@ module AuthHub
     # def after_sign_out_path_for(user_instance)
     #   redirect_to root_path
     # end
-    
+
     def user_params
         params.require(:user).permit(:old_password, :password, :password_confirmation)
     end
