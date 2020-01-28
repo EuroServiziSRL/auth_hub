@@ -304,7 +304,7 @@ module AuthHub
               cliente_caricato = ClientiCliente.find_by tenant_azure: session['tid_corrente']
               #Nome ente per log
               nome_ente = cliente_caricato.CLIENTE
-              cliente_caricato.clienti_installazioni.each{ |installazione| }
+              cliente_caricato.clienti_installazioni.each{ |installazione|
                 next if installazione.SPIDERURL.blank? && session['dest_app_civ_next'] == 'servizi_online' #sono su installazione php e mi serve url ruby
                 next if installazione.HIPPO.blank? && session['dest_app_civ_next'] != 'servizi_online' #sono su installazione ruby e mi serve url php
                 if session['dest_app_civ_next'] == 'servizi_online'
