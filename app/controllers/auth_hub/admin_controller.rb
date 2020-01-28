@@ -8,23 +8,26 @@ module AuthHub
         @errore = flash[:error]
         @successo = flash[:success]
         @warning = flash[:warning]
+        
         if @array_enti_gestiti.blank?
-            @errore_configurazione = 'Non hai enti associati!'
+            @errore = 'Non hai enti associati!'
         else
             begin
-                if session['ente_corrente'].blank?
+                ente_corrente = session['ente_corrente']
+                if ente_corrente.blank?
                     #errore, mostrare messaggio che l'admin deve configurare dominio
-                    @errore_configurazione = "Problemi nella configurazione, l'amministratore è stato informato."
+                    @errore = "Problemi nella configurazione, l'amministratore è stato informato."
                     Mailer.with(user: @current_user, array_enti_gestiti: @array_enti_gestiti, url_gestione_utente: associa_enti_user_url(@current_user.id)).configurazione_enti_domini_principale.deliver_now
                 else
-                    ente_corrente = session['ente_corrente']
                     @hash_applicazioni_ente = {}
-                    
                     if ente_corrente.clienti_cliente.clienti_installazioni.length > 0
                         ente_corrente.clienti_cliente.clienti_installazioni.each{ |installazione|
                             #qui ho l'installazione a livello di server che sarà o una ruby o php con le rispettive app
                             dominio_installazione_ruby = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site ) 
+                            #tolgo slash alla fine se presente
+                            dominio_installazione_ruby = dominio_installazione_ruby[0..-2] if dominio_installazione_ruby[-1] == "/"
                             dominio_installazione_hippo = installazione.HIPPO
+                            dominio_installazione_hippo = dominio_installazione_hippo[0..-2] if dominio_installazione_hippo[-1] == "/"
                             #se ci sono applicazioni installate riferite a questa installazione/server
                             if installazione.clienti_applinstallate.length > 0
                                 hash_jwt_app = {
@@ -41,25 +44,24 @@ module AuthHub
                                           admin_servizi: current_user.admin_servizi == true
                                       }
                                 }
-                            
-                            
                                 installazione.clienti_applinstallate.each{ |app_installata|
                                     next if app_installata.NON_VISIBILE #non mostro se non è visibile
                                     nome_app = app_installata.APPLICAZIONE
                                     app = AuthHub::ClientiApplicazione.find_by_NOME(nome_app)
                                     #se non ho la url di amministrazione non la mostro
                                     next if app.URLAMMINISTRAZIONE.blank?
+                                    url_amministrazione = (app.URLAMMINISTRAZIONE[0] == "/" ? app.URLAMMINISTRAZIONE[1..-1] : app.URLAMMINISTRAZIONE)
                                     @hash_applicazioni_ente[app.ID_AREA] ||= []
                                     if app.ID_AMBIENTE == 'ruby'
                                         if app.NOME == 'cms'
-                                            url_applicazione = "#{dominio_installazione_ruby.gsub("https","http")}/#{app.URLAMMINISTRAZIONE}"#.gsub('//','/')
+                                            url_applicazione = "#{dominio_installazione_ruby.gsub("https","http")}/#{url_amministrazione}"#.gsub('//','/')
                                             hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby.gsub("https","http")
                                         else
-                                            url_applicazione = "#{dominio_installazione_ruby}/#{app.URLAMMINISTRAZIONE}"#.gsub('//','/')
+                                            url_applicazione = "#{dominio_installazione_ruby}/#{url_amministrazione}"#.gsub('//','/')
                                             hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_ruby
                                         end
                                     elsif app.ID_AMBIENTE == 'php'
-                                        url_applicazione = "#{dominio_installazione_hippo}/#{app.URLAMMINISTRAZIONE}"#.gsub('//','/')
+                                        url_applicazione = "#{dominio_installazione_hippo}/#{url_amministrazione}"#.gsub('//','/')
                                         hash_jwt_app['dominio_ente_corrente'] = dominio_installazione_hippo
                                     else #caso in cui non ho ambiente...
                                         url_applicazione = "#"
@@ -68,14 +70,13 @@ module AuthHub
                                     #aggiungo il parametro per il jwt
                                     #creo jwt con dominio in base all'ambiente dell'applicazione corrente
                                     jwt_con_dominio = JsonWebToken.encode(hash_jwt_app)
-                                    url_applicazione += ( url_applicazione.include?('?') ? "&jwt=#{jwt_con_dominio}&redirect=#{app.URLAMMINISTRAZIONE}" : "?jwt=#{jwt_con_dominio}&redirect=#{app.URLAMMINISTRAZIONE}" )
+                                    url_applicazione += ( url_applicazione.include?('?') ? "&jwt=#{jwt_con_dominio}&redirect=#{url_amministrazione}" : "?jwt=#{jwt_con_dominio}&redirect=#{url_amministrazione}" )
                                     @hash_applicazioni_ente[app.ID_AREA] << { nome: app.NOME, descrizione: app.DESCRIZIONE, url: url_applicazione, ambiente: app.ID_AMBIENTE}
                                 }
                             end
                         }
-                    else
-                        @messaggio = { "warning" => "Non hai applicazioni installate nell'ente #{ente_corrente.CLIENTE}" }
                     end
+                    @warning = "Non hai applicazioni installate nell'ente #{ente_corrente.clienti_cliente.CLIENTE.strip}" if @hash_applicazioni_ente.blank?
                     @array_applicazioni_ente = []
                 end
             rescue Exception => exc
