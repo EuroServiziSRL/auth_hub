@@ -207,6 +207,7 @@ module AuthHub
     #dopo aver fatto la login arrivo a questo metodo per capire dove fare il redirect
     #QUI PASSA SEMPRE, Se sono autenticato arrivo qui senza passare per il metodo new
     def after_sign_in_path_for(user_instance)
+      path = nil
       #controllo se ha lo stato confermato
       if user_instance.stato != 'confermato'
           signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
