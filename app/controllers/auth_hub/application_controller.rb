@@ -304,16 +304,20 @@ module AuthHub
               cliente_caricato = ClientiCliente.find_by tenant_azure: session['tid_corrente']
               #Nome ente per log
               nome_ente = cliente_caricato.CLIENTE
-              installazione = cliente_caricato.clienti_installazioni.first
-              if session['dest_app_civ_next'] == 'servizi_online'
-                  raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
-                  dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site )
-                  dominio = "https://#{dominio}" if (dominio =~ /http/).nil?
-                  path = "#{dominio[-1]=='/' ? dominio[0..-2] : dominio}#{helpers.map_funzioni_next(session['dest_app_civ_next'])}"
-              else
-                  raise "Url portale hippo mancante" if installazione.HIPPO.blank?
-                  path = installazione.HIPPO+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])+"/login.php"
-              end
+              cliente_caricato.clienti_installazioni.each{ |installazione| }
+                next if installazione.SPIDERURL.blank? && session['dest_app_civ_next'] == 'servizi_online' #sono su installazione php e mi serve url ruby
+                next if installazione.HIPPO.blank? && session['dest_app_civ_next'] != 'servizi_online' #sono su installazione ruby e mi serve url php
+                if session['dest_app_civ_next'] == 'servizi_online'
+                    raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
+                    dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site )
+                    dominio = "https://#{dominio}" if (dominio =~ /http/).nil?
+                    path = "#{dominio[-1]=='/' ? dominio[0..-2] : dominio}#{helpers.map_funzioni_next(session['dest_app_civ_next'])}"
+                else
+                    raise "Url portale hippo mancante" if installazione.HIPPO.blank?
+                    path = installazione.HIPPO+"/"+helpers.map_funzioni_next(session['dest_app_civ_next'])+"/login.php"
+                end
+              }
+
             else
               #devo rifare login azure, potrei avere una sessione attiva ma fatta con username e password
               return user_omniauth_azure_oauth2_authorize_path('azure_oauth2')
