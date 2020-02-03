@@ -25,9 +25,9 @@ module AuthHub
                             #qui ho l'installazione a livello di server che sarà o una ruby o php con le rispettive app
                             dominio_installazione_ruby = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site ) 
                             #tolgo slash alla fine se presente
-                            dominio_installazione_ruby = dominio_installazione_ruby[0..-2] if dominio_installazione_ruby[-1] == "/"
+                            dominio_installazione_ruby = dominio_installazione_ruby[0..-2] if !dominio_installazione_ruby.blank? && dominio_installazione_ruby[-1] == "/"
                             dominio_installazione_hippo = installazione.HIPPO
-                            dominio_installazione_hippo = dominio_installazione_hippo[0..-2] if dominio_installazione_hippo[-1] == "/"
+                            dominio_installazione_hippo = dominio_installazione_hippo[0..-2] if !dominio_installazione_hippo.blank? && dominio_installazione_hippo[-1] == "/"
                             #se ci sono applicazioni installate riferite a questa installazione/server
                             if installazione.clienti_applinstallate.length > 0
                                 hash_jwt_app = {
