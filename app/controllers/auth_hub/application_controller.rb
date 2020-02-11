@@ -274,6 +274,8 @@ module AuthHub
             session['from_civ_next'] = true
             session['auth'] = "aad" #da NEXT arrivo sempre con azure
             session['dest_app_civ_next'] = params['app'] unless params['app'].blank?
+            #se su civilia next ha fatto un cambio di ente devo usare il nuovo tenant che arriva nei params
+            session['tid_corrente'] = params['TenantId'] if !params['TenantId'].blank? && params['TenantId'] != session['tid_corrente']
             #devo caricare un jwt in tabella
             hmac_secret = Rails.application.secrets.external_auth_api_key
             ext_session = nil #session[:ext_session_id]
