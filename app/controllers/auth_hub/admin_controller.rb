@@ -76,7 +76,7 @@ module AuthHub
                             end
                         }
                     end
-                    @warning = "Non hai applicazioni installate nell'ente #{ente_corrente.clienti_cliente.CLIENTE.strip}" if @hash_applicazioni_ente.blank?
+                    @warning = "Non hai applicazioni installate nell'ente #{ente_corrente.clienti_cliente.CLIENTE.strip}" if !ente_corrente.clienti_cliente.blank? && @hash_applicazioni_ente.blank?
                     @array_applicazioni_ente = []
                 end
             rescue Exception => exc
