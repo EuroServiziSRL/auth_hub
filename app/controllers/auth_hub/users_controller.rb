@@ -121,6 +121,7 @@ module AuthHub
             @user.password = user_params[:password] unless user_params[:password].blank?
             @user.admin_role = user_params[:admin_role] == 'true'
             @user.admin_servizi = user_params[:admin_servizi] == 'true'
+            @user.wiki_hd = user_params[:wiki_hd] == 'true'
             @user.stato = user_params[:stato]
 
             if @user.save(context: :update_da_admin)
@@ -193,7 +194,7 @@ module AuthHub
         #traduco il checkbox per lo stato in uno stato parlante
         params['user']['stato'] = 'confermato' if params['user']['stato'] == '1'
         params['user']['stato'] = 'da_validare' if params['user']['stato'] == '0'
-        params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi,:stato)
+        params.require(:user).permit(:email,:password,:password_confirmation,:nome,:cognome,:nome_cognome,:admin_role,:admin_servizi,:wiki_hd,:stato)
       end
   end
 end

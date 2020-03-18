@@ -1,174 +1,187 @@
 <%= form_with(model: @user, local: true, class: "form-horizontal") do |form| %>
-  <% if user.errors.any? %>
-    <div id="error_explanation">
-      <h3>Errori rilevati: <%= user.errors.count %> </h3>
-      <ul>
-      <% user.errors.full_messages.each do |message| %>
-        <li>
-		<div class="alert alert-danger">
-		<%= message %>
+    <% if user.errors.any? %>
+		<div id="error_explanation">
+			<h3>Errori rilevati: <%= user.errors.count %> </h3>
+			<ul>
+				<% user.errors.full_messages.each do |message| %>
+					<li>
+					<div class="alert alert-danger">
+					<%= message %>
+					</div>
+					</li>
+				<% end %>
+			</ul>
 		</div>
-		</li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+    <% end %>
   
-  <div class="panel panel-default">
-    <div class="panel-heading panel-heading-lg"><% if azione == 'nuovo' %>Nuovo<% elsif azione == 'modifica'  %>Modifica<% else %>Dati<% end  %> Utente</div>
-    <div class="panel-body">
-      <div class="row">
-      
-				<div class="col-lg-12">
-				  <input type='hidden' name='azione' value='<%= azione%>'>
-				  <div class="row">
-				      <div class="col-sm-12">
-								<div class="form-group form-group-sm" id="email_container">
-								  <label class="control-label" for="email">Email</label>
-								  <% if azione == 'vedi' %>
-								    <p class="form-control-static"><%= @user.email %></p>
-								  <% else %>
-								    <%= form.text_field :email, class: "form-control input-sm no-radius" %>
-								  <% end  %>
+	<div class="panel panel-default">
+		<div class="panel-heading panel-heading-lg"><% if azione == 'nuovo' %>Nuovo<% elsif azione == 'modifica'  %>Modifica<% else %>Dati<% end  %> Utente</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-12">
+					<input type='hidden' name='azione' value='<%= azione%>'>
+					<div class="row">
+							<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="email_container">
+									<label class="control-label" for="email">Email</label>
+									<% if azione == 'vedi' %>
+										<p class="form-control-static"><%= @user.email %></p>
+									<% else %>
+										<%= form.text_field :email, class: "form-control input-sm no-radius" %>
+									<% end  %>
+									</div>
+								</div>
+									
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="nome_container">
+									<label class="control-label" for="nome">Nome</label>
+									<% if azione == 'vedi' %>
+										<p class="form-control-static"><%= @user.nome %></p>
+									<% else %>
+										<%= form.text_field :nome, class: "form-control input-sm no-radius" %>
+									<% end  %>
+									</div>
+							</div>
+					
+							<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="cognome_container">
+									<label class="control-label" for="cognome">Cognome</label>
+									<% if azione == 'vedi' %>
+										<p class="form-control-static"><%= @user.cognome %></p>
+									<% else %>
+										<%= form.text_field :cognome, class: "form-control input-sm no-radius" %>
+									<% end  %>
+									</div>
+							</div>
+						
+							<div class="col-sm-12">
+								<div class="form-group form-group-sm" id="ente_container">
+									<label class="control-label" for="ente">Ente</label>
+									<% if azione == 'vedi' %>
+									<p class="form-control-static"><%= @user.ente %></p>
+									<% else %>
+									<%= form.text_field :ente, class: "form-control input-sm no-radius" %>
+									<% end  %>
 								</div>
 							</div>
-							      
+					
 							<div class="col-sm-12">
-								<div class="form-group form-group-sm" id="nome_container">
-								  <label class="control-label" for="nome">Nome</label>
-								  <% if azione == 'vedi' %>
-								    <p class="form-control-static"><%= @user.nome %></p>
-								  <% else %>
-								    <%= form.text_field :nome, class: "form-control input-sm no-radius" %>
-								  <% end  %>
-								</div>
-				      </div>
-				  
-				      <div class="col-sm-12">
-								<div class="form-group form-group-sm" id="cognome_container">
-								  <label class="control-label" for="cognome">Cognome</label>
-								  <% if azione == 'vedi' %>
-								    <p class="form-control-static"><%= @user.cognome %></p>
-								  <% else %>
-								    <%= form.text_field :cognome, class: "form-control input-sm no-radius" %>
-								  <% end  %>
-								</div>
-				      </div>
-				      
-				      <div class="col-sm-12">
-								<div class="form-group form-group-sm" id="ente_container">
-								  <label class="control-label" for="ente">Ente</label>
-								  <% if azione == 'vedi' %>
-								    <p class="form-control-static"><%= @user.ente %></p>
-								  <% else %>
-								    <%= form.text_field :ente, class: "form-control input-sm no-radius" %>
-								  <% end  %>
-								</div>
-				      </div>
-				  
-				      <div class="col-sm-12">
 								<div class="form-group form-group-sm" id="telefono_container">
-								  <label class="control-label" for="telefono">Telefono</label>
-								  <% if azione == 'vedi' %>
-								    <p class="form-control-static"><%= @user.telefono %></p>
-								  <% else %>
-								    <%= form.text_field :telefono, class: "form-control input-sm no-radius" %>
-								  <% end  %>
+									<label class="control-label" for="telefono">Telefono</label>
+									<% if azione == 'vedi' %>
+									<p class="form-control-static"><%= @user.telefono %></p>
+									<% else %>
+									<%= form.text_field :telefono, class: "form-control input-sm no-radius" %>
+									<% end  %>
 								</div>
-				      </div>
-							      
+							</div>
+									
 							<% if azione != 'vedi' %>
 								<div class="col-sm-12">
 									<div class="form-group form-group-sm" id="password_container">
-									  <label class="control-label" for="password">Password</label>
-									  <%= form.password_field :password, class: "form-control input-sm no-radius" %>
+										<label class="control-label" for="password">Password</label>
+										<%= form.password_field :password, class: "form-control input-sm no-radius" %>
 									</div>
-							  </div>
-							      
-							  <div class="col-sm-12">
+								</div>
+									
+								<div class="col-sm-12">
 									<div class="form-group form-group-sm" id="password_confirmation_container">
-								  	<label class="control-label" for="password_confirmation">Conferma Password</label>
-								  	<%= form.password_field :password_confirmation, class: "form-control input-sm no-radius" %>
-									</div>
-				      	</div>
-				    	<% end  %>
-				      
-				    	<% if azione == 'vedi' %>
-					      <div class="form-group">
-									<label for="tipologia_utente" class="col-lg-2 control-label">Tipologia:</label>
-									<div class="col-lg-10">
-									  <p class="form-control-static">
-									    <% if @user.admin_role %>
-									      Amministratore
-									    <% end  %>
-									    <% if @user.admin_servizi %>
-									      Amministratore Servizio
-									    <% end  %>
-									  </p>
-									  <p class="form-control-static">
-									  	<% if @user.stato == 'confermato' %>
-									      <strong>Utente Confermato</strong>
-									    <% end  %>
-									  </p>
-									</div>
-					      </div>  
-				    	<% else %>
-				    		<% if @current_user.admin_role? %>
-				    			<%= form.check_box :admin_servizi, { id: "admin_servizi", class: 'hide hidden' }, "true", "true" %>
-				    		<% else %>
-							      <div class="form-group">
-								      	<label for="tipologia_utente" class="col-lg-1 control-label">Tipologia:</label>
-												<div class="col-lg-offset-1 col-lg-10">
-												  <div class="checkbox">
-												    <%= form.check_box :admin_role, { id: "admin_role"} , "true", "false"  %>
-												    <label for="admin_role">Amministratore</label>
-												  </div>
-												</div>
+									<label class="control-label" for="password_confirmation">Conferma Password</label>
+									<%= form.password_field :password_confirmation, class: "form-control input-sm no-radius" %>
+								</div>
+							</div>
+							<% end  %>
+							<% if azione == 'vedi' %>
+								<div class="form-group">
+										<label for="tipologia_utente" class="col-lg-2 control-label">Tipologia:</label>
+										<div class="col-lg-10">
+										<p class="form-control-static">
+											<% if @user.admin_role %>
+											Amministratore
+											<% end  %>
+											<% if @user.admin_servizi %>
+											Amministratore Servizio
+											<% end  %>
+											<% if @user.wiki_hd %>
+											<br />Gestore Wiki HD
+											<% end  %>
+										</p>
+										<p class="form-control-static">
+											<% if @user.stato == 'confermato' %>
+											<strong>Utente Confermato</strong>
+											<% end  %>
+										</p>
 										</div>
-										    
+								</div>  
+							<% else %>
+								<% if @current_user.admin_role? %>
+									<%= form.check_box :admin_servizi, { id: "admin_servizi", class: 'hide hidden' }, "true", "true" %>
+								<% else %>
+										<div class="form-group">
+											<label for="tipologia_utente" class="col-lg-1 control-label">Tipologia:</label>
+											<div class="col-lg-offset-1 col-lg-10">
+												<div class="checkbox">
+												<%= form.check_box :admin_role, { id: "admin_role"} , "true", "false"  %>
+												<label for="admin_role">Amministratore</label>
+												</div>
+											</div>
+										</div>
+												
 										<div class="form-group">
 											<label for="tipologia_utente" class="col-lg-1 control-label"></label>
 											<div class="col-lg-offset-1 col-lg-10">
-											  <div class="checkbox">
-											    <%= form.check_box :admin_servizi, { id: "admin_servizi" }, "true", "false" %>
-											    <label for="admin_servizi">Amministratore Servizio</label>
-											  </div>
+												<div class="checkbox">
+												<%= form.check_box :admin_servizi, { id: "admin_servizi" }, "true", "false" %>
+												<label for="admin_servizi">Amministratore Servizio</label>
+												</div>
 											</div>
-							      </div>
-				      	<% end %>
-					      <div class="form-group">
+										</div>
+										<% if @current_user.superadmin_role? %>
+											<div class="form-group">
+												<label for="tipologia_utente" class="col-lg-1 control-label"></label>										
+												<div class="col-lg-offset-1 col-lg-10">
+													<div class="checkbox">
+														<%= form.check_box :wiki_hd, { id: "wiki_hd"} , "true", "false"  %>
+														<label for="wiki_hd">Gestore Wiki HD</label>
+													</div>
+												</div>
+											</div>
+										<% end %>
+
+								<% end %>
+								
+								<div class="form-group">
 									<label for="stato" class="col-lg-1 control-label"><strong>Abilita</strong></label>
 									<div class="col-lg-offset-1 col-lg-10">
-									  <div class="checkbox">
-									    <%= form.check_box :stato, id: "stato", :checked => @user.stato == 'confermato' %>
-									    <label for="stato">Rendi Confermato</label>
-									  </div>
+										<div class="checkbox">
+										<%= form.check_box :stato, id: "stato", :checked => @user.stato == 'confermato' %>
+										<label for="stato">Rendi Confermato</label>
+										</div>
 									</div>
-					      </div>
-				    	<% end %>
-							      
-				  </div>
-				</div>
-	
-      </div>
-      
-    </div>
-  </div>
-  <!--
-  <%= form.hidden_field :nome_cognome %>
-	-->
-  <div class="text-center">
-    <% if azione != 'vedi' %>
-      <%= form.submit 'Salva', :class => 'btn btn-default btn-sm no-radius btn-primary' %>
-    <% else %>
-      <%= link_to 'Modifica', edit_user_path, id: "#{@user.id}", class: 'btn btn-default btn-sm no-radius btn-primary' %>
-    <% end %>
-    <% if can? :index, AuthHub::User %>
-    <%= link_to 'Elenco Utenti', users_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
-    <% end %>
-    <% if can? :utenti_servizi, AuthHub::User %>
-    <%= link_to 'Elenco Utenti', utenti_servizi_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
-    <% end %>
-  </div>
+								</div>
+							<% end %>
+									
+						</div>
+					</div>
+		
+			</div>
+		</div>
+	</div>
+	<!--
+	<%= form.hidden_field :nome_cognome %>
+		-->
+	<div class="text-center">
+		<% if azione != 'vedi' %>
+		<%= form.submit 'Salva', :class => 'btn btn-default btn-sm no-radius btn-primary' %>
+		<% else %>
+		<%= link_to 'Modifica', edit_user_path, id: "#{@user.id}", class: 'btn btn-default btn-sm no-radius btn-primary' %>
+		<% end %>
+		<% if can? :index, AuthHub::User %>
+		<%= link_to 'Elenco Utenti', users_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+		<% end %>
+		<% if can? :utenti_servizi, AuthHub::User %>
+		<%= link_to 'Elenco Utenti', utenti_servizi_path, {class: 'btn btn-default btn-sm no-radius btn-primary'} %>
+		<% end %>
+	</div>
 
 <% end %>

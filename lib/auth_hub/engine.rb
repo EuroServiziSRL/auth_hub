@@ -1,6 +1,8 @@
 module AuthHub
   class Engine < ::Rails::Engine
     isolate_namespace AuthHub
+    require_relative '../../config/initializers/inflections' #require delle inflections per nomi plurali
+
     require 'config' #carica gemma per i Settings da file yml
     require 'email_verifier'
     require 'doorkeeper'

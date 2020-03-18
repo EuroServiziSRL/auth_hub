@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.version     = AuthHub::VERSION
   s.authors     = ["fabianopavan"]
   s.email       = ["fabianopavan84@gmail.com"]
-  s.homepage    = "http://www.soluzionipa.it/auth_hub"
-  s.summary     = "Summary of AuthHub."
-  s.description = "Description of AuthHub."
+  s.homepage    = "http://start.soluzionipa.it/auth_hub"
+  s.summary     = "AuthHub: Sistema centralizzato di login ."
+  s.description = "Sistema centralizzato di login."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
