@@ -15,11 +15,13 @@ module AuthHub
       @nome_pagina = "Lista Setup"
       unless session['ente_corrente'].blank?
         @filterrific = initialize_filterrific(Setup,	params[:filterrific] ) || return
+        #filtro in base ai valori del filtro in pagina e del tipo di accesso che ho fatto
         @setups = Setup.filterrific_find(@filterrific).where('ID_ACCESSO': @current_user.sigla_ruolo).page(params[:page])
         @dati_ente = get_dati_ente
         @scrtk = Rails.application.secrets.external_auth_api_key
       else
         #vado sulla home mostrando avviso
+        @avviso = "Seleziona enti"
       end
     end
 
@@ -79,7 +81,7 @@ module AuthHub
         params.require(:setup).permit(:VALORE)
       end
       
-      #carico solo i dati dellì'installazione ruby, per la parte php non serve far ripartire
+      #carico solo i dati dell'installazione ruby, per la parte php non serve far ripartire
       def get_installazione
           id_clienti_cliente = session['ente_corrente'].is_a?(Hash) ? session['ente_corrente']['clienti_cliente_id'] :  session['ente_corrente'].clienti_cliente_id
           #return ClientiCliente.find(id_clienti_cliente).clienti_installazioni[0]
@@ -90,19 +92,20 @@ module AuthHub
       #imposto il nome del db a livello di thread corrente 
       def set_db_name
         #se sono su new ho un hash, se sono su index carico oggetto
-        begin
-          inst = get_installazione
-          raise "Installazione non presente" if inst.blank?
-          nome_db = !inst.SPIDERDB.blank? ? inst.SPIDERDB : inst.HIPPODB
-          Thread.current[:db_name] = nome_db
-          AuthHub::Setup.establish_connection({})
-        rescue Exception => exc
-          puts exc.message
-          puts exc.backtrace.inspect
-          flash[:error] = "Database non gestibile"
-          redirect_to index_admin_path
+        unless session['ente_corrente'].blank?
+          begin
+            inst = get_installazione
+            raise "Installazione non presente" if inst.blank?
+            nome_db = !inst.SPIDERDB.blank? ? inst.SPIDERDB : inst.HIPPODB
+            Thread.current[:db_name] = nome_db
+            AuthHub::Setup.establish_connection({})
+          rescue => exc
+            puts exc.message
+            puts exc.backtrace.inspect
+            flash[:error] = "Database non gestibile"
+            redirect_to index_admin_path
+          end
         end
-        
       end
       
       #imposto il nome del db a livello di thread corrente 

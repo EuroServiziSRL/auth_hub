@@ -2,7 +2,7 @@ module AuthHub
   class ApplicationController < ::ApplicationController
     before_action :authenticate_user!, except: [:new, :create, :ext_logout]
     protect_from_forgery prepend: true
-    
+    before_action :set_class_var
     include Rails.application.routes.url_helpers
     
     rescue_from CanCan::AccessDenied do |exception|
@@ -10,6 +10,19 @@ module AuthHub
       redirect_to auth_hub_index_path
     end
     
+    @@clienti = {}
+
+    def set_class_var
+      if @@clienti.blank?
+        clienti ||= AuthHub::ClientiCliente.all
+        #var di classe
+        hash_clienti = {}
+        clienti.each{|cliente| hash_clienti[cliente.ID] = cliente.CLIENTE } unless clienti.blank? 
+        #hash dei clienti, chiave = id della tabella e valore = campo CLIENTE
+        @@clienti = hash_clienti
+      end
+    end
+
     #GET ext_logout DA CONTROLLARE!
     #arriva un JWT in get, controllo il ext_session_id. Redirect sul controller session per fare la logout facendo la delete delle sessioni
     #poi redirect su una ub che c'è in jwt 
@@ -166,15 +179,17 @@ module AuthHub
         #enti_gestiti = @current_user.enti_gestiti
         enti_gestiti = @current_user.enti_gestiti.sort_by{ |ente| ente.clienti_cliente.CLIENTE}
         @array_enti_gestiti = []
+        @array_enti_gestiti_solo_id = []
         @ente_principale = session['ente_corrente']
         enti_gestiti.each do |ente|
           @ente_principale = ente if ente.principale? && @ente_principale.blank?
           #array_ente_per_select_tag = ["&#xf132; ".html_safe+ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID] #mostra uno stemmino su ogni riga
           array_ente_per_select_tag = [ente.clienti_cliente.CLIENTE, ente.clienti_cliente.ID]
           @array_enti_gestiti << array_ente_per_select_tag
+          @array_enti_gestiti_solo_id << ente.clienti_cliente.ID
         end
         #salvo in sessione per usarlo nei vari controller come user_controller
-        session['array_enti_gestiti'] = @array_enti_gestiti
+        session['array_enti_gestiti'] = @array_enti_gestiti_solo_id
         #se non ho ente in sessione e non ho il principale assegnato metto il primo 
         @ente_principale = enti_gestiti[0] if enti_gestiti.length > 0 && @ente_principale.blank?
         return true

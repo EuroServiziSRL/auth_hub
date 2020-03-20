@@ -1,8 +1,10 @@
 module AuthHub
     class Setup < SpiderModel
+      #questo model estende il model astratto SpiderModel,
+      #quando con questo model si va a fare establish_connection, viene cambiato il database della connessione
       self.table_name = 'setup'
       
-      # CAMBI CON TIPO
+      # CAMPI CON TIPO
       #   element "ID", :db_column_type => "int", :length => 11
       # 	element "CR_DATE", :db_column_type => "varchar", :length => 50
       #   element "MOD_DATE", :db_column_type => "varchar", :length => 50

@@ -4,7 +4,7 @@ module AuthHub
         self.abstract_class = true
         
         
-        #Cambia dinamicamente la connessione
+        #Cambia dinamicamente la connessione al db in base al valore salvato nel thread corrente
         def self.establish_connection(params)
             db_name = Thread.current[:db_name].blank? ? 'soluzionipa_new' : Thread.current[:db_name]
             default_params = { :adapter  => "mysql2",

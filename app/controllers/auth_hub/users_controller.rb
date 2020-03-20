@@ -28,7 +28,6 @@ module AuthHub
     # GET /users/utenti_da_confermare
     def utenti_da_confermare
       #controllo se viene passata chiave stato
-      
       @nome_pagina = "Lista Utenti Da Confermare"
       #@filterrific = initialize_filterrific(User,	params[:filterrific], available_filters: [:search_query, :utenti_stato_non], default_filter_params: {stato: 'confermato'} ) or return
       @filterrific = initialize_filterrific(User,	params[:filterrific] ) or return
@@ -185,7 +184,14 @@ module AuthHub
       end
       
       def set_ente
-        @array_enti_gestiti = session['array_enti_gestiti'] unless session['array_enti_gestiti'].blank?
+        #creare un array di array
+        #[["A.S.L. Azienda Sanitaria Locale - Varese", 2], ["A.S.P. CASA DI RIPOSO A. SUAREZ", 3], ... ]
+        @array_enti_gestiti = []
+        unless session['array_enti_gestiti'].blank?
+          session['array_enti_gestiti'].each{|id_cliente|
+            @array_enti_gestiti << [@@clienti[id_cliente],id_cliente]
+          }
+        end
         @ente_principale = EnteGestito.find(session['ente_corrente']['id']) unless session['ente_corrente'].blank?
       end
 

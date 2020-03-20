@@ -19,27 +19,29 @@
   				  <input type='hidden' name='azione' value='<%= azione%>'>
   				  <div class="row">
   				      
-  				      <div class="col-sm-12">
-  								<div class="form-group form-group-sm" id="applicazione_container">
-  								  <label class="control-label" for="applicazione">Applicazione</label>
-  								    <p class="form-control-static"><%= @setup.APPLICAZIONE %></p>
-  								</div>
-  							</div>
+  				      	<div class="col-sm-12">
+							<div class="form-group form-group-sm" id="applicazione_container">
+								<label class="control-label" for="applicazione">Applicazione</label>
+								<p class="form-control-static"><%= @setup.APPLICAZIONE %></p>
+							</div>
+						</div>
   				    
-  				      <div class="col-sm-12">
-  								<div class="form-group form-group-sm" id="codice_container">
-  								  <label class="control-label" for="codice">Codice</label>
-  								    <p class="form-control-static"><%= @setup.CODICE %></p>
-  								</div>
-  							</div>
-  				    
-  				      <div class="col-sm-12">
-    					    <div class="form-group form-group-sm" id="valore_container">
-  								  <label class="control-label" for="valore">Valore</label>
+  				      	<div class="col-sm-12">
+							<div class="form-group form-group-sm" id="codice_container">
+								<label class="control-label" for="codice">Codice</label>
+								<p class="form-control-static"><%= @setup.CODICE %></p>
+							</div>
+						</div>
+						<div id="msg_errore_yaml" class="col-sm-12 alert alert-danger hide">
+						Problemi nello yaml!
+						</div>
+  				      	<div class="col-sm-12">
+    					    <div class="form-group form-group" id="valore_container">
+  								  <label class="control-label" for="valore">Valore di tipo <strong><%= @setup.ID_TIPO %></strong> (formato yaml)</label>
   								  <% if azione == 'vedi' %>
-        					     <p class="form-control-static"><%= @setup.VALORE %></p>
+        					     <p class="form-control-static"><%= simple_format(@setup.VALORE) %></p>
         				    <% else %>
-        				    	 <%= form.text_field :VALORE, class: "form-control input-sm no-radius" %>
+        				    	 <%= form.text_area :VALORE, id:"valore_yaml_conf", class: "form-control input-sm no-radius", rows: "15" %>
         				    <% end %>
   								</div>
     				    </div>
