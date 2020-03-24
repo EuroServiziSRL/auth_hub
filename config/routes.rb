@@ -56,7 +56,7 @@ AuthHub::Engine.routes.draw do
     get '/' => 'application#user_dashboard', :as => :auth_hub_index
     get 'ext_logout' => 'application#ext_logout', :as => :external_logout
     post "cambia_ente" => "application#cambia_ente", :as => :cambia_ente
-
+    get 'aggiorna_clienti' => 'application#aggiorna_clienti', :as => :aggiorna_clienti, :defaults => { :format => 'json' }
     
     get 'cambia_password_admin' => 'application#cambia_password_admin', :as => :cambia_password_admin
     post 'aggiorna_password' => 'application#aggiorna_password', :as => :aggiorna_password
