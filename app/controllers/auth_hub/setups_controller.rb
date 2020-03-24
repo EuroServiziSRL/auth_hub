@@ -100,8 +100,8 @@ module AuthHub
             Thread.current[:db_name] = nome_db
             AuthHub::Setup.establish_connection({})
           rescue => exc
-            puts exc.message
-            puts exc.backtrace.inspect
+            logger.error exc.message
+            logger.error exc.backtrace.join("\n")
             flash[:error] = "Database non gestibile"
             redirect_to index_admin_path
           end
