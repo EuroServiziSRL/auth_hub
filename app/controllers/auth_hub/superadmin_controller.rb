@@ -7,6 +7,9 @@ module AuthHub
     #view con vari link
     def index
       @nome_pagina = "Home"
+      @errore = flash[:error]
+      @successo = flash[:success]
+      @warning = flash[:warning]
     end
   
     def valorizza_link_navigazione
