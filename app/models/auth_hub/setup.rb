@@ -48,5 +48,18 @@ module AuthHub
       }
     
      
+      def utenze_accesso
+        case self.ID_ACCESSO
+        when "SU"
+          "Superadmin"
+        when "AM"
+          "Admin Portale, Superadmin"
+        when "AS"
+          "Admin Servizi, Admin Portale, Superadmin"
+        else
+          "Utente" 
+        end
+      end
+
     end
 end

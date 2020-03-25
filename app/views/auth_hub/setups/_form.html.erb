@@ -32,6 +32,18 @@
 								<p class="form-control-static"><%= @setup.CODICE %></p>
 							</div>
 						</div>
+						<div class="col-sm-12">
+							<div class="form-group form-group-sm" id="note_container">
+								<label class="control-label" for="note"></label>
+								<p class="form-control-static"><%= @setup.NOTE %></p>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="form-group form-group-sm" id="accesso_container">
+								<label class="control-label" for="accesso">Utenze che possono modificare</label>
+								<p class="form-control-static"><%= @setup.utenze_accesso %></p>
+							</div>
+						</div>
 						<div id="msg_errore_yaml" class="col-sm-12 alert alert-danger hide">
 						Problemi nello yaml!
 						</div>
