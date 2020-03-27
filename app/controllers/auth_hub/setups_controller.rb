@@ -97,6 +97,7 @@ module AuthHub
             inst = get_installazione
             raise "Installazione non presente" if inst.blank?
             nome_db = !inst.SPIDERDB.blank? ? inst.SPIDERDB : inst.HIPPODB
+            #setto nel thread il nome del db e poi chiamo la funzione del model
             Thread.current[:db_name] = nome_db
             AuthHub::Setup.establish_connection({})
           rescue => exc

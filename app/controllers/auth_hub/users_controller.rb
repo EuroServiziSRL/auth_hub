@@ -114,6 +114,7 @@ module AuthHub
           render :edit
       else
           begin
+            @user.email = user_params[:email] if @current_user.superadmin_role
             @user.nome = user_params[:nome]
             @user.cognome = user_params[:cognome]
             @user.nome_cognome = user_params[:nome_cognome]
