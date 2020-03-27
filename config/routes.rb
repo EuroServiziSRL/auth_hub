@@ -1,6 +1,10 @@
 AuthHub::Engine.routes.draw do
     
-  use_doorkeeper
+    use_doorkeeper do
+      # it accepts :authorizations, :tokens, :token_info, :applications and :authorized_applications
+      controllers :tokens => 'custom_tokens'
+    end
+    
     #nella route mostra doppio auth_hub ma funziona!
     
     #Sistema le route togliendo l'engine davanti
