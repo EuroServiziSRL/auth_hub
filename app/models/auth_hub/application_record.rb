@@ -4,7 +4,7 @@ module AuthHub
     establish_connection :"#{Rails.env}"  #cambia all'inizio il database
     
     #Per cambio dinamico della connessione
-    def self.establish_connection(params)
+    def self.establish_connection(params=nil)
         config   = Rails.configuration.database_configuration
         host     = config[Rails.env]["host"]
         database = config[Rails.env]["database"]

@@ -4,6 +4,7 @@ module AuthHub
   class SetupsController < ApplicationController
     before_action :set_db_name
     before_action :set_setup, only: [:show, :edit, :update, :destroy]
+    after_action :set_db_default
 
     #USARE:
     #https://mavens.github.io/2016/02/09/rails-multi-db
@@ -107,6 +108,19 @@ module AuthHub
             redirect_to index_admin_path
           end
         end
+      end
+
+      #imposto la connessione al db di default 
+      def set_db_default
+        begin
+          AuthHub::ApplicationRecord.establish_connection()
+        rescue => exc
+          logger.error exc.message
+          logger.error exc.backtrace.join("\n")
+          flash[:error] = "Database principale non selezionato"
+          redirect_to index_admin_path
+        end
+        
       end
       
       #imposto il nome del db a livello di thread corrente 

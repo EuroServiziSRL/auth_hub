@@ -21,9 +21,9 @@ module AuthHub
                       #resource.extend(Devise::Models::DatabaseAuthenticatablePatch)
                       resource.password = resource_params[:password]
                       if resource.save!(context: :aggiorna_password)
-                          flash[:success] = "Password Aggiornata con successo."
+                          flash[:success] = "Password Aggiornata con successo. Autenticarsi con la nuova Password"
                           #bypass_sign_in resource, scope: scope
-                          redirect_to dashboard_path
+                          redirect_to new_user_session_path
                       else
                           clean_up_passwords(resource)
                           redirect_to user_password_expired_path

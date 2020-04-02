@@ -125,8 +125,8 @@ module AuthHub
                     begin
                       @current_user.password = user_params[:password]
                       @current_user.save!(context: :aggiorna_password)
-                      flash[:success] = "Password Aggiornata con successo."
-                      redirect_to auth_hub.index_admin_path
+                      flash[:success] = "Password Aggiornata con successo. Autenticarsi con la nuova Password."
+                      redirect_to auth_hub.new_user_session_path
                     rescue Exception => e
                       flash[:error] = e.message
                       puts e.backtrace.inspect
