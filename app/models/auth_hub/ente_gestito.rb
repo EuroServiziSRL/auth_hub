@@ -22,7 +22,7 @@ module AuthHub
     
     #metodo richiamato da gemma rails_admin
     def custom_label_method
-        "#{self.clienti_cliente.CLIENTE}"
+      self.clienti_cliente.blank? ? '' : "#{self.clienti_cliente.CLIENTE}"
     end
     
   end

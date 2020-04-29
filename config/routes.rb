@@ -67,7 +67,9 @@ AuthHub::Engine.routes.draw do
     
     get 'sa' => 'superadmin#index', :as => :index_superadmin
     get 'admin' => 'admin#index', :as => :index_admin
-  
+    
+    get 'api/get_info_login_cliente' => 'api#get_info_login_cliente', :as => :get_info_login_cliente
+    
     resources :setups
   
 end

@@ -3,8 +3,8 @@ module AuthHub
         self.table_name = 'clienti__attivazione'
         self.primary_key = :ID
         
-        belongs_to :clienti_cliente, class_name: 'ClientiCliente', :foreign_key => "ID_CLIENTE"
-        belongs_to :ordine, class_name: 'ClientiOrdine', :foreign_key => "ID_ORDINE"
+        belongs_to :clienti_cliente, class_name: 'AuthHub::ClientiCliente', :foreign_key => "ID_CLIENTE"
+        belongs_to :ordine, class_name: 'AuthHub::ClientiOrdine', :foreign_key => "ID_ORDINE"
         
         #metodo richiamato da gemma rails_admin
         def custom_label_method

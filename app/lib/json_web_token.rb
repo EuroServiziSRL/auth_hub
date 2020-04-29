@@ -23,5 +23,10 @@ class JsonWebToken
             end
         end
   
+        def valid_token(decoded_token)
+            #lo start deve essere non più vecchio di 10 minuti
+            data_valida = (DateTime.strptime(decoded_token['start'],"%d%m%Y%H%M%S") > (DateTime.now.new_offset(0)-(((1.0/24)/60)*10)) )
+        end
+
     end
 end
