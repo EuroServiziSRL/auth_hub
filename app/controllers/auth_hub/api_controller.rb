@@ -20,13 +20,13 @@ module AuthHub
                     #controllo se al cliente è stato attivato il tipo di login richiesto
                     case hash_return['tipo_login']
                     when 'cie'
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } unless info_cliente.cie 
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return unless info_cliente.cie 
                     when 'spid'
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } unless info_cliente.spid 
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return unless info_cliente.spid 
                     when 'eidas'
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } unless info_cliente.eidas 
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return unless info_cliente.eidas 
                     else    
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login richiesto non specificato" }
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login richiesto non specificato" } and return
                     end
                     #creo jwe
                     priv_key = OpenSSL::PKey::RSA.new(File.read(Settings.path_key_jwe))
@@ -48,7 +48,11 @@ module AuthHub
                         'org_url' => info_cliente['org_url'],
                         'key_b64' => Base64.strict_encode64(key_deflate),
                         'cert_b64' => Base64.strict_encode64(cert_deflate),
-                        'app_ext' => info_cliente['app_ext']
+                        'app_ext' => info_cliente['app_ext'],
+                        'spid_pre_prod' => info_cliente['spid_pre_prod'],
+                        'cie_pre_prod' => info_cliente['cie_pre_prod'],
+                        'eidas_pre_prod' => info_cliente['eidas_pre_prod'],
+                        'aggregato' => info_cliente['aggregato']
                     }.to_json
 
                     encrypted = JWE.encrypt(payload, priv_key, zip: 'DEF')

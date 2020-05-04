@@ -4,3 +4,9 @@ it:
             all: "Non sei autorizzato su questa risorsa."
         index:
             AuthHub::User: "Non sei autorizzato a vedere gli utenti."
+    activerecord:
+        models:
+            info_login_cliente:
+                spid_pre_prod: "Spid Validator"
+                cie_pre_prod: "CIE TEST"
+                eidas_pre_prod: "eIDAS QA"

@@ -12,9 +12,12 @@ module AuthHub
         # t.string  :org_display_name,    null: false
         # t.string  :org_url,             null: false
         # t.boolean :spid,                null: true
-        # t.boolean :eidas,               null: true
+        # t.boolean :spid_pre_prod,       null: true
         # t.boolean :cie,                 null: true
-        # t.boolean :aggregato,                 null: true
+        # t.boolean :cie_pre_prod,        null: true
+        # t.boolean :eidas,               null: true
+        # t.boolean :eidas_pre_prod,      null: true
+        # t.boolean :aggregato,           null: true
         # t.belongs_to :clienti_cliente,  index: true,  optional: true
         
         mount_uploader :cert_path, CertUploader
