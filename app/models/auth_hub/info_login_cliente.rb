@@ -1,5 +1,8 @@
 module AuthHub
     class InfoLoginCliente < ApplicationRecord
+        before_save :check_modifiche
+        before_create :aggiungi_metadata
+
         # t.string  :key_path,            null: false
         # t.string  :cert_path,           null: false
         # t.boolean :app_ext,             null: true
@@ -18,6 +21,7 @@ module AuthHub
         # t.boolean :eidas,               null: true
         # t.boolean :eidas_pre_prod,      null: true
         # t.boolean :aggregato,           null: true
+        # t.string  :stato_metadata,      null: false   aggiunto,modificato,cancellato, inviato(quando viene inviato ad agid assume questo stato)
         # t.belongs_to :clienti_cliente,  index: true,  optional: true
         
         mount_uploader :cert_path, CertUploader
@@ -26,5 +30,17 @@ module AuthHub
         belongs_to :clienti_cliente, class_name: 'AuthHub::ClientiCliente'
         
         validates :key_path, :cert_path, :issuer, :org_name, :org_display_name, :org_url, presence: true
+
+        def check_modifiche
+            if self.changed?
+                self.stato_metadata = 'modificato'
+            end
+        end
+
+        def aggiungi_metadata
+            self.stato_metadata = 'aggiunto'
+        end
+
+
     end
 end

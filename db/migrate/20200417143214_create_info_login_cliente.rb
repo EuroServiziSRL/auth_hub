@@ -19,6 +19,10 @@ class CreateInfoLoginCliente < ActiveRecord::Migration[5.2]
       t.boolean :eidas,               null: true
       t.boolean :eidas_pre_prod,      null: true
       t.boolean :aggregato,           null: true
+      t.string  :cod_ipa_aggregato,   null: false
+      t.string  :p_iva_aggregato,     null: false
+      t.string  :cf_aggregato,        null: false
+      t.string  :stato_metadata,      null: false
       t.belongs_to :clienti_cliente,  index: true,  optional: true
     end
   end

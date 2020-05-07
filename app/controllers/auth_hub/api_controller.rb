@@ -52,7 +52,10 @@ module AuthHub
                         'spid_pre_prod' => info_cliente['spid_pre_prod'],
                         'cie_pre_prod' => info_cliente['cie_pre_prod'],
                         'eidas_pre_prod' => info_cliente['eidas_pre_prod'],
-                        'aggregato' => info_cliente['aggregato']
+                        'aggregato' => info_cliente['aggregato'],
+                        'cod_ipa_aggregato' => info_cliente['cod_ipa_aggregato'],
+                        'p_iva_aggregato' => info_cliente['p_iva_aggregato'],
+                        'cf_aggregato' => info_cliente['cf_aggregato']
                     }.to_json
 
                     encrypted = JWE.encrypt(payload, priv_key, zip: 'DEF')
