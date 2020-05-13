@@ -29,7 +29,7 @@ module AuthHub
 
         belongs_to :clienti_cliente, class_name: 'AuthHub::ClientiCliente'
         
-        validates :key_path, :cert_path, :issuer, :org_name, :org_display_name, :org_url, presence: true
+        validates :issuer, :org_name, :org_display_name, :org_url, presence: true
 
         def check_modifiche
             if self.changed?
@@ -39,6 +39,19 @@ module AuthHub
 
         def aggiungi_metadata
             self.stato_metadata = 'aggiunto'
+        end
+
+        def get_stato_manifest
+            case self.stato_metadata
+            when 'aggiunto'
+                'POST'
+            when 'modificato'
+                'PUT'
+            when 'cancellato'
+                'DELETE'
+            else
+                'PUT' #se per errore lo inserisce nello zip lo metto come modificato
+            end
         end
 
 

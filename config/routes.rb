@@ -69,6 +69,7 @@ AuthHub::Engine.routes.draw do
     get 'admin' => 'admin#index', :as => :index_admin
     
     get 'api/get_info_login_cliente' => 'api#get_info_login_cliente', :as => :get_info_login_cliente
+    get 'api/genera_zip_metadata' => 'api#genera_zip_metadata', :as => :genera_zip_metadata
     
     resources :setups
   
