@@ -66,6 +66,9 @@ AuthHub::Engine.routes.draw do
     post 'aggiorna_password' => 'application#aggiorna_password', :as => :aggiorna_password
     
     get 'sa' => 'superadmin#index', :as => :index_superadmin
+    get 'applicazioni_oauth2' => 'superadmin#applicazioni_oauth2', :as => :applicazioni_oauth2
+    get 'invia_metadata_agid' => 'superadmin#invia_metadata_agid', :as => :invia_metadata_agid
+
     get 'admin' => 'admin#index', :as => :index_admin
     
     get 'api/get_info_login_cliente' => 'api#get_info_login_cliente', :as => :get_info_login_cliente

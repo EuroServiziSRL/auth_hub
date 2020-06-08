@@ -31,12 +31,29 @@ module AuthHub
                     end
                     #creo jwe
                     priv_key = OpenSSL::PKey::RSA.new(File.read(Settings.path_key_jwe))
-                    #leggo certificato, comprimo e metto in base64
-                    path_cert = "#{Rails.root}/data/certs_clienti/cert_path/#{info_cliente['client']}/#{info_cliente['cert_path']}"
-                    cert_deflate = Zlib::Deflate.deflate(File.read(path_cert))
-                    #leggo chiave, comprimo e metto in base64
-                    path_key = "#{Rails.root}/data/certs_clienti/key_path/#{info_cliente['client']}/#{info_cliente['key_path']}"
-                    key_deflate = Zlib::Deflate.deflate(File.read(path_key))
+                    
+                    #Se richiedo login cie oppure sono con con spid/eidas e non sono cliente aggregato
+                    if hash_return['tipo_login'] == 'cie' || !info_cliente.aggregato
+                        #leggo certificato, comprimo e metto in base64
+                        path_cert = "#{Rails.root}/data/certs_clienti/cert_path/#{info_cliente['client']}/#{info_cliente['cert_path']}"
+                        if !info_cliente['cert_path'].blank? && File.exists?(path_cert)
+                            cert_deflate = Zlib::Deflate.deflate(File.read(path_cert))
+                            cert_b64 = Base64.strict_encode64(cert_deflate)
+                        else 
+                            render json: { 'esito' => 'ko', 'msg_errore' => "AH: Certificato per client #{info_cliente['client']} mancante!" } and return
+                        end
+                        #leggo chiave, comprimo e metto in base64
+                        path_key = "#{Rails.root}/data/certs_clienti/key_path/#{info_cliente['client']}/#{info_cliente['key_path']}"
+                        if !info_cliente['key_path'].blank? && File.exists?(path_key)
+                            key_deflate = Zlib::Deflate.deflate(File.read(path_key)) 
+                            key_b64 = Base64.strict_encode64(key_deflate)
+                        else 
+                            render json: { 'esito' => 'ko', 'msg_errore' => "AH: Chiave per client #{info_cliente['client']} mancante!" } and return
+                        end
+                    else
+                        cert_b64 = nil
+                        key_b64 = nil
+                    end                    
                     
                     payload = {
                         'client' => info_cliente['client'],
@@ -47,9 +64,12 @@ module AuthHub
                         'org_name' => info_cliente['org_name'],
                         'org_display_name' => info_cliente['org_display_name'],
                         'org_url' => info_cliente['org_url'],
-                        'key_b64' => Base64.strict_encode64(key_deflate),
-                        'cert_b64' => Base64.strict_encode64(cert_deflate),
+                        'key_b64' => key_b64,
+                        'cert_b64' => cert_b64,
                         'app_ext' => info_cliente['app_ext'],
+                        'spid' => info_cliente['spid'],
+                        'cie' => info_cliente['cie'],
+                        'eidas' => info_cliente['eidas'],
                         'spid_pre_prod' => info_cliente['spid_pre_prod'],
                         'cie_pre_prod' => info_cliente['cie_pre_prod'],
                         'eidas_pre_prod' => info_cliente['eidas_pre_prod'],
@@ -70,15 +90,32 @@ module AuthHub
             end
         end 
 
-        #zip con metadata singoli in xml e un json riepilogativo
+        # La comunicazione del metadata può essere effettuata esclusivamente i giorni
+        # lunedì, mercoledì e venerdì (se feriali) entro e non oltre le ore 15 con un'unica
+        # mail giornaliera, con oggetto “[Metadata Aggregatori]”, contenente, in un unico
+        # file ZIP in allegato:
+        # o un file XML per ogni metadata nuovo o aggiornato;
+        # o un file JSON riepilogativo dei dati degli Aggregati interessati.
+
+        #zip con metadata singoli in xml e un json riepilogativo API        
         def genera_zip_metadata
-            
+            hash_risultato = self.class._genera_zip_metadata
+            render json: hash_risultato 
+        end
+
+
+        
+
+
+        #zip con metadata singoli in xml e un json riepilogativo METODO INTERNO
+        def self._genera_zip_metadata
             info_cliente_results = InfoLoginCliente.where("stato_metadata <> ? AND aggregato = ? AND spid = ?","inviato", true, true)
             unless info_cliente_results.blank?
                 #file zip che viene inviato ad agid, viene salvato sulla data
                 dir_zip_metadata = "#{Rails.root}/data/metadata_aggregati"
                 Dir.mkdir(dir_zip_metadata) unless File.exists?(dir_zip_metadata) 
-                zip_file = File.new("#{dir_zip_metadata}/"+Time.now.strftime("%Y%m%d%H%M%S")+".zip", 'w')
+                file_zip_path = "#{dir_zip_metadata}/md-aggr-#{Settings.hash_aggregatore['piva_aggregatore']}-#{Time.now.strftime('%Y%m%d')}.zip"
+                zip_file = File.new(file_zip_path, 'w')
                 #creo uno zip mettendoci dentro il valore della response che arriva
                 Zip::OutputStream.open(zip_file.path) do |zip|
                     #oggetto per manifest json
@@ -108,7 +145,7 @@ module AuthHub
                         encrypted = JWE.encrypt(payload, priv_key, zip: 'DEF')
                         response = HTTParty.get(File.join(Settings.app_auth_url,"spid/get_metadata"),
                             :headers => { 'Authorization' => "Bearer #{encrypted}" },
-                            :body => {},
+                            :body => { 'client_id' => info_cliente['client'], 'zip' => 'true'},
                             :follow_redirects => false,
                             :timeout => 500 )
                         unless response.blank?
@@ -123,7 +160,7 @@ module AuthHub
                                         'metadataFilename': "c_X000__57575757575.xml",
                                         'metadataUrl': (info_cliente.url_metadata_ext.blank? ? info_cliente.issuer+"/portal/auth/spid/sp_metadata" : info_cliente.url_metadata_ext)
                                     }
-                                    zip.put_next_entry("temp_metadata_#{info_cliente['client']}.xml")
+                                    zip.put_next_entry("#{(info_cliente.cod_ipa_aggregato.blank? ? info_cliente.p_iva_aggregato : info_cliente.cod_ipa_aggregato)}__#{Settings.hash_aggregatore['piva_aggregatore']}.xml")
                                     zip.puts response['metadata']
                                 rescue => exc
                                     logger.error  "AH: Problemi recupero metadata di #{info_cliente['org_name']}"
@@ -147,15 +184,13 @@ module AuthHub
                         'dateTime': Time.now.strftime('%Y-%m-%dT%H:%M:%S'),
                         'metadata': array_metadati
                     }
-                    zip.put_next_entry('manifest.json')
-                    zip.puts hash_manifest.to_json
+                    zip.put_next_entry("md-aggr-#{Settings.hash_aggregatore['piva_aggregatore']}-#{Time.now.strftime('%Y%m%d')}.json")
+                    zip.puts JSON.pretty_generate(hash_manifest)
                 end
-
-                render json: { 'esito' => 'ok', 'msg_errore' => "Metadata generati" }
+                return { 'esito' => 'ok', 'msg' => "Metadata generati", 'path_zip' => file_zip_path }
             else
-                render json: { 'esito' => 'ko', 'msg' => "Non ci sono metadati da aggiornare" }
+                return { 'esito' => 'ko', 'msg_errore' => "Non ci sono metadati da aggiornare" }
             end
-            
         end
 
 

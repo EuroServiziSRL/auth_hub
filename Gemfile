@@ -12,14 +12,15 @@ gemspec
 
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '= 5.0.7'
 gem 'sprockets', '= 3.7.1'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
-gem 'bootstrap-sass', '~> 3.3.7'
-gem 'autoprefixer-rails'
+gem 'bootstrap-sass', '= 3.3.7'
+gem 'autoprefixer-rails', '= 9.6.1'
 #spostate qui fin che non sistemo gemma devise_security_extension, DA FARE
-gem 'devise'
-gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git' #le gemma non la installa, vuole railties < 5.0
-gem 'omniauth'
-gem 'omniauth-azure-oauth2'
-gem 'filterrific'
+# gem 'devise'
+# gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git' #le gemma non la installa, vuole railties < 5.0
+gem 'omniauth', '= 1.9.0'
+gem 'omniauth-azure-oauth2', '= 0.0.10'
+gem 'filterrific', '= 5.2.0'
+gem 'will_paginate', '= 3.3.0'
