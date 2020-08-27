@@ -7,13 +7,18 @@ module AuthHub
             database = config[::Rails.env]["database"]
             username = config[::Rails.env]["username"]
             password = config[::Rails.env]["password"]
-            default_params = { :adapter  => "mysql2",
-            :host     => host,
-            :username => username,
-            :password => password,
-            :database => database }
-            logger.debug "\n\n Connetto al db #{database} per jwt \n"
-            ::ActiveRecord::Base.establish_connection(default_params)
+            #controllo se non sono collegato al db che mi serve
+            unless ::ActiveRecord::Base.connection.current_database == database
+                default_params = { :adapter  => "mysql2",
+                :host     => host,
+                :username => username,
+                :password => password,
+                :database => database }
+                logger.debug "\n\n Disconnetto dal db #{::ActiveRecord::Base.connection.current_database} per jwt \n"
+                ::ActiveRecord::Base.connection.disconnect!
+                logger.debug "\n\n Connetto al db #{database} per jwt \n"
+                ::ActiveRecord::Base.establish_connection(default_params)
+            end
             headers.merge!(authorize_response.headers)
             render json: authorize_response.body,
                 status: authorize_response.status

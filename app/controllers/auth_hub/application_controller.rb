@@ -10,16 +10,15 @@ module AuthHub
             redirect_to auth_hub_index_path
         end
         
-        @@clienti = {}
+        @@clienti ||= {}
 
         def set_class_var
             if @@clienti.blank?
-                clienti ||= AuthHub::ClientiCliente.all
                 #var di classe
-                hash_clienti = {}
-                clienti.each{|cliente| hash_clienti[cliente.ID] = cliente.CLIENTE } unless clienti.blank? 
+                @@clienti = {}
+                clienti = AuthHub::ClientiCliente.all
+                clienti.each{|cliente| @@clienti[cliente.ID] = cliente.CLIENTE } unless clienti.blank? 
                 #hash dei clienti, chiave = id della tabella e valore = campo CLIENTE
-                @@clienti = hash_clienti
             end
         end
 
@@ -27,14 +26,16 @@ module AuthHub
         def aggiorna_clienti
             @esito = {}
             begin
-                clienti ||= AuthHub::ClientiCliente.all
+                clienti = AuthHub::ClientiCliente.all
                 unless clienti.blank?
                     #var di classe
-                    hash_clienti = {}
-                    clienti.each{|cliente| hash_clienti[cliente.ID] = cliente.CLIENTE } unless clienti.blank? 
+                    @@clienti = {}
+                    clienti.each{|cliente| @@clienti[cliente.ID] = cliente.CLIENTE }
                     #hash dei clienti, chiave = id della tabella e valore = campo CLIENTE
-                    @@clienti = hash_clienti
                     @esito['stato'] = 'ok'
+                else
+                    @esito['stato'] = 'ko'
+                    @esito['errore'] = "Clienti non presenti in db"
                 end
             rescue => exc
                 logger.error exc.message

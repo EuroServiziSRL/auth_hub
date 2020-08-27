@@ -10,12 +10,15 @@ module AuthHub
         database = config[Rails.env]["database"]
         username = config[Rails.env]["username"]
         password = config[Rails.env]["password"]
-        default_params = { :adapter  => "mysql2",
-          :host     => host,
-          :username => username,
-          :password => password,
-          :database => database }
-        ActiveRecord::Base.establish_connection(default_params)
+        unless ActiveRecord::Base.connection.current_database == database
+            default_params = { :adapter  => "mysql2",
+              :host     => host,
+              :username => username,
+              :password => password,
+              :database => database }
+            ActiveRecord::Base.connection.disconnect!
+            ActiveRecord::Base.establish_connection(default_params)
+        end
     end
     
       

@@ -52,7 +52,7 @@
       <% end %>
 
       <h4>Seleziona enti da associare</h4>
-			<%= select_tag 'enti_da_associare[]', options_for_select( @enti.map {|ente| [ente.CLIENTE,ente.ID]}, nil), :multiple => true, :class => 'form-control input-sm no-radius'  %>
+			<%= select_tag 'enti_da_associare[]', options_for_select( @enti.pluck(:CLIENTE, :ID), nil) , :multiple => true, :class => 'form-control input-sm no-radius'  %>
     </div>
   </div>
   <div class="text-center actions">

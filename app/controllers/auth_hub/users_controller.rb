@@ -148,10 +148,11 @@ module AuthHub
     #Vedo gli enti associati ad un utente e la select per associarne di nuovi (select multipla)
     # GET /users/1/associa_enti
     def associa_enti
+      
       @nome_pagina = "Associa Enti ad Amministratore"
       @esito = flash['esito'] unless flash.blank?
       @utente_selezionato = User.find(params[:id])
-      enti_associati = @utente_selezionato.enti_gestiti.map{|ente| ente.clienti_cliente_id} if @utente_selezionato.enti_gestiti.length > 0
+      enti_associati = @utente_selezionato.enti_gestiti.pluck(:clienti_cliente_id) if @utente_selezionato.enti_gestiti.length > 0
       if enti_associati.blank?
         @enti = ClientiCliente.all.order("CLIENTE asc")
       else
