@@ -473,11 +473,11 @@ module AuthHub
             #se non ho il path controllo il ruolo dell'utente, path in base al ruolo
             if path.blank?
               if user_instance.superadmin_role
-                path = index_superadmin_path
+                path = AuthHub::Engine.routes.url_helpers.index_superadmin_path #index_superadmin_path
               elsif user_instance.admin_role
-                path = index_admin_path
+                path = AuthHub::Engine.routes.url_helpers.index_admin_path #index_admin_path
               elsif user_instance.admin_servizi
-                path = index_admin_path
+                path = AuthHub::Engine.routes.url_helpers.index_admin_path #index_admin_path
               else #user_role
                 path = dashboard_path
               end
