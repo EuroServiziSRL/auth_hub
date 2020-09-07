@@ -351,16 +351,16 @@ module AuthHub
                     next if installazione.SPIDERURL.blank? && session['dest_app_civ_next'] == 'servizi_online' #sono su installazione php e mi serve url ruby
                     next if installazione.HIPPO.blank? && session['dest_app_civ_next'] != 'servizi_online' #sono su installazione ruby e mi serve url php
                     #VECCHIO REDIRECT A dominio/admin
-                    # if session['dest_app_civ_next'] == 'servizi_online'
-                    #     raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
-                    #     dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site )
-                    #     dominio = "https://#{dominio}" if (dominio =~ /http/).nil?
-                    #     path = "#{(dominio[-1]=='/' ? dominio[0..-2] : dominio)}#{helpers.map_funzioni_next(session['dest_app_civ_next'])}"
-                    # else
-                    #     raise "Url portale hippo mancante" if installazione.HIPPO.blank?
-                    #     path = installazione.HIPPO+helpers.map_funzioni_next(session['dest_app_civ_next'])+"/login.php"
-                    # end
-                    path = nil if session['dest_app_civ_next'] == 'servizi_online' #mettendolo a nil il path viene assegnato dopo
+                    if session['dest_app_civ_next'] == 'servizi_online'
+                        # raise "Url portale spider mancante" if installazione.SPIDER_PORTAL.blank? && installazione.SPIDERURL.blank?
+                        # dominio = installazione.SPIDERURL || ( installazione.SPIDER_PORTAL.blank? ? "" : Addressable::URI.parse(installazione.SPIDER_PORTAL).site )
+                        # dominio = "https://#{dominio}" if (dominio =~ /http/).nil?
+                        # path = "#{(dominio[-1]=='/' ? dominio[0..-2] : dominio)}#{helpers.map_funzioni_next(session['dest_app_civ_next'])}"
+                        path = nil #non settando il path vado poi a settare che vada nella dashboard auth_hub
+                    else
+                        raise "Url portale hippo mancante" if installazione.HIPPO.blank?
+                        path = installazione.HIPPO+helpers.map_funzioni_next(session['dest_app_civ_next'])+"/login.php"
+                    end
                   }
 
                 else
