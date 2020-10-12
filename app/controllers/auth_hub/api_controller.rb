@@ -161,7 +161,7 @@ module AuthHub
                                     }
                                     #se faccio una DELETE non metto metadataUrl
                                     if info_cliente.get_stato_manifest != "DELETE" 
-                                        array_metadati.last['metadataUrl'] = (info_cliente.url_metadata_ext.blank? ? info_cliente.issuer+"/portal/auth/spid/sp_metadata" : info_cliente.url_metadata_ext)
+                                        array_metadati.last['metadataUrl'] = (info_cliente.url_metadata_ext.blank? ? info_cliente.org_url+"/portal/auth/spid/sp_metadata" : info_cliente.url_metadata_ext)
                                     end
                                     zip.put_next_entry("#{(info_cliente.cod_ipa_aggregato.blank? ? info_cliente.p_iva_aggregato : info_cliente.cod_ipa_aggregato)}__#{Settings.hash_aggregatore['piva_aggregatore']}.xml")
                                     zip.puts response['metadata']
