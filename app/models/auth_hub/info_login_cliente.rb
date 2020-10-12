@@ -31,6 +31,8 @@ module AuthHub
         # t.string  :cod_ipa_aggregato,   null: false
         # t.string  :p_iva_aggregato,     null: false
         # t.string  :cf_aggregato,        null: false
+        # t.string  :email_aggregato,     null: false
+        # t.string  :telefono_aggregato,  null: false
         # t.string  :stato_metadata,      null: false   aggiunto,modificato,cancellato, inviato(quando viene inviato ad agid assume questo stato)
         # t.belongs_to :clienti_cliente,  index: true,  optional: true
         
@@ -39,7 +41,7 @@ module AuthHub
 
         belongs_to :clienti_cliente, class_name: 'AuthHub::ClientiCliente'
         
-        validates :issuer, :org_name, :org_display_name, :org_url, presence: true
+        validates :issuer, :org_name, :org_display_name, :org_url, :email_aggregato,  presence: true
 
         #se sono state fatte delle modifiche al record cambio lo stato e aggiorno la cache su auth
         #se non riesco ad aggiornare la cache su auth schedulare su una cosa l'aggiornamento

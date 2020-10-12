@@ -76,7 +76,9 @@ module AuthHub
                         'aggregato' => info_cliente['aggregato'],
                         'cod_ipa_aggregato' => info_cliente['cod_ipa_aggregato'],
                         'p_iva_aggregato' => info_cliente['p_iva_aggregato'],
-                        'cf_aggregato' => info_cliente['cf_aggregato']
+                        'cf_aggregato' => info_cliente['cf_aggregato'],
+                        'email_aggregato' => info_cliente['email_aggregato'],
+                        'telefono_aggregato' => info_cliente['telefono_aggregato']
                     }.to_json
 
                     encrypted = JWE.encrypt(payload, priv_key, zip: 'DEF')
@@ -140,7 +142,9 @@ module AuthHub
                             'aggregato' => info_cliente['aggregato'],
                             'cod_ipa_aggregato' => info_cliente['cod_ipa_aggregato'],
                             'p_iva_aggregato' => info_cliente['p_iva_aggregato'],
-                            'cf_aggregato' => info_cliente['cf_aggregato']
+                            'cf_aggregato' => info_cliente['cf_aggregato'],
+                            'email_aggregato' => info_cliente['email_aggregato'],
+                            'telefono_aggregato' => info_cliente['telefono_aggregato']
                         }.to_json
                         encrypted = JWE.encrypt(payload, priv_key, zip: 'DEF')
                         response = HTTParty.get(File.join(Settings.app_auth_url,"spid/get_metadata"),
