@@ -35,13 +35,27 @@ module AuthHub
   
 
     def invia_metadata_agid
-      result = ApiController._genera_zip_metadata
-      if result['esito'] == 'ok'
-        #ho il metadata in result['path_zip']
-        Mailer.with(allegato: result['path_zip']).invia_metadata_agid.deliver_now
-        redirect_to index_superadmin_path
-      else
-
+      @esito = {}
+      begin 
+        result = ApiController._genera_zip_metadata
+        if result['esito'] == 'ok'
+          #ho il metadata in result['path_zip']
+          Mailer.with(allegato: result['path_zip']).invia_metadata_agid.deliver_now
+          @esito['stato'] = 'ok'
+          redirect_to index_superadmin_path
+        else
+          @esito['stato'] = 'ko'
+          @esito['errore'] = "Problemi nel generare lo zip dei metadati"
+          logger.error "\n\n Errore nell'invio della mail con metadata ad AGID"
+        end
+      rescue => exc
+        logger.error exc.message
+        logger.error exc.backtrace.join("\n")
+        @esito['stato'] = 'ko'
+        @esito['errore'] = exc.message
+      end
+      respond_to do |format| 
+        format.json { render json: @esito }                 
       end
     end
 
