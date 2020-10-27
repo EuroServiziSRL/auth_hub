@@ -21,11 +21,11 @@ module AuthHub
                     #controllo se al cliente è stato attivato il tipo di login richiesto
                     case hash_return['tipo_login']
                     when 'cie'
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return unless info_cliente.cie 
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return if !info_cliente.cie && !info_cliente.cie_pre_prod
                     when 'spid'
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return unless info_cliente.spid 
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return if !info_cliente.spid && !info_cliente.spid_pre_prod
                     when 'eidas'
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return unless info_cliente.eidas 
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return if !info_cliente.eidas && !info_cliente.eidas_pre_prod
                     else    
                         render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login richiesto non specificato" } and return
                     end
