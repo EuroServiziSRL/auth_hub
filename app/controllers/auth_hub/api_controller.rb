@@ -32,8 +32,8 @@ module AuthHub
                     #creo jwe
                     priv_key = OpenSSL::PKey::RSA.new(File.read(Settings.path_key_jwe))
                     
-                    #Se richiedo login cie oppure sono con con spid/eidas e non sono cliente aggregato
-                    if hash_return['tipo_login'] == 'cie' || !info_cliente.aggregato
+                    #Se non sono cliente aggregato
+                    if !info_cliente.aggregato
                         #leggo certificato, comprimo e metto in base64
                         path_cert = "#{Rails.root}/data/certs_clienti/cert_path/#{info_cliente['client']}/#{info_cliente['cert_path']}"
                         if !info_cliente['cert_path'].blank? && File.exists?(path_cert)
