@@ -116,7 +116,7 @@ module AuthHub
                 #file zip che viene inviato ad agid, viene salvato sulla data
                 dir_zip_metadata = "#{Rails.root}/data/metadata_aggregati"
                 Dir.mkdir(dir_zip_metadata) unless File.exists?(dir_zip_metadata) 
-                file_zip_path = "#{dir_zip_metadata}/md-aggr-#{Settings.hash_aggregatore['piva_aggregatore']}-#{Time.now.strftime('%Y%m%d')}.zip"
+                file_zip_path = "#{dir_zip_metadata}/md-aggr-#{Settings.hash_aggregatore['piva_aggregatore']}_#{Time.now.strftime('%Y%m%d')}.zip"
                 zip_file = File.new(file_zip_path, 'w')
                 #creo uno zip mettendoci dentro il valore della response che arriva
                 Zip::OutputStream.open(zip_file.path) do |zip|
@@ -191,7 +191,7 @@ module AuthHub
                         'dateTime': Time.now.strftime('%Y-%m-%dT%H:%M:%S'),
                         'metadata': array_metadati
                     }
-                    zip.put_next_entry("md-aggr-#{Settings.hash_aggregatore['piva_aggregatore']}-#{Time.now.strftime('%Y%m%d')}.json")
+                    zip.put_next_entry("md-aggr-#{Settings.hash_aggregatore['piva_aggregatore']}_#{Time.now.strftime('%Y%m%d')}.json")
                     zip.puts JSON.pretty_generate(hash_manifest)
                 end
                 return { 'esito' => 'ok', 'msg' => "Metadata generati", 'path_zip' => file_zip_path }
