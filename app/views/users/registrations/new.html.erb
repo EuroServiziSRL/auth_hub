@@ -1,87 +1,111 @@
 <div class="card-box">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <% unless @errore.blank? %>
-          <div class="alert alert-danger"><%= @errore %></div>
-      <% end %>
-      <%= form_for(resource, as: resource_name, url: user_registration_path, class: "form-horizontal") do |f| %>
-        <%= devise_error_messages! %>
-        <div class="panel panel-default">
-            <div class="panel-heading panel-heading-lg">Registrazione</div>
-            
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="row">
-                    <div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="ente">
-      								  <label class="control-label" for="ente">Ente</label>
-      								  <%= f.text_field :ente, class: "form-control input-sm no-radius" %>
-      								</div>
-      							</div>
-                  <!--
-                    <div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="ente_associato">
-      								  <label class="control-label" for="ente_associato">Ente Associato</label>
-      								  <%= f.collection_select(:clienti_cliente_ids, AuthHub::ClientiCliente.where('ATTIVO': true).order('CLIENTE asc'), :id, :CLIENTE) %>
-      								</div>
-      							</div>
-  					      -->
-                    <div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="nome">
-      								  <label class="control-label" for="nome">Nome</label>
-      								  <%= f.text_field :nome, class: "form-control input-sm no-radius" %>
-      								</div>
-      							</div>
-                  
-                    <div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="cognome">
-      								  <label class="control-label" for="cognome">Cognome</label>
-      								  <%= f.text_field :cognome, class: "form-control input-sm no-radius" %>
-      								</div>
-      							</div>
-                    
-                    <div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="email">
-      								  <label class="control-label" for="email">E-mail</label>
-      								  <%= f.text_field :email, class: "form-control input-sm no-radius" %>
-      								</div>
-      							</div>
-      							
-      							<div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="telefono">
-      								  <label class="control-label" for="telefono">Telefono</label>
-      								  <%= f.text_field :telefono, class: "form-control input-sm no-radius" %>
-      								</div>
-      							</div>
-      							
-      							<div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="password">
-      								  <label class="control-label" for="password">Password</label>
-      								  <%= f.password_field :password, class: "form-control input-sm no-radius", autofocus: true, autocomplete: "off" %>
-      								</div>
-      							</div>
-                  
-                    <div class="col-sm-12">
-      								<div class="form-group form-group-sm" id="password_confirmation">
-      								  <label class="control-label" for="password_confirmation">Conferma Password</label>
-      								  <%= f.password_field :password_confirmation, class: "form-control input-sm no-radius", autofocus: true, autocomplete: "off" %>
-      								</div>
-      							</div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-        </div>
-        
-        <div class="text-center">
-          <%= f.submit "Conferma", :class => 'btn btn-default btn-sm no-radius btn-primary' %>
-          <%= link_to "Accedi", new_session_path(resource_name), :class => 'btn btn-default btn-sm no-radius btn-primary' %>
-        </div>
-      <% end %>
-    </div>
-  </div>
+  	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+		<% unless @errore.blank? %>
+			<div class="alert alert-danger"><%= @errore %></div>
+		<% end %>
+		<%= form_for(resource, as: resource_name, url: user_registration_path, class: "form-horizontal") do |f| %>
+			<%= devise_error_messages! %>
+			<div class="panel panel-default">
+				<div class="panel-heading panel-heading-lg">Registrazione</div>
+				
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="ente">
+										<label class="control-label" for="ente">Ente</label>
+										<%= f.text_field :ente, class: "form-control input-sm no-radius" %>
+									</div>
+								</div>
+								<!---
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="ente_associato">
+										<label class="control-label" for="ente_associato">Ente Associato</label>
+										<%= f.collection_select(:clienti_cliente_ids, AuthHub::ClientiCliente.where('ATTIVO': true).order('CLIENTE asc'), :id, :CLIENTE) %>
+									</div>
+								</div>
+								-->
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="nome">
+										<label class="control-label" for="nome">Nome</label>
+										<%= f.text_field :nome, class: "form-control input-sm no-radius" %>
+									</div>
+								</div>
+							
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="cognome">
+										<label class="control-label" for="cognome">Cognome</label>
+										<%= f.text_field :cognome, class: "form-control input-sm no-radius" %>
+									</div>
+								</div>
+								
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="email">
+										<label class="control-label" for="email">E-mail</label>
+										<%= f.text_field :email, class: "form-control input-sm no-radius" %>
+									</div>
+								</div>
+											
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="telefono">
+										<label class="control-label" for="telefono">Telefono</label>
+										<%= f.text_field :telefono, class: "form-control input-sm no-radius" %>
+									</div>
+								</div>
+								
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="password">
+										<label class="control-label" for="password">Password</label>
+										<%= f.password_field :password, class: "form-control input-sm no-radius", autofocus: true, autocomplete: "off" %>
+									</div>
+								</div>
+							
+								<div class="col-sm-12">
+									<div class="form-group form-group-sm" id="password_confirmation">
+										<label class="control-label" for="password_confirmation">Conferma Password</label>
+										<%= f.password_field :password_confirmation, class: "form-control input-sm no-radius", autofocus: true, autocomplete: "off" %>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br /><br /> 
+					<!--- Questo sotto serve per mostrare il recaptcha v2 di google -->
+					<div class="row">
+						<div class="col-lg-12">
+							<div id="rechapta_id"></div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="text-center">
+			<%= f.submit "Conferma", :class => 'btn btn-default btn-sm no-radius btn-primary', :id => "btn_submit", :disabled => 'disabled' %>
+			<%= link_to "Accedi", new_session_path(resource_name), :class => 'btn btn-default btn-sm no-radius btn-primary' %>
+			</div>
+		<% end %>
+		</div>
+  	</div>
+  	<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+	<script type="text/javascript">
+			var onloadCallback = function () {
+				grecaptcha.render('rechapta_id', {
+					'sitekey': "<%= @rechapta_site_key %>",
+					'callback': enable_btn_submit,
+					'expired-callback': disable_btn_submit
+				});
+			};
+			function enable_btn_submit() {
+					$("#btn_submit").prop("disabled", false);
+				};
+			function disable_btn_submit() {
+				$("#btn_submit").prop("disabled", true);
+			}
+			
+        </script>  
+
 </div>
 

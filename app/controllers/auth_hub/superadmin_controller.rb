@@ -42,7 +42,7 @@ module AuthHub
           #ho il metadata in result['path_zip']
           Mailer.with(allegato: result['path_zip']).invia_metadata_agid.deliver_now
           @esito['stato'] = 'ok'
-          redirect_to index_superadmin_path
+          #redirect_to index_superadmin_path #tolto per rimanere in pagina e mostrare avviso
         else
           @esito['stato'] = 'ko'
           @esito['errore'] = "Problemi nel generare lo zip dei metadati"
