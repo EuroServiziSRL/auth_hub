@@ -202,7 +202,17 @@ module AuthHub
                 end
             end
             #enti_gestiti = @current_user.enti_gestiti
-            enti_gestiti = @current_user.enti_gestiti.sort_by{ |ente| ente.clienti_cliente.CLIENTE}
+            
+            #creo array ordinato di enti_gestiti, cancello ente_gestito se il cliente non esiste (per eliminazione da db)
+            enti_gestiti = []
+            @current_user.enti_gestiti.each{ |ente| 
+              if ente.clienti_cliente.blank?
+                ente.delete
+              else
+                enti_gestiti << ente
+              end
+            }
+            enti_gestiti = enti_gestiti.sort_by{|ente| ente.clienti_cliente.CLIENTE }
             @array_enti_gestiti = []
             @array_enti_gestiti_solo_id = []
             @ente_principale = session['ente_corrente']
