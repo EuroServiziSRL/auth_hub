@@ -62,7 +62,7 @@ module AuthHub
                             hash_clienti_stesso_ipa[info_cliente['client']] = {}
                             hash_clienti_stesso_ipa[info_cliente['client']]['url_assertion_consumer'] = info_cliente['url_ass_cons_ext'] #se non definito ritorna nil
                             hash_clienti_stesso_ipa[info_cliente['client']]['index_assertion_consumer'] = info_cliente['index_consumer'].blank? ? 0 : info_cliente['index_consumer'] #se non definito nil
-                            hash_clienti_stesso_ipa[info_cliente['client']]['campi_richiesti'] = info_cliente['campi_richiesti'].blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : info_cliente['campi_richiesti'] #se non definito prende campi default
+                            hash_clienti_stesso_ipa[info_cliente['client']]['campi_richiesti'] = info_cliente['campi_richiesti'].blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : info_cliente['campi_richiesti'].split(",") #se non definito prende campi default
                             hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
                             hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
                             hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
@@ -70,7 +70,7 @@ module AuthHub
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = cliente_altro_servizio.url_ass_cons_ext #se non definito ritorna nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['index_assertion_consumer'] = cliente_altro_servizio.index_consumer.blank? ? 0 : cliente_altro_servizio.index_consumer #se non definito nil
-                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : cliente_altro_servizio.campi_richiesti
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : cliente_altro_servizio.campi_richiesti.split(",")
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['external'] = cliente_altro_servizio.app_ext #se non definito ritorna nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['default'] = cliente_altro_servizio.index_consumer.blank? ? true : false #se non definito nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['testo'] = cliente_altro_servizio.org_name
@@ -78,6 +78,8 @@ module AuthHub
                         end
                     end                    
                     
+                    
+
                     payload = {
                         'client' => info_cliente['client'],
                         'secret' => info_cliente['secret'],
@@ -103,7 +105,7 @@ module AuthHub
                         'email_aggregato' => info_cliente['email_aggregato'],
                         'telefono_aggregato' => info_cliente['telefono_aggregato'],
                         'index_consumer' => info_cliente['index_consumer'],
-                        'campi_richiesti' => info_cliente['campi_richiesti'],
+                        'campi_richiesti' => (info_cliente['campi_richiesti'].blank? ? '' : info_cliente['campi_richiesti'].split(",")),
                         'hash_clienti_stesso_ipa' => hash_clienti_stesso_ipa
                     }.to_json
 
@@ -131,10 +133,6 @@ module AuthHub
             render json: hash_risultato 
         end
 
-
-        
-
-
         #zip con metadata singoli in xml e un json riepilogativo METODO INTERNO
         def self._genera_zip_metadata
             info_cliente_results = InfoLoginCliente.where("stato_metadata <> ? AND aggregato = ? AND spid = ?","inviato", true, true)
@@ -148,7 +146,10 @@ module AuthHub
                 Zip::OutputStream.open(zip_file.path) do |zip|
                     #oggetto per manifest json
                     array_metadati = []
-                    info_cliente_results.each{ |info_cliente| 
+                    array_cod_ipa_presenti = []
+                    info_cliente_results.each{ |info_cliente|
+                        #metto solo una entry per i casi di ente con n servizi
+                        next if info_cliente['cod_ipa_aggregato'].blank? || array_cod_ipa_presenti.include?(info_cliente['cod_ipa_aggregato'])
                         #creo jwe
                         priv_key = OpenSSL::PKey::RSA.new(File.read(Settings.path_key_jwe))
                         payload = {
@@ -189,6 +190,7 @@ module AuthHub
                                         'isPrivate': (info_cliente.cod_ipa_aggregato.blank? ? true : false),
                                         'metadataFilename': "#{info_cliente.cod_ipa_aggregato}__#{Settings.hash_aggregatore['piva_aggregatore']}.xml"
                                     }
+                                    array_cod_ipa_presenti << info_cliente.cod_ipa_aggregato
                                     #se faccio una DELETE non metto metadataUrl
                                     if info_cliente.get_stato_manifest != "DELETE" 
                                         array_metadati.last['metadataUrl'] = (info_cliente.url_metadata_ext.blank? ? info_cliente.org_url+"/portal/auth/spid/sp_metadata" : info_cliente.url_metadata_ext)
