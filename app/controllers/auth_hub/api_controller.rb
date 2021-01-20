@@ -77,9 +77,6 @@ module AuthHub
                             }
                         end
                     end                    
-                    
-                    
-
                     payload = {
                         'client' => info_cliente['client'],
                         'secret' => info_cliente['secret'],
@@ -149,7 +146,7 @@ module AuthHub
                     array_cod_ipa_presenti = []
                     info_cliente_results.each{ |info_cliente|
                         #metto solo una entry per i casi di ente con n servizi
-                        next if info_cliente['cod_ipa_aggregato'].blank? || array_cod_ipa_presenti.include?(info_cliente['cod_ipa_aggregato'])
+                        next if info_cliente['cod_ipa_aggregato'].blank? || array_cod_ipa_presenti.include?(info_cliente['cod_ipa_aggregato']) || (!info_cliente['index_consumer'].blank? && info_cliente['index_consumer'].to_i >= 1)
                         #creo jwe
                         priv_key = OpenSSL::PKey::RSA.new(File.read(Settings.path_key_jwe))
                         payload = {
