@@ -53,6 +53,29 @@ module AuthHub
                     else
                         cert_b64 = nil
                         key_b64 = nil
+                        #se sono aggregato, controllo se con stesso cod_ipa ho altri servizi definiti (hanno client e secret diversi)
+                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND client != ? AND aggregato = ?",info_cliente['cod_ipa_aggregato'],info_cliente['client'],true)
+                        #se ci sono dati creo un hash con info per aggiungere assertion_consumer
+                        unless info_cliente_stesso_ipa.blank?
+                            hash_clienti_stesso_ipa = {}
+                            #primo cliente, quello richiesto da api
+                            hash_clienti_stesso_ipa[info_cliente['client']] = {}
+                            hash_clienti_stesso_ipa[info_cliente['client']]['url_assertion_consumer'] = info_cliente['url_ass_cons_ext'] #se non definito ritorna nil
+                            hash_clienti_stesso_ipa[info_cliente['client']]['index_assertion_consumer'] = info_cliente['index_consumer'].blank? ? 0 : info_cliente['index_consumer'] #se non definito nil
+                            hash_clienti_stesso_ipa[info_cliente['client']]['campi_richiesti'] = info_cliente['campi_richiesti'].blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : info_cliente['campi_richiesti'] #se non definito prende campi default
+                            hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
+                            hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
+                            hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
+                            info_cliente_stesso_ipa.each{|cliente_altro_servizio|
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = cliente_altro_servizio.url_ass_cons_ext #se non definito ritorna nil
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['index_assertion_consumer'] = cliente_altro_servizio.index_consumer.blank? ? 0 : cliente_altro_servizio.index_consumer #se non definito nil
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : cliente_altro_servizio.campi_richiesti
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['external'] = cliente_altro_servizio.app_ext #se non definito ritorna nil
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['default'] = cliente_altro_servizio.index_consumer.blank? ? true : false #se non definito nil
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['testo'] = cliente_altro_servizio.org_name
+                            }
+                        end
                     end                    
                     
                     payload = {
@@ -78,7 +101,10 @@ module AuthHub
                         'p_iva_aggregato' => info_cliente['p_iva_aggregato'],
                         'cf_aggregato' => info_cliente['cf_aggregato'],
                         'email_aggregato' => info_cliente['email_aggregato'],
-                        'telefono_aggregato' => info_cliente['telefono_aggregato']
+                        'telefono_aggregato' => info_cliente['telefono_aggregato'],
+                        'index_consumer' => info_cliente['index_consumer'],
+                        'campi_richiesti' => info_cliente['campi_richiesti'],
+                        'hash_clienti_stesso_ipa' => hash_clienti_stesso_ipa
                     }.to_json
 
                     encrypted = JWE.encrypt(payload, priv_key, zip: 'DEF')
