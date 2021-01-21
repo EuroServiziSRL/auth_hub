@@ -54,18 +54,18 @@ module AuthHub
                         cert_b64 = nil
                         key_b64 = nil
                         #se sono aggregato, controllo se con stesso cod_ipa ho altri servizi definiti (hanno client e secret diversi)
-                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND client != ? AND aggregato = ?",info_cliente['cod_ipa_aggregato'],info_cliente['client'],true)
+                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ?  AND aggregato = ?",info_cliente['cod_ipa_aggregato'],true).order(index_consumer ASC)
                         #se ci sono dati creo un hash con info per aggiungere assertion_consumer
                         unless info_cliente_stesso_ipa.blank?
                             hash_clienti_stesso_ipa = {}
                             #primo cliente, quello richiesto da api
-                            hash_clienti_stesso_ipa[info_cliente['client']] = {}
-                            hash_clienti_stesso_ipa[info_cliente['client']]['url_assertion_consumer'] = info_cliente['url_ass_cons_ext'] #se non definito ritorna nil
-                            hash_clienti_stesso_ipa[info_cliente['client']]['index_assertion_consumer'] = info_cliente['index_consumer'].blank? ? 0 : info_cliente['index_consumer'] #se non definito nil
-                            hash_clienti_stesso_ipa[info_cliente['client']]['campi_richiesti'] = info_cliente['campi_richiesti'].blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : info_cliente['campi_richiesti'].split(",") #se non definito prende campi default
-                            hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
-                            hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
-                            hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
+                            # hash_clienti_stesso_ipa[info_cliente['client']] = {}
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['url_assertion_consumer'] = info_cliente['url_ass_cons_ext'] #se non definito ritorna nil
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['index_assertion_consumer'] = info_cliente['index_consumer'].blank? ? 0 : info_cliente['index_consumer'] #se non definito nil
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['campi_richiesti'] = info_cliente['campi_richiesti'].blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : info_cliente['campi_richiesti'].split(",") #se non definito prende campi default
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = cliente_altro_servizio.url_ass_cons_ext #se non definito ritorna nil
@@ -150,18 +150,18 @@ module AuthHub
                         #creo jwe
                         priv_key = OpenSSL::PKey::RSA.new(File.read(Settings.path_key_jwe))
                         #se sono aggregato, controllo se con stesso cod_ipa ho altri servizi definiti (hanno client e secret diversi)
-                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND client != ? AND aggregato = ?",info_cliente['cod_ipa_aggregato'],info_cliente['client'],true)
+                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND aggregato = ?",info_cliente['cod_ipa_aggregato'],true).order(index_consumer ASC)
                         #se ci sono dati creo un hash con info per aggiungere assertion_consumer
                         unless info_cliente_stesso_ipa.blank?
                             hash_clienti_stesso_ipa = {}
                             #primo cliente, quello richiesto da api
-                            hash_clienti_stesso_ipa[info_cliente['client']] = {}
-                            hash_clienti_stesso_ipa[info_cliente['client']]['url_assertion_consumer'] = info_cliente['url_ass_cons_ext'] #se non definito ritorna nil
-                            hash_clienti_stesso_ipa[info_cliente['client']]['index_assertion_consumer'] = info_cliente['index_consumer'].blank? ? 0 : info_cliente['index_consumer'] #se non definito nil
-                            hash_clienti_stesso_ipa[info_cliente['client']]['campi_richiesti'] = info_cliente['campi_richiesti'].blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : info_cliente['campi_richiesti'].split(",") #se non definito prende campi default
-                            hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
-                            hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
-                            hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
+                            # hash_clienti_stesso_ipa[info_cliente['client']] = {}
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['url_assertion_consumer'] = info_cliente['url_ass_cons_ext'] #se non definito ritorna nil
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['index_assertion_consumer'] = info_cliente['index_consumer'].blank? ? 0 : info_cliente['index_consumer'] #se non definito nil
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['campi_richiesti'] = info_cliente['campi_richiesti'].blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : info_cliente['campi_richiesti'].split(",") #se non definito prende campi default
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
+                            # hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = cliente_altro_servizio.url_ass_cons_ext #se non definito ritorna nil
