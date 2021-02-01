@@ -33,6 +33,8 @@ module AuthHub
         # t.string  :cf_aggregato,        null: false
         # t.string  :email_aggregato,     null: false
         # t.string  :telefono_aggregato,  null: false
+        # t.string  :index_consumer,      null: false
+        # t.string  :campi_richieste,     null: false
         # t.string  :stato_metadata,      null: false   aggiunto,modificato,cancellato, inviato(quando viene inviato ad agid assume questo stato)
         # t.belongs_to :clienti_cliente,  index: true,  optional: true
         
