@@ -54,7 +54,7 @@ module AuthHub
                         cert_b64 = nil
                         key_b64 = nil
                         #se sono aggregato, controllo se con stesso cod_ipa ho altri servizi definiti (hanno client e secret diversi)
-                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ?  AND aggregato = ?",info_cliente['cod_ipa_aggregato'],true).order(index_consumer ASC)
+                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ?  AND aggregato = ?",info_cliente['cod_ipa_aggregato'],true).order('index_consumer ASC')
                         #se ci sono dati creo un hash con info per aggiungere assertion_consumer
                         unless info_cliente_stesso_ipa.blank?
                             hash_clienti_stesso_ipa = {}
@@ -150,7 +150,7 @@ module AuthHub
                         #creo jwe
                         priv_key = OpenSSL::PKey::RSA.new(File.read(Settings.path_key_jwe))
                         #se sono aggregato, controllo se con stesso cod_ipa ho altri servizi definiti (hanno client e secret diversi)
-                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND aggregato = ?",info_cliente['cod_ipa_aggregato'],true).order(index_consumer ASC)
+                        info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND aggregato = ?",info_cliente['cod_ipa_aggregato'],true).order('index_consumer ASC')
                         #se ci sono dati creo un hash con info per aggiungere assertion_consumer
                         unless info_cliente_stesso_ipa.blank?
                             hash_clienti_stesso_ipa = {}
