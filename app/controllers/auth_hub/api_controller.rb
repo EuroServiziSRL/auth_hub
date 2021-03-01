@@ -101,7 +101,7 @@ module AuthHub
                         'cf_aggregato' => info_cliente['cf_aggregato'],
                         'email_aggregato' => info_cliente['email_aggregato'],
                         'telefono_aggregato' => info_cliente['telefono_aggregato'],
-                        'index_consumer' => ((info_cliente['index_consumer'].nil? || info_cliente['index_consumer'] == '') ? '0' : info_cliente['index_consumer'] ) ,
+                        'index_consumer' => ((info_cliente['index_consumer'].nil? || info_cliente['index_consumer'] == '') ? 0 : info_cliente['index_consumer'] ) ,
                         'campi_richiesti' => (info_cliente['campi_richiesti'].blank? ? '' : info_cliente['campi_richiesti'].split(",")),
                         'hash_clienti_stesso_ipa' => hash_clienti_stesso_ipa
                     }.to_json
