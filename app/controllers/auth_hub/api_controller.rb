@@ -198,7 +198,7 @@ module AuthHub
                             'cf_aggregato' => info_cliente['cf_aggregato'],
                             'email_aggregato' => info_cliente['email_aggregato'],
                             'telefono_aggregato' => info_cliente['telefono_aggregato'],
-                            'index_consumer' => info_cliente['index_consumer'],
+                            'index_consumer' => info_cliente['index_consumer'].to_i,
                             'campi_richiesti' => (info_cliente['campi_richiesti'].blank? ? '' : info_cliente['campi_richiesti'].split(",")),
                             'hash_clienti_stesso_ipa' => hash_clienti_stesso_ipa
                         }.to_json
@@ -233,7 +233,7 @@ module AuthHub
                                     #render json: { 'esito' => 'ko', 'msg_errore' => "AH: Problemi recupero metadata di #{info_cliente['org_name']}" }
                                 end
                             else
-                                logger.error "Errore in genera_zip_metadata SPID: #{response['msg_errore']}"
+                                logger.error "Errore in genera_zip_metadata SPID: #{response['msg_errore']} per cliente #{info_cliente['org_name']}"
                                 raise "Metadata aggregato non completo"
                                 #render json: { 'esito' => 'ko', 'msg_errore' => "Non ci sono metadati da aggiornare" }
                             end                        
