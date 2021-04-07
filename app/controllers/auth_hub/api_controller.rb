@@ -22,8 +22,8 @@ module AuthHub
                     case hash_return['tipo_login']
                     when 'cie'
                         render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return if !info_cliente.cie && !info_cliente.cie_pre_prod
-                    when 'spid'
-                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return if !info_cliente.spid && !info_cliente.spid_pre_prod
+                    when 'spid' #in questo caso potrei anche chiedere i metadata solo per eidas
+                        render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return if !info_cliente.spid && !info_cliente.spid_pre_prod && !info_cliente.eidas && !info_cliente.eidas_pre_prod
                     when 'eidas'
                         render json: { 'esito' => 'ko', 'msg_errore' => "AH: Tipo di login non abilitato" } and return if !info_cliente.eidas && !info_cliente.eidas_pre_prod
                     else    
@@ -57,7 +57,7 @@ module AuthHub
                         if hash_return['tipo_login'] == 'cie'
                             info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND aggregato = ? AND ( cie = ? OR cie_pre_prod = ?)",info_cliente['cod_ipa_aggregato'],true,true,true).order('index_consumer ASC')
                         else
-                            info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND aggregato = ? AND ( spid = ? OR spid_pre_prod = ?)",info_cliente['cod_ipa_aggregato'],true,true,true).order('index_consumer ASC')
+                            info_cliente_stesso_ipa = InfoLoginCliente.where("cod_ipa_aggregato = ? AND aggregato = ? AND ( spid = ? OR spid_pre_prod = ? OR eidas = ? OR eidas_pre_prod = ?)",info_cliente['cod_ipa_aggregato'],true,true,true,true,true).order('index_consumer ASC')
                         end
                         
                         #se ci sono dati creo un hash con info per aggiungere assertion_consumer
@@ -106,6 +106,7 @@ module AuthHub
                         'cf_aggregato' => info_cliente['cf_aggregato'],
                         'email_aggregato' => info_cliente['email_aggregato'],
                         'telefono_aggregato' => info_cliente['telefono_aggregato'],
+                        'belfiore_aggregato' => info_cliente['belfiore_aggregato'],
                         'index_consumer' => info_cliente['index_consumer'].to_i ,
                         'campi_richiesti' => (info_cliente['campi_richiesti'].blank? ? '' : info_cliente['campi_richiesti'].split(",")),
                         'hash_clienti_stesso_ipa' => hash_clienti_stesso_ipa
@@ -198,6 +199,7 @@ module AuthHub
                             'cf_aggregato' => info_cliente['cf_aggregato'],
                             'email_aggregato' => info_cliente['email_aggregato'],
                             'telefono_aggregato' => info_cliente['telefono_aggregato'],
+                            'belfiore_aggregato' => info_cliente['belfiore_aggregato'],
                             'index_consumer' => info_cliente['index_consumer'].to_i,
                             'campi_richiesti' => (info_cliente['campi_richiesti'].blank? ? '' : info_cliente['campi_richiesti'].split(",")),
                             'hash_clienti_stesso_ipa' => hash_clienti_stesso_ipa
