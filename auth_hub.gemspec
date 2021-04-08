@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   
   s.add_dependency 'email_verifier', '= 0.1.0' #PER VALIDAZIONI SU MODEL 
-  s.add_dependency "mysql2", "= 0.4.10"
+  s.add_dependency "mysql2", "= 0.5.3"
   s.add_dependency "rails", "= 5.2.4.3"
   s.add_dependency 'config', '= 2.0.0' #PER USARE SETTINGS IN DEVISE.RB
   s.add_dependency "devise", '= 4.6.2'
