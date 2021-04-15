@@ -73,10 +73,14 @@ module AuthHub
                             # hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
-                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = cliente_altro_servizio.url_ass_cons_ext #se non definito ritorna nil
+                                if hash_return['tipo_login'] == 'cie'
+                                    hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext_cie : nil ) #se non definito ritorna nil
+                                else
+                                    hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext : nil ) #se non definito ritorna nil
+                                end
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['index_assertion_consumer'] = cliente_altro_servizio.index_consumer.blank? ? 0 : cliente_altro_servizio.index_consumer #se non definito nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address','domicileStreetAddress','domicilePostalCode','domicileMunicipality','domicileProvince','domicileNation', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : cliente_altro_servizio.campi_richiesti.split(",")
-                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['external'] = cliente_altro_servizio.app_ext #se non definito ritorna nil
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['external'] = cliente_altro_servizio.app_ext #se non definito ritorna nil, imposta su auth se sto usando un sso esterno
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['default'] = cliente_altro_servizio.index_consumer.to_i == 0 ? true : false #se non definito nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['testo'] = cliente_altro_servizio.org_name
                             }
@@ -87,6 +91,7 @@ module AuthHub
                         'secret' => info_cliente['secret'],
                         'url_app_ext' => info_cliente['url_app_ext'],
                         'url_ass_cons_ext' => info_cliente['url_ass_cons_ext'],
+                        'url_ass_cons_ext_cie' => info_cliente['url_ass_cons_ext_cie'],
                         'issuer' => info_cliente['issuer'],
                         'org_name' => info_cliente['org_name'],
                         'org_display_name' => info_cliente['org_display_name'],
@@ -170,7 +175,7 @@ module AuthHub
                             # hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
-                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = cliente_altro_servizio.url_ass_cons_ext #se non definito ritorna nil
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext : nil ) #se non definito ritorna nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['index_assertion_consumer'] = cliente_altro_servizio.index_consumer.blank? ? 0 : cliente_altro_servizio.index_consumer #se non definito nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address','domicileStreetAddress','domicilePostalCode','domicileMunicipality','domicileProvince','domicileNation', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : cliente_altro_servizio.campi_richiesti.split(",")
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['external'] = cliente_altro_servizio.app_ext #se non definito ritorna nil
@@ -185,6 +190,8 @@ module AuthHub
                             'url_app_ext' => info_cliente['url_app_ext'],
                             'url_ass_cons_ext' => info_cliente['url_ass_cons_ext'],
                             'url_metadata_ext' => info_cliente['url_metadata_ext'],
+                            'url_ass_cons_ext_cie' => info_cliente['url_ass_cons_ext_cie'],
+                            'url_metadata_ext_cie' => info_cliente['url_metadata_ext_cie'],
                             'issuer' => info_cliente['issuer'],
                             'org_name' => info_cliente['org_name'],
                             'org_display_name' => info_cliente['org_display_name'],
