@@ -108,7 +108,7 @@ module AuthHub
                 canonical_dominio_installazione_hippo = ApplicationController.helpers.to_canonical(dominio_installazione_hippo,false) || ""
                 #logger.debug "\n\n dominio inst hippo canonico #{canonical_dominio_installazione_hippo}"
                 #ritorno true se ci sono applicazioni installate riferite a questa installazione/server e se trovo lo stesso dominio 
-                return installazione.CLIENTE if installazione.clienti_applinstallate.length > 0 && ( !canonical_dominio.blank? && !canonical_dominio_installazione_ruby.blank? && canonical_dominio_installazione_ruby.include?(canonical_dominio)) || (!canonical_dominio_installazione_hippo.blank? && canonical_dominio_installazione_hippo.include?(canonical_dominio))
+                return installazione.CLIENTE if installazione.clienti_applinstallate.length > 0 && ( ( !canonical_dominio.blank? && (!canonical_dominio_installazione_ruby.blank? && canonical_dominio_installazione_ruby.include?(canonical_dominio))) || (!canonical_dominio.blank? && (!canonical_dominio_installazione_hippo.blank? && canonical_dominio_installazione_hippo.include?(canonical_dominio)) ) )
             }                  
           end
         }
