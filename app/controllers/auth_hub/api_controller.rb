@@ -181,9 +181,14 @@ module AuthHub
                             # hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
                             # hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
                             # hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
+                            
+                            
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
+                                #SE SERVE GENERARE ANCHE PER CIE BISOGNA CAMBIARE QUI CON UN PARAMETRO
+                                url_assertion = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext : cliente_altro_servizio['org_url'].gsub(/\/portal([\/]*)$/,'')+'/portal/auth/spid/assertion_consumer' ) 
+                            
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
-                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext : nil ) #se non definito ritorna nil
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = url_assertion
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['index_assertion_consumer'] = cliente_altro_servizio.index_consumer.blank? ? 0 : cliente_altro_servizio.index_consumer #se non definito nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? array_campi_spid : cliente_altro_servizio.campi_richiesti.split(",")
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['external'] = cliente_altro_servizio.app_ext #se non definito ritorna nil
@@ -191,7 +196,6 @@ module AuthHub
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['testo'] = cliente_altro_servizio.org_name
                             }
                         end
-                        
                         payload = {
                             'client' => info_cliente['client'],
                             'secret' => info_cliente['secret'],
@@ -208,6 +212,9 @@ module AuthHub
                             'spid_pre_prod' => info_cliente['spid_pre_prod'],
                             'cie_pre_prod' => info_cliente['cie_pre_prod'],
                             'eidas_pre_prod' => info_cliente['eidas_pre_prod'],
+                            'spid' => info_cliente['spid'],
+                            'cie' => info_cliente['cie'],
+                            'eidas' => info_cliente['eidas'],
                             'aggregato' => info_cliente['aggregato'],
                             'cod_ipa_aggregato' => info_cliente['cod_ipa_aggregato'],
                             'p_iva_aggregato' => info_cliente['p_iva_aggregato'],
