@@ -169,7 +169,7 @@ module AuthHub
                         #se ci sono dati creo un hash con info per aggiungere assertion_consumer
                         
                         #array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address','domicileStreetAddress','domicilePostalCode','domicileMunicipality','domicileProvince','domicileNation', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice']
-                        array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'],
+                        array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice']
                     
                         unless info_cliente_stesso_ipa.blank?
                             hash_clienti_stesso_ipa = {}
@@ -250,7 +250,7 @@ module AuthHub
                                     #render json: { 'esito' => 'ko', 'msg_errore' => "AH: Problemi recupero metadata di #{info_cliente['org_name']}" }
                                 end
                             else
-                                logger.error "Errore in genera_zip_metadata SPID: #{response['msg_errore']} per cliente #{info_cliente['org_name']}"
+                                logger.error "Errore in genera_zip_metadata SPID: #{response['msg_errore']}, \n\n per cliente #{info_cliente['org_name']}"
                                 raise "Metadata aggregato non completo"
                                 #render json: { 'esito' => 'ko', 'msg_errore' => "Non ci sono metadati da aggiornare" }
                             end                        
