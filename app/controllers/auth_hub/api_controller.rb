@@ -74,9 +74,9 @@ module AuthHub
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
                                 if hash_return['tipo_login'] == 'cie'
-                                    hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext_cie : nil ) #se non definito ritorna nil
+                                    hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext_cie : cliente_altro_servizio['org_url'].gsub(/\/portal([\/]*)$/,'')+'/portal/auth/cie/assertion_consumer' ) #sempre definito
                                 else
-                                    hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext : nil ) #se non definito ritorna nil
+                                    hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext : cliente_altro_servizio['org_url'].gsub(/\/portal([\/]*)$/,'')+'/portal/auth/spid/assertion_consumer' ) #se non definito ritorna nil
                                 end
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['index_assertion_consumer'] = cliente_altro_servizio.index_consumer.blank? ? 0 : cliente_altro_servizio.index_consumer #se non definito nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address','domicileStreetAddress','domicilePostalCode','domicileMunicipality','domicileProvince','domicileNation', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : cliente_altro_servizio.campi_richiesti.split(",")
