@@ -73,7 +73,7 @@ module AuthHub
                             # hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
                         
                             #array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address','domicileStreetAddress','domicilePostalCode','domicileMunicipality','domicileProvince','domicileNation', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice']
-                            array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'],
+                            array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice']
                     
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
