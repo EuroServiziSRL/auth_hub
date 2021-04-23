@@ -71,6 +71,10 @@ module AuthHub
                             # hash_clienti_stesso_ipa[info_cliente['client']]['external'] = info_cliente['app_ext'] 
                             # hash_clienti_stesso_ipa[info_cliente['client']]['default'] = info_cliente['index_consumer'].blank? ? true : false
                             # hash_clienti_stesso_ipa[info_cliente['client']]['testo'] = info_cliente['org_name']
+                        
+                            #array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address','domicileStreetAddress','domicilePostalCode','domicileMunicipality','domicileProvince','domicileNation', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice']
+                            array_campi_spid = ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'],
+                    
                             info_cliente_stesso_ipa.each{|cliente_altro_servizio|
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client] = {}
                                 if hash_return['tipo_login'] == 'cie'
@@ -79,7 +83,7 @@ module AuthHub
                                     hash_clienti_stesso_ipa[cliente_altro_servizio.client]['url_assertion_consumer'] = ( cliente_altro_servizio.app_ext ? cliente_altro_servizio.url_ass_cons_ext : cliente_altro_servizio['org_url'].gsub(/\/portal([\/]*)$/,'')+'/portal/auth/spid/assertion_consumer' ) #se non definito ritorna nil
                                 end
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['index_assertion_consumer'] = cliente_altro_servizio.index_consumer.blank? ? 0 : cliente_altro_servizio.index_consumer #se non definito nil
-                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email', 'gender', 'dateOfBirth', 'placeOfBirth', 'countyOfBirth', 'idCard', 'address','domicileStreetAddress','domicilePostalCode','domicileMunicipality','domicileProvince','domicileNation', 'digitalAddress', 'expirationDate', 'mobilePhone', 'ivaCode', 'registeredOffice'] : cliente_altro_servizio.campi_richiesti.split(",")
+                                hash_clienti_stesso_ipa[cliente_altro_servizio.client]['campi_richiesti'] = cliente_altro_servizio.campi_richiesti.blank? ? array_campi_spid : cliente_altro_servizio.campi_richiesti.split(",")
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['external'] = cliente_altro_servizio.app_ext #se non definito ritorna nil, imposta su auth se sto usando un sso esterno
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['default'] = cliente_altro_servizio.index_consumer.to_i == 0 ? true : false #se non definito nil
                                 hash_clienti_stesso_ipa[cliente_altro_servizio.client]['testo'] = cliente_altro_servizio.org_name
