@@ -415,7 +415,7 @@ module AuthHub
                 user_instance.jwt_created = DateTime.now
                 user_instance.save
             end
-            #da app esterna con username password
+            #da app esterna con username password (anche il caso di click su bottone in dashboard di start manda su app php che mandano qui)
             if session[:auth] == 'up' && session['from_civ_next'].blank?
                 # creo jwt
                 dominio_ente_chiamante = Addressable::URI.parse(session[:url_pre_sign_in]).site unless session[:url_pre_sign_in].blank?

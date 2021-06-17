@@ -30,9 +30,11 @@ module AuthHub
                             dominio_installazione_hippo = dominio_installazione_hippo[0..-2] if !dominio_installazione_hippo.blank? && dominio_installazione_hippo[-1] == "/"
                             #se ci sono applicazioni installate riferite a questa installazione/server
                             if installazione.clienti_applinstallate.length > 0
+                                tipo_auth = session[:auth]
+                                tipo_auth ||= session['hash_azure'].blank? ? 'up' : 'aad'
                                 hash_jwt_app = {
                                       iss: 'soluzionipa.it',
-                                      auth: 'up',
+                                      auth: tipo_auth,
                                       user: {
                                           user_id: current_user.id,
                                           name: current_user.nome_cognome,
