@@ -135,8 +135,8 @@ module AuthHub
     #metodo che crea e ritorna uno user all'accesso da azure
     def self.find_for_oauth(auth_hash)
       user = find_or_create_by(uid: auth_hash['uid'], provider: auth_hash['provider'])
-      user.nome = auth_hash['info']['first_name'].strip if user.nome.blank?
-      user.cognome = auth_hash['info']['last_name'].strip if user.cognome.blank?
+      user.nome = (!auth_hash['info'].blank? && !auth_hash['info']['first_name'].blank? ? auth_hash['info']['first_name'].strip : '') if user.nome.blank?
+      user.cognome = (auth_hash['info'].blank? && !auth_hash['info']['first_name'].blank? ? auth_hash['info']['last_name'].strip : '') if user.cognome.blank?
       nome_e_cognome = "#{user.nome} #{user.cognome}".strip
       user.nome_cognome = nome_e_cognome
       user.email = auth_hash['info']['email']
