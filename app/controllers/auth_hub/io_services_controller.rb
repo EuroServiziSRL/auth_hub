@@ -14,7 +14,6 @@ module AuthHub
             hash_return = verify_authorization
             if hash_return['esito'] == 'ok'
                 #cerco in base al cf dell'ente e al nome del servizio le info del servizio 
-                debugger
                 services_results = IoService.where("organization_fiscal_code = ? AND service_name = ?",hash_return['cf_ente'],hash_return['nome_servizio']) 
                 if services_results.blank?
                     render json: { 'esito' => 'ko', 'msg_errore' => "AH: servizio con cf_ente #{hash_return['cf_ente']} e nome del servizio #{hash_return['nome_servizio']} non presente!" }
