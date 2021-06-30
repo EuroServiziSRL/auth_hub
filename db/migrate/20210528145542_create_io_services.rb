@@ -1,6 +1,6 @@
 class CreateIoServices < ActiveRecord::Migration[5.2]
   def change
-    create_table :io_services do |t|
+    create_table :auth_hub_io_services do |t|
       t.string :organization_name
       t.string :department_name
       t.string :organization_fiscal_code
@@ -13,6 +13,7 @@ class CreateIoServices < ActiveRecord::Migration[5.2]
       t.longtext :description
       t.string :web_url
       t.string :app_ios
+      t.string :app_android
       t.string :tos_url
       t.string :privacy_url
       t.string :address
