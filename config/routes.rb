@@ -73,6 +73,9 @@ AuthHub::Engine.routes.draw do
     
     get 'api/get_info_login_cliente' => 'api#get_info_login_cliente', :as => :get_info_login_cliente
     get 'api/genera_zip_metadata' => 'api#genera_zip_metadata', :as => :genera_zip_metadata
+
+    #ritorna le info del servizio per app IO
+    get 'io_services/get_info_service' => 'io_services#get_info_service', :as => :get_info_service
     
     resources :setups
   
