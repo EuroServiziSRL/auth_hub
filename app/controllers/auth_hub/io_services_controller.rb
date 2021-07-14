@@ -14,9 +14,9 @@ module AuthHub
             hash_return = verify_authorization
             if hash_return['esito'] == 'ok'
                 #cerco in base al cf dell'ente e al nome del servizio le info del servizio 
-                services_results = IoService.where("organization_fiscal_code = ? AND service_name = ?",hash_return['cf_ente'],hash_return['nome_servizio']) 
+                services_results = IoService.where("organization_fiscal_code = ? AND service_name = ?",hash_return['organization_fiscal_code'],hash_return['service_name']) 
                 if services_results.blank?
-                    render json: { 'esito' => 'ko', 'msg_errore' => "AH: servizio con cf_ente #{hash_return['cf_ente']} e nome del servizio #{hash_return['nome_servizio']} non presente!" }
+                    render json: { 'esito' => 'ko', 'msg_errore' => "Nessun servizio trovato con organization_fiscal_code: #{hash_return['organization_fiscal_code']} e service_name: #{hash_return['service_name']}!" }
                 else
                     servizio = services_results.first
                     #creo jwe
@@ -48,13 +48,13 @@ module AuthHub
                 if request.headers['Authorization'].present?
                     bearer_token = request.headers['Authorization'].split(' ').last    
                     hash_token_decoded = JsonWebToken.decode(bearer_token)
-                    client_id = hash_token_decoded['cf_ente']
+                    client_id = hash_token_decoded['organization_fiscal_code']
                     start_istant = hash_token_decoded['start']
                     #verifico istante temporale
                     if JsonWebToken.valid_token(hash_token_decoded)
                         resp['esito'] = 'ok'
-                        resp['cf_ente'] = hash_token_decoded['cf_ente']
-                        resp['nome_servizio'] = hash_token_decoded['nome_servizio']
+                        resp['organization_fiscal_code'] = hash_token_decoded['organization_fiscal_code']
+                        resp['service_name'] = hash_token_decoded['service_name']
                     else
                         resp['esito'] = 'ko'
                         resp['msg_errore'] = "AH: JWT non valido, controllare date (Datetime server #{Time.now}, datetime inviata #{Time.strptime(hash_token_decoded['start'],"%d%m%Y%H%M%S")})"
